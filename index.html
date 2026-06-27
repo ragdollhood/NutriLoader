@@ -454,16 +454,20 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 }
 
 #headerVisits {
-  position:absolute;
+  position:fixed;
   top: 4px;
   right: 26px;
-  font-size: 12px;
-color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12)
+  color:var(--ink-soft);
   background: rgba(255,255,255,0.9);
-  padding: 4px 4px;
-  border-radius:999px;padding:4px 4px;font-size:12.5px;font-weight:700;
+  box-shadow:0 2px 8px rgba(85,70,55,.12);
+  border-radius:999px;
+  padding:4px 8px;
+  font-size:12.5px;
+  font-weight:700;
   z-index: 10000;
-  font-weight: bold;
+}
+@media (max-width:680px){
+  #headerVisits{right:14px}
 }
 
   
@@ -491,7 +495,7 @@ color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12)
     </a>
   </div>
 <header>
-  <h1><img src="/images/logga-alpha.png" alt="NutriLoader" class="title-image"></h1>
+  <h1><img src="/images/logga-alpha.png" alt="Nutri Loader" class="title-image"></h1>
   <div class="tagline" data-i18n="tagline">With focus on nourishment - not calories</div>
 
 
@@ -518,9 +522,9 @@ color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12)
     </div>
   </section>
 
-<div style="display:flex;justify-content:center;padding:10px 2px 4px">
-  <button id="resetBtnTop" style="background:none;border:none;padding:0;cursor:pointer">
-    <img id="resetBtnTopImg" src="/images/clean-eng.png" alt="Clean plates" style="height:48px;display:block">
+<div style="display:flex;justify-content:center;padding:12px 2px">
+  <button id="resetBtnTop" style="background:none;border:none;padding:0;cursor:pointer;width:23%;min-width:80px">
+    <img id="resetBtnTopImg" src="/images/clean-eng.png" alt="Clean plates" style="width:100%;display:block;filter:drop-shadow(0 6px 18px rgba(60,40,20,.3))">
   </button>
 </div>
 
