@@ -11,7 +11,7 @@
   --bg:#e9e4dd;
   --panel:#f7f4ef;
   --panel-deep:#efe9e1;
-  --ink:#41382f; 
+  --ink:#41382f;
   --ink-soft:#867b6d;
   --line:#d9d0c3;
   --rose:#c2766e;
@@ -101,7 +101,7 @@ g.organ.hovsel .hoverpart{transform:scale(1.16)}
 .chip.flash{animation:chipflash 1.4s ease 2}
 
 /* ---------- header ---------- */
-header{position:absolute;text-align:center;padding:38px 70px 10px}
+header{position:relative;text-align:center;padding:38px 70px 10px}
 header h1{
   font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;
   font-size:clamp(34px,5.4vw,58px);letter-spacing:.32em;text-indent:.32em;
@@ -109,7 +109,7 @@ header h1{
 header h1 em{font-style:normal;color:var(--rose-deep)}
 .tagline{margin-top:6px;color:var(--ink-soft);letter-spacing:.06em;font-size:14px}
 .tagline::before,.tagline::after{content:"·";margin:0 10px;color:var(--rose)}
-#topLeftBtns{position:absolute;top:10px;left:10px;z-index:200;display:flex;flex-direction:column;gap:6px}
+#topLeftBtns{position:fixed;top:16px;left:18px;z-index:200;display:flex;flex-direction:column;gap:6px}
 #resetBtnTop{border:1px solid var(--line);background:#fffdf9f2;
   border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:700;
   letter-spacing:.04em;color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12);cursor:pointer}
@@ -468,38 +468,25 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 </div>
 <div id="foodPop"></div>
 <div id="organLabel"></div>
-
-<header>
-
-  <!-- vänstra knappar -->
   <div id="topLeftBtns">
     <a id="donateBtn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=ingenskit%40hotmail.com&item_name=NUTRILOADER&currency_code=SEK&no_shipping=1" target="_blank" rel="noopener">
-      <svg class="ppmark" viewBox="0 0 24 28" width="14" height="16">
+      <svg class="ppmark" viewBox="0 0 24 28" width="14" height="16" aria-hidden="true">
         <path d="M7.4 27 l.9-5.6 H6 L8.6 4.3 h7.3 c3.7 0 6 1.9 5.4 5.8 -.6 4.2 -3.7 6.2 -7.8 6.2 H10 l-.9 5.7 -.2 1.4 Z" fill="#003087"/>
         <path d="M9.1 22.8 l.9-5.6 h2.9 c4.6 0 8-2.2 8.7-7 .1-.5.1-1 .1-1.4 1.6 .9 2.3 2.6 1.8 5.3 -.8 4.7 -4.1 6.9 -8.7 6.9 h-1.6 l-.9 5.6 -.2 1.4 H9 Z" fill="#0070e0"/>
       </svg>
       <span>Support NutriLoader</span>
     </a>
-
     <button id="resetBtnTop" data-i18n="reset">Start a new day</button>
   </div>
-
-  <!-- språk (bara flagga) -->
-  <button id="langBtn">
-    <span class="flag" id="flagBox"></span>
+<header>
+  <h1><img src="/images/logga-alpha.png" alt="NutriLoader" class="title-image"></h1>
+  <div class="tagline" data-i18n="tagline">With focus on nourishment - not calories</div>
+  <button id="langBtn" title="Byt språk / Change language">
+    <span class="flag" id="flagBox"></span><span id="langLbl">Svenska</span>
   </button>
 
-  <!-- logga -->
-  <h1>
-    <img src="/images/logga-alpha.png" alt="NutriLoader" class="title-image">
-  </h1>
-
-  <!-- tagline -->
-  <div class="tagline" data-i18n="tagline">
-    With focus on nourishment - not calories
-  </div>
-
 </header>
+
 <main class="layout">
 
   <!-- ============ PLATE + PANTRY ============ -->
