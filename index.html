@@ -1411,7 +1411,7 @@ buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic()
 
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-  fetch("https://api.countapi.xyz/hit/nutrifoodpal/visits")
+  fetch("https://api.countapi.xyz/hit/nutrifood/visits")
     .then(res => res.json())
     .then(data => {
       document.getElementById("headerVisits").textContent = "Visits: " + data.value;
