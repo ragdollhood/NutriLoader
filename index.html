@@ -188,21 +188,35 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
 .plate-item .em{font-size:37px;line-height:1.05;filter:drop-shadow(0 4px 4px rgba(60,40,20,.4))}
 .plate-item .nm{font-size:11px;font-weight:800;color:#473c2f;text-align:center;line-height:1.1;max-width:170px;
   text-shadow:0 0 4px #fff,0 0 7px #fff,0 1px 1px #fff}
-.plate-item.eaten .em{filter:drop-shadow(0 4px 4px rgba(60,40,20,.4)) drop-shadow(0 0 6px rgba(125,143,108,.9))}
+.plate-item.eaten .em{
+  filter:drop-shadow(0 4px 4px rgba(60,40,20,.4)) drop-shadow(0 0 6px rgba(125,143,108,.9));
+  opacity:0.45}
+.plate-item.eaten .em-wrap{position:relative;display:inline-block;}
+.plate-item.eaten .em-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 42%,rgba(80,60,40,.7) 42%,rgba(80,60,40,.7) 58%,transparent 58%);
+  pointer-events:none}
+@keyframes eat-pulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(190,50,40,.45)}
+  50%{transform:scale(1.05);box-shadow:0 0 0 6px rgba(190,50,40,0)}
+}
 .plate-item .foodbtn{
   position:relative;width:78px;height:78px;background:none;border:none;padding:0;cursor:pointer;
   display:grid;place-items:center;transition:transform .15s ease}
-.plate-item .foodbtn:hover{transform:scale(1.07)}
+.plate-item:not(.eaten) .foodbtn{
+  animation:eat-pulse 2s ease-in-out infinite}
+.plate-item .foodbtn:hover{transform:scale(1.07);animation:none}
 .plate-item .foodbtn .em{font-size:32px;line-height:1;z-index:1;
   filter:drop-shadow(0 2px 3px rgba(60,30,15,.35))}
 .plate-item .ringSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .plate-item .narcb{fill:none;stroke:#c8bca2;stroke-width:15.5;stroke-linecap:round}
 .plate-item .narcf{fill:none;stroke:#f7f2e7;stroke-width:12.5;stroke-linecap:round}
-.plate-item .earcb{fill:none;stroke:#93a878;stroke-width:15.5;stroke-linecap:round}
-.plate-item .earcf{fill:none;stroke:rgba(238,243,228,.96);stroke-width:12.5;stroke-linecap:round;transition:stroke .2s}
+.plate-item .earcb{fill:none;stroke:#a83228;stroke-width:15.5;stroke-linecap:round;transition:stroke .3s}
+.plate-item .earcf{fill:none;stroke:#e85043;stroke-width:12.5;stroke-linecap:round;transition:stroke .3s}
 .plate-item .ntx{fill:#5a4c38;font-weight:800}
-.plate-item .etx{fill:#4d6238;font-weight:800;font-size:11.5px;letter-spacing:.13em}
-.plate-item .foodbtn:hover .earcf{stroke:#dce8c9}
+.plate-item .etx{fill:#fff;font-weight:800;font-size:11.5px;letter-spacing:.13em;transition:fill .3s}
+.plate-item .foodbtn:hover .earcf{stroke:#c94038}
+.plate-item.eaten .earcb{stroke:#4a6e30}
 .plate-item.eaten .earcf{stroke:var(--good)}
 .plate-item.eaten .etx{fill:#fff}
 .plate-item .qty{box-shadow:0 2px 5px rgba(60,40,20,.2);background:rgba(253,243,239,.95);
@@ -1048,7 +1062,7 @@ function renderPlate(){
             <text class="ntx" font-size="${fs}"><textPath href="#${tid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${nm}</textPath></text>
             <text class="etx"><textPath href="#${bid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${it.eaten?'\u2713 '+t('eatenBtn'):t('eatBtn')}</textPath></text>
           </svg>
-          <span class="em">${f.em}</span>
+          <span class="em-wrap"><span class="em">${f.em}</span></span>
         </button>
       </div>`;
     el.addEventListener('dragstart',ev=>ev.dataTransfer.setData('text/plain','item:'+it.uid));
