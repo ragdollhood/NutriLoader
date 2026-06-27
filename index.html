@@ -408,16 +408,23 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   #plateZone{height:480px}
   #bars{grid-template-columns:1fr}
 }
-  
-.title-image {
+ .title-image {
   width: clamp(180px, 40vw, 420px);
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
+#headerVisits {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  font-size: 12px;
+  color: #666;
+  z-index: 9999;
     }
 </style>
+
 </head>
 <body>
 <div id="bgFood" aria-hidden="true"></div>
@@ -436,14 +443,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   <button id="langBtn" title="Byt språk / Change language">
     <span class="flag" id="flagBox"></span><span id="langLbl">Svenska</span>
   </button>
-#headerVisits {
-  position: fixed;
-  top: 10px;
-  right: 14px;
-  font-size: 12px;
-  color: #666;
-  z-index: 9999;
-}
+
 </header>
 
 <main class="layout">
