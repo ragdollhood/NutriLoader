@@ -1411,15 +1411,17 @@ buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic()
 
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-  fetch("https://api.countapi.xyz/hit/nutrifoodpal/home")
+  fetch("https://api.countapi.xyz/hit/nutrifoodpal/visits")
     .then(res => res.json())
     .then(data => {
       document.getElementById("headerVisits").textContent = "Visits: " + data.value;
     })
-    .catch(() => {
-      document.getElementById("headerVisits").textContent = "No data";
+    .catch(err => {
+      console.log(err);
+      document.getElementById("headerVisits").textContent = "Loading...";
     });
 });
 </script>
+
 </body>
 </html>
