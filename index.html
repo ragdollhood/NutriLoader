@@ -390,15 +390,10 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 /* ---------- pantry (painted wood pantry, photo style) ---------- */
 #pantry{min-width:0}
 #pantryInner{
-  background:url(/images/background-hylla.png) repeat;background-size:470px auto;
-  border:10px solid #ddd4c4;border-radius:14px;
-  box-shadow:var(--shadow),
-    inset 0 0 0 2px #c3b9a4,
-    inset 0 16px 34px rgba(110,85,50,.22),
-    inset 0 -8px 20px rgba(90,70,40,.15),
-    inset 14px 0 26px -14px rgba(90,70,40,.25),
-    inset -14px 0 26px -14px rgba(90,70,40,.25);
-  padding:14px 16px 0;overflow:hidden}
+  background:url(/images/hyllwall1.png) repeat;background-size:400px auto;
+  border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:14px 16px 14px;overflow:hidden}
 #pantryInner h2{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;letter-spacing:.06em;
   color:#695838;text-shadow:0 1px 0 rgba(255,255,248,.9), 0 0 8px rgba(255,255,248,.6);margin:0}
 #shelves{display:flex;flex-direction:column;gap:16px;margin-top:12px}
@@ -413,11 +408,7 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
   background:#faf3e1;border:1px solid #c7b893;border-radius:3px;padding:2px 11px;
   font-size:10.5px;font-weight:800;letter-spacing:.1em;color:#6e5c3c;
   box-shadow:0 2px 4px rgba(90,70,40,.30);transform:rotate(-1deg)}
-.pantry-base{margin:6px -16px 0}
-.pantry-base .baseB{height:0}
-.pantry-base .floorB{height:46px;
-  background:url(/images/background-hylla.png);background-size:cover;background-position:center;
-  box-shadow:inset 0 6px 10px -4px rgba(90,70,40,.45)}
+.pantry-base{display:none}
 .chip{display:flex;align-items:center;gap:7px;border:1px solid #ddd0b6;background:#fffdf6;
   border-radius:10px;padding:7px 12px 7px 9px;font-size:13px;font-weight:600;color:var(--ink);
   box-shadow:0 5px 6px -2px rgba(80,60,30,.45), 0 1px 2px rgba(80,60,30,.2);
