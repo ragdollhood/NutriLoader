@@ -1405,16 +1405,8 @@ document.getElementById('resetBtnTop').onclick=()=>document.getElementById('rese
 window.addEventListener('resize',()=>renderPlate());
 buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic(); renderPantry(); renderScene(); render();
 </script>
-
-  <script>
-fetch("https://api.countapi.xyz/hit/nutrifoodpal/home")
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById("headerVisits").textContent = "Visits: " + data.value;
-  })
-  .catch(() => {
-    document.getElementById("headerVisits").textContent = "";
-  });
+<script>
+document.getElementById("headerVisits").textContent = "TEST";
 </script>
 </body>
 </html>
