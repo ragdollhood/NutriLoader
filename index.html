@@ -436,6 +436,14 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   <button id="langBtn" title="Byt språk / Change language">
     <span class="flag" id="flagBox"></span><span id="langLbl">Svenska</span>
   </button>
+#headerVisits {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  font-size: 12px;
+  color: #666;
+  z-index: 9999;
+}
 </header>
 
 <main class="layout">
@@ -1392,6 +1400,20 @@ document.getElementById('resetBtnTop').onclick=()=>document.getElementById('rese
 /* ================= INIT ================= */
 window.addEventListener('resize',()=>renderPlate());
 buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic(); renderPantry(); renderScene(); render();
+</script>
+  <script>
+(function(){
+  fetch('https://api.counterapi.dev/v1/nutrifoodpal/visits/up')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var n = d.count != null ? d.count : (d.Count != null ? d.Count : null);
+      if(n != null){
+        var el = document.getElementById('headerVisits');
+        if(el) el.textContent = '✦ ' + Number(n).toLocaleString('sv-SE') + ' VISITORS';
+      }
+    })
+    .catch(function(){});
+})();
 </script>
 </body>
 </html>
