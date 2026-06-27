@@ -114,10 +114,11 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   letter-spacing:.04em;color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12);cursor:pointer}
 #resetBtnTop:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
 #langBtn{
-  position:absolute;top:26px;right:26px;display:flex;align-items:center;gap:8px;
+  position:absolute;top:48px;right:26px;display:flex;align-items:center;gap:8px;
   border:1px solid var(--line);background:var(--panel);border-radius:999px;
   padding:7px 14px;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink);
-  box-shadow:0 3px 10px rgba(85,70,55,.10);transition:transform .15s ease}
+  box-shadow:0 3px 10px rgba(85,70,55,.10);transition:transform .15s ease:
+ z-index: 9000;}
 #langBtn:hover{transform:translateY(-1px)}
 #langBtn .flag{width:22px;height:15px;border-radius:2px;overflow:hidden;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
 
@@ -417,18 +418,20 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 
 #headerVisits {
   position: fixed;
-  top: 10px;
-  right: 14px;
+  top: 4px;
+  right: 26px;
   font-size: 12px;
-  color: #666;
-  background: rgba(255,255,255,0.75);
+  color: #000;
+  background: rgba(255,255,255,0.9);
   padding: 4px 9px;
   border-radius: 999px;
-  z-index: 9999;
+  z-index: 10000;
+  font-weight: bold;
 }
+
 </style>
 
-<div id="headerVisits">Visits: ...</div>
+<div id="headerVisits">Loading...</div>
 <div id="bgFood" aria-hidden="true"></div>
   
 <div id="bgFood" aria-hidden="true"></div>
@@ -536,7 +539,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 
 
 
-<footer><b>GOOD FOR ME</b><br><span data-i18n="footer">This page is about everything food gives you — never about counting or restricting. Every food belongs. Values are friendly everyday approximations, not medical advice.</span></footer>
+<footer><b>NUTRI FOOD PAL</b><br><span data-i18n="footer">This page is about everything food gives you — never about counting or restricting. Every food belongs. Values are friendly everyday approximations, not medical advice.</span></footer>
 
 <div id="toast"></div>
 <script>
@@ -1405,8 +1408,18 @@ document.getElementById('resetBtnTop').onclick=()=>document.getElementById('rese
 window.addEventListener('resize',()=>renderPlate());
 buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic(); renderPantry(); renderScene(); render();
 </script>
+
 <script>
-document.getElementById("headerVisits").textContent = "TEST";
+window.addEventListener("DOMContentLoaded", () => {
+  fetch("https://api.countapi.xyz/hit/nutrifoodpal/home")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("headerVisits").textContent = "Visits: " + data.value;
+    })
+    .catch(() => {
+      document.getElementById("headerVisits").textContent = "No data";
+    });
+});
 </script>
 </body>
 </html>
