@@ -1014,12 +1014,14 @@ function renderPlate(){
   if(z.style.minHeight) z.style.minHeight='';
   const img=z.querySelector('.plate-photo');
   img.style.width=plateW+'px'; img.style.height=plateH+'px';
-  // cutlery resting on the windowsill
+  // cutlery resting on the windowsill (elements may not exist)
   const fork=document.getElementById('cutFork'), knife=document.getElementById('cutKnife');
-  const L=Math.min(w*0.30,210), W=L*0.149, sillY=zh*0.935;
-  [fork,knife].forEach(c=>{c.style.height=L+'px';c.style.top=(sillY-L/2)+'px';});
-  fork.style.left=(w*0.24 - W/2)+'px';
-  knife.style.left=(w*0.76 - W/2)+'px';
+  if(fork && knife){
+    const L=Math.min(w*0.30,210), W=L*0.149, sillY=zh*0.935;
+    [fork,knife].forEach(c=>{c.style.height=L+'px';c.style.top=(sillY-L/2)+'px';});
+    fork.style.left=(w*0.24 - W/2)+'px';
+    knife.style.left=(w*0.76 - W/2)+'px';
+  }
   // food side by side in columns/rows, never overlapping, never outside the image
   mealItems.forEach((it,i)=>{
     const f=foodById(it.foodId);
