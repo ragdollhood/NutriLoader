@@ -408,11 +408,14 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   #plateZone{height:480px}
   #bars{grid-template-columns:1fr}
 }
- 
-    .title-image {
-      width: 220px;   /* justera storlek */
-      display: block;
-      margin: 0 auto; /* centrerar */
+  
+.title-image {
+  width: clamp(180px, 40vw, 420px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
     }
 </style>
 </head>
