@@ -1408,17 +1408,21 @@ document.getElementById('resetBtnTop').onclick=()=>document.getElementById('rese
 window.addEventListener('resize',()=>renderPlate());
 buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic(); renderPantry(); renderScene(); render();
 </script>
-
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-  fetch("https://api.countapi.xyz/hit/nutrifood/visits")
+  document.getElementById("headerVisits").textContent = "Visits: 1";
+});
+</script>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  fetch("https://api.countapi.xyz/hit/nutripal123/main")
     .then(res => res.json())
     .then(data => {
       document.getElementById("headerVisits").textContent = "Visits: " + data.value;
     })
-    .catch(err => {
-      console.log(err);
-      document.getElementById("headerVisits").textContent = "Loading...";
+    .catch(() => {
+      // fallback så den inte fastnar
+      document.getElementById("headerVisits").textContent = "Visits: —";
     });
 });
 </script>
