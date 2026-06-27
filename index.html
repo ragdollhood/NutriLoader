@@ -1413,19 +1413,38 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("headerVisits").textContent = "Visits: 1";
 });
 </script>
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  fetch("https://api.countapi.xyz/hit/nutripal123/main")
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("headerVisits").textContent = "Visits: " + data.value;
-    })
-    .catch(() => {
-      // fallback så den inte fastnar
-      document.getElementById("headerVisits").textContent = "Visits: —";
-    });
-});
-</script>
 
+<script>
+const SUPABASE_URL = "https://ibytawdimgthoqwtbtgv.supabase.co";
+const SUPABASE_KEY = "ibytawdimgthoqwtbtgv";
+
+async function updateCounter() {
+  let res = await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+
+  let data = await res.json();
+  let current = data[0].value;
+
+  let newValue = current + 1;
+
+  await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
+    method: "PATCH",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ value: newValue })
+  });
+
+  document.getElementById("headerVisits").textContent = "Visits: " + newValue;
+}
+
+updateCounter();
+</script>
 </body>
 </html>
