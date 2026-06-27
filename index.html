@@ -421,13 +421,16 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   right: 14px;
   font-size: 12px;
   color: #666;
+  background: rgba(255,255,255,0.75);
+  padding: 4px 9px;
+  border-radius: 999px;
   z-index: 9999;
-    } }
+}
 </style>
 
-</head>
-<body>
-  <div id="headerVisits">0</di
+<div id="headerVisits">Visits: ...</div>
+<div id="bgFood" aria-hidden="true"></div>
+  
 <div id="bgFood" aria-hidden="true"></div>
 <div id="qtyPop">
   <h4 id="qtyTitle"></h4>
@@ -1402,19 +1405,16 @@ document.getElementById('resetBtnTop').onclick=()=>document.getElementById('rese
 window.addEventListener('resize',()=>renderPlate());
 buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic(); renderPantry(); renderScene(); render();
 </script>
+
   <script>
-(function(){
-  fetch('https://api.counterapi.dev/v1/nutrifoodpal/visits/up')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var n = d.count != null ? d.count : (d.Count != null ? d.Count : null);
-      if(n != null){
-        var el = document.getElementById('headerVisits');
-        if(el) el.textContent = '✦ ' + Number(n).toLocaleString('sv-SE') + ' VISITORS';
-      }
-    })
-    .catch(function(){});
-})();
+fetch("https://api.countapi.xyz/hit/nutrifoodpal/home")
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("headerVisits").textContent = "Visits: " + data.value;
+  })
+  .catch(() => {
+    document.getElementById("headerVisits").textContent = "";
+  });
 </script>
 </body>
 </html>
