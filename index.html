@@ -1166,9 +1166,10 @@ function renderPlate(){
   const z=document.getElementById('plateZone');
   const w=z.clientWidth||360, h=z.clientHeight||520;
   const cx=w/2, n=mealItems.length;
-  // plate size
-  const plateMaxD=Math.min(w*0.94, h*0.86);
-  const plateD=Math.min(plateMaxD, Math.max(245, w*0.88));
+  // plate grows with items - base small, expands as food is added
+  const plateBase = Math.min(w*0.60, h*0.52, 260);
+  const plateMaxD = Math.min(w*0.94, h*0.88);
+  const plateD = n === 0 ? plateBase : Math.min(plateMaxD, plateBase + n * 14);
   const zh=h, cyz=h*0.52;
   if(z.style.minHeight) z.style.minHeight='';
   const img=z.querySelector('.plate-photo');
@@ -1185,41 +1186,35 @@ function renderPlate(){
   // Rings: outer (up to 6), then centre slot (7th), then inner ring (8-12), then outer-2 (13+)
   // Each ring gets a radius and the items placed evenly around it.
   function circlePositions(total, platePx, cy){
-    const outerR = platePx * 0.355;   // outer ring radius
-    const innerR = platePx * 0.185;   // inner ring radius
-    const positions = [];
-    // Hexagonal layout:
-    // Slot 0 = centre
-    // Slots 1-6 = outer ring, fixed hex angles: top, top-right, bottom-right, bottom, bottom-left, top-left
-    // Slots 7-12 = second outer ring (outerR2), same hex angles offset by 30deg
-    // Slots 13+ = third ring, scaled down further
-    // Scale is reduced when total > 7 so nothing overlaps.
-    const hexAngles = [-Math.PI/2, -Math.PI/6, Math.PI/6, Math.PI/2, 5*Math.PI/6, -5*Math.PI/6];
-    // hex2 angles rotated 30° so they sit between ring-1 items
-    const hex2Angles = hexAngles.map(a => a + Math.PI/6);
-    const outerR2 = platePx * 0.46;
-    // item scale: reduce when rings stack up so they don't overlap
+    // All ring radii are fractions of platePx (plate radius) so food stays inside the plate
+    // as the plate grows. Edge margin keeps items from clipping the rim.
+    const edgeMargin = 0.80; // items stay within 80% of plate radius
     const itemScale = total <= 7 ? 1 : total <= 13 ? 0.82 : 0.68;
+    // Ring radii — always relative to current platePx so nothing escapes the rim
+    const outerR  = platePx * 0.44 * edgeMargin;  // ring 1
+    const outerR2 = platePx * 0.70 * edgeMargin;  // ring 2
+    const outerR3 = platePx * 0.88 * edgeMargin;  // ring 3
+    const hexAngles  = [-Math.PI/2, -Math.PI/6, Math.PI/6, Math.PI/2, 5*Math.PI/6, -5*Math.PI/6];
+    const hex2Angles = hexAngles.map(a => a + Math.PI/6);
+    const positions = [];
     // centre slot
     positions.push({x:0, y:0, s: itemScale});
-    // ring 1 (up to 6 items)
+    // ring 1 (slots 1-6)
     for(let i=0;i<Math.min(total-1,6);i++){
       const a = hexAngles[i];
       positions.push({x: outerR*Math.cos(a), y: outerR*Math.sin(a), s: itemScale});
     }
-    // ring 2 (items 8-13)
+    // ring 2 (slots 7-12)
     if(total > 7){
       for(let i=0;i<Math.min(total-7,6);i++){
         const a = hex2Angles[i];
         positions.push({x: outerR2*Math.cos(a), y: outerR2*Math.sin(a), s: itemScale});
       }
     }
-    // ring 3 (items 14+), even further out
+    // ring 3 (slots 13+)
     if(total > 13){
-      const outerR3 = platePx * 0.54;
-      const sc3 = 0.58;
-      const restCount = total - 13;
-      for(let i=0;i<restCount;i++){
+      const sc3 = 0.65;
+      for(let i=0;i<total-13;i++){
         const a = hexAngles[i % 6];
         positions.push({x: outerR3*Math.cos(a), y: outerR3*Math.sin(a), s: sc3});
       }
@@ -1353,14 +1348,20 @@ function flyToPlate(f, fromEl, done){
     const existingIdx=mealItems.findIndex(x=>x.foodId===f.id);
     const slotIdx = existingIdx>=0 ? existingIdx : mealItems.length;
 
-    // Replicate circlePositions logic to get landing spot in screen coords
-    const plateD = z.width * 0.46;
+    // Replicate plate sizing logic from renderPlate so landing spot matches
+    const zw = z.width, zh2 = z.height;
+    const plateBase = Math.min(zw*0.60, zh2*0.52, 260);
+    const plateMaxD = Math.min(zw*0.94, zh2*0.88);
+    const futureN = slotIdx + 1; // how many items after this one is added
+    const plateD = futureN <= 1 ? plateBase : Math.min(plateMaxD, plateBase + futureN * 14);
     const platePx = plateD/2;
     const cx = z.left + z.width/2;
     const cyz_abs = z.top + z.height*0.55;
-    const outerR = platePx * 0.32;
-    const outerR2 = platePx * 0.46;
-    const hexAngles = [-Math.PI/2, -Math.PI/6, Math.PI/6, Math.PI/2, 5*Math.PI/6, -5*Math.PI/6];
+    // Match circlePositions ring radii exactly (edgeMargin 0.80)
+    const outerR  = platePx * 0.44 * 0.80;
+    const outerR2 = platePx * 0.70 * 0.80;
+    const outerR3 = platePx * 0.88 * 0.80;
+    const hexAngles  = [-Math.PI/2, -Math.PI/6, Math.PI/6, Math.PI/2, 5*Math.PI/6, -5*Math.PI/6];
     const hex2Angles = hexAngles.map(a => a + Math.PI/6);
     let tx=cx, ty=cyz_abs;
     if(slotIdx===0){
@@ -1372,7 +1373,6 @@ function flyToPlate(f, fromEl, done){
       const a=hex2Angles[slotIdx-7];
       tx=cx+outerR2*Math.cos(a); ty=cyz_abs+outerR2*Math.sin(a);
     } else {
-      const outerR3=platePx*0.54;
       const a=hexAngles[(slotIdx-13)%6];
       tx=cx+outerR3*Math.cos(a); ty=cyz_abs+outerR3*Math.sin(a);
     }
