@@ -586,6 +586,21 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   #headerVisits{right:14px}
 }
 
+/* next-plate prompt overlay */
+#nextPlatePrompt{
+  display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  z-index:20;flex-direction:column;align-items:center;gap:10px;
+  background:rgba(249,244,239,.93);border:1.5px solid var(--rose-soft);
+  border-radius:18px;padding:18px 22px;box-shadow:0 8px 28px rgba(85,60,40,.22);
+  text-align:center;cursor:pointer;transition:transform .15s ease}
+#nextPlatePrompt.show{display:flex}
+#nextPlatePrompt:hover{transform:translate(-50%,-50%) scale(1.04)}
+#nextPlatePrompt .np-ic{font-size:36px;line-height:1}
+#nextPlatePrompt .np-nm{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;
+  letter-spacing:.06em;color:var(--ink)}
+#nextPlatePrompt .np-lbl{font-size:11px;font-weight:800;letter-spacing:.14em;
+  color:var(--rose-deep);text-transform:uppercase}
+
   
 </style>
 
@@ -636,6 +651,11 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <img class="plate-photo" src="/images/tallrik-vit.png" alt="">
       <div id="plateEmpty" data-i18n="plateEmpty">Drag food here to plan your plate</div>
       <div id="plateItems"></div>
+      <div id="nextPlatePrompt">
+        <span class="np-ic"></span>
+        <span class="np-nm"></span>
+        <span class="np-lbl"></span>
+      </div>
     </div>
   </section>
 
@@ -800,11 +820,11 @@ const FOODS = [
  {id:'potato',cat:'veg',em:'🥔',en:'Potato',sv:'Potatis',m:{sv:[2,'st'],en:[2,'piece']},n:{vitC:25,fiber:10,magnesium:8,iron:6}},
  {id:'apple',cat:'fruit',em:'🍎',en:'Apple',sv:'Äpple',m:{sv:[1,'st'],en:[1,'piece']},n:{fiber:15,vitC:10}},
  {id:'banana',cat:'fruit',em:'🍌',en:'Banana',sv:'Banan',m:{sv:[1,'st'],en:[1,'piece']},n:{fiber:12,vitC:12,magnesium:8}},
- {id:'orange',cat:'fruit',em:'🍊',en:'Orange',sv:'Apelsin',m:{sv:[1,'st'],en:[1,'piece']},n:{vitC:90,folate:10,fiber:10}},
  {id:'blueberry',cat:'fruit',em:'🫐',en:'Blueberries',sv:'Blåbär',m:{sv:[1,'dl'],en:[0.5,'cup']},n:{vitC:15,vitK:20,fiber:12}},
+ {id:'orange',cat:'fruit',em:'🍊',en:'Orange',sv:'Apelsin',m:{sv:[1,'st'],en:[1,'piece']},n:{vitC:90,folate:10,fiber:10}},
  {id:'kiwi',cat:'fruit',em:'🥝',en:'Kiwi',sv:'Kiwi',m:{sv:[1,'st'],en:[1,'piece']},n:{vitC:90,vitK:30,vitE:5,fiber:8}},
- {id:'avocado',cat:'fruit',em:'🥑',en:'Avocado',sv:'Avokado',m:{sv:[0.5,'st'],en:[0.5,'piece']},n:{vitE:15,vitK:25,folate:20,fiber:25,magnesium:10}},
  {id:'salmon',cat:'fish',em:'🐟',en:'Salmon',sv:'Lax',m:{sv:[125,'g'],en:[4,'oz']},n:{omega3:100,vitD:80,b12:100,protein:45,vitE:10}},
+ {id:'avocado',cat:'fruit',em:'🥑',en:'Avocado',sv:'Avokado',m:{sv:[0.5,'st'],en:[0.5,'piece']},n:{vitE:15,vitK:25,folate:20,fiber:25,magnesium:10}},
  {id:'cod',cat:'fish',em:'🐠',en:'Cod',sv:'Torsk',m:{sv:[125,'g'],en:[4,'oz']},n:{protein:40,b12:60,vitD:10,magnesium:8}},
  {id:'tuna',cat:'fish',em:'🍣',en:'Tuna',sv:'Tonfisk',m:{sv:[100,'g'],en:[3,'oz']},n:{protein:50,b12:80,vitD:40,omega3:40,iron:8}},
  {id:'shrimp',cat:'fish',em:'🦐',en:'Shrimp',sv:'Räkor',m:{sv:[100,'g'],en:[3,'oz']},n:{protein:40,b12:60,zinc:15,vitE:8}},
@@ -926,7 +946,8 @@ const I18N = {
   sgTitle:{en:'SUGAR',sv:'SOCKER'},
   sgHint:{en:'Enter grams of sugar you\u2019ve had \u2014 it just adds up here, nothing goes on the plate.',sv:'Fyll i gram socker du f\u00e5tt i dig \u2014 det summeras bara h\u00e4r, inget l\u00e4ggs p\u00e5 tallriken.'},
   sgAdd:{en:'Add',sv:'L\u00e4gg till'},
-  sgTotal:{en:'Total: {g} g',sv:'Totalt: {g} g'}
+  sgTotal:{en:'Total: {g} g',sv:'Totalt: {g} g'},
+  nextPlate:{en:'PLAN NEXT PLATE',sv:'PLANERA N\u00c4STA TALLRIK'}
 };
 
 /* ================= ORGAN GEOMETRY ================= */
@@ -1165,6 +1186,8 @@ function renderBars(eT,pT){
 
 
 function renderPlate(){
+  const pr=document.getElementById('nextPlatePrompt');
+  if(pr) pr.classList.remove('show');
   const box=$('#plateItems'); box.innerHTML='';
   const mealItems=items.filter(it=>it.meal===activeMeal);
   const mealName=MEALS.find(m=>m.id===activeMeal)[lang];
@@ -1173,6 +1196,7 @@ function renderPlate(){
   empt.textContent = t('plateFor').replace('{m}',mealName);
   const z=document.getElementById('plateZone');
   const w=z.clientWidth||360, h=z.clientHeight||520;
+  const isMobile = w < 400;
   const cx=w/2, n=mealItems.length;
   // Item footprint: each food circle is ~72px, need ~90px clearance per item
   const ITEM_STEP = 90; // px between ring centres
@@ -1232,7 +1256,14 @@ function renderPlate(){
 
     return all.slice(0, Math.max(0, total)).map(p=>({...p, s:1}));
   }
-  const positions = circlePositions(n, r1, r2, r3);
+  let positions = circlePositions(n, r1, r2, r3);
+  // On mobile, slots 8 and 11 (matkälla 9 and 12) can fall outside the narrow screen.
+  // Remap them to the positions of slots 9 and 12 respectively (which stay on-screen).
+  if(isMobile && positions.length > 11){
+    const allPos = circlePositions(13, r1, r2, r3);
+    if(positions.length > 8)  positions[8]  = allPos[9];
+    if(positions.length > 11) positions[11] = allPos[12];
+  }
   mealItems.forEach((it,i)=>{
     const f=foodById(it.foodId);
     const pos = positions[i] || {x:0, y:0, s:0.6};
@@ -1566,11 +1597,37 @@ function addItem(foodId,eaten,announce){
     toast(t('qtyUpToast').replace('{f}',f[lang]).replace('{m}',fmtMeasure(f,ex.qty,lang)));
     render(); return;
   }
+  // Check if plate is full (mobile: 13 items, desktop: 19 items)
+  const mealItems=items.filter(x=>x.meal===activeMeal);
+  const plateZoneW=document.getElementById('plateZone').clientWidth||360;
+  const isMob=plateZoneW<400;
+  const limit=isMob?13:19;
+  if(mealItems.length>=limit){
+    showNextPlatePrompt();
+    return;
+  }
   items.push({uid:++uidc,foodId,eaten:!!eaten,qty:1,meal:activeMeal});
   const f=foodById(foodId);
   if(announce) toast(t('addedToast').replace('{f}',f[lang]));
   if(eaten) eatToast(f,1);
   render();
+}
+
+function showNextPlatePrompt(){
+  const mealIdx=MEALS.findIndex(m=>m.id===activeMeal);
+  const nextMeal=MEALS[mealIdx+1];
+  if(!nextMeal) return; // already on last meal, do nothing
+  const pr=document.getElementById('nextPlatePrompt');
+  pr.querySelector('.np-ic').textContent=nextMeal.ic;
+  pr.querySelector('.np-nm').textContent=nextMeal[lang];
+  pr.querySelector('.np-lbl').textContent=t('nextPlate');
+  pr.classList.add('show');
+  pr.onclick=()=>{
+    pr.classList.remove('show');
+    activeMeal=nextMeal.id;
+    renderScene();
+    renderPlate();
+  };
 }
 function toggleEaten(uid){
   const it=items.find(x=>x.uid===uid); if(!it) return;
@@ -1696,6 +1753,15 @@ function renderStatic(){
   const cleanSrc = lang==='en' ? '/images/clean-eng.png' : '/images/clean-swe.png';
   document.getElementById('resetBtnImg').src = cleanSrc;
   document.getElementById('resetBtnTopImg').src = cleanSrc;
+  // update next-plate label if visible
+  const npLbl=document.querySelector('#nextPlatePrompt .np-lbl');
+  if(npLbl) npLbl.textContent=t('nextPlate');
+  const npNm=document.querySelector('#nextPlatePrompt .np-nm');
+  if(npNm && document.getElementById('nextPlatePrompt').classList.contains('show')){
+    const mealIdx=MEALS.findIndex(m=>m.id===activeMeal);
+    const nextMeal=MEALS[mealIdx+1];
+    if(nextMeal) npNm.textContent=nextMeal[lang];
+  }
 }
 document.getElementById('langBtn').onclick=()=>{
   lang = lang==='en'?'sv':'en';
