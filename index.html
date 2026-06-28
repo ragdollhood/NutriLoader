@@ -586,20 +586,30 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   #headerVisits{right:14px}
 }
 
-/* next-plate prompt overlay */
+/* next-plate prompt — fixed so it's visible wherever the user is on the page */
 #nextPlatePrompt{
-  display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  z-index:20;flex-direction:column;align-items:center;gap:10px;
-  background:rgba(249,244,239,.93);border:1.5px solid var(--rose-soft);
-  border-radius:18px;padding:18px 22px;box-shadow:0 8px 28px rgba(85,60,40,.22);
-  text-align:center;cursor:pointer;transition:transform .15s ease}
+  display:none;position:fixed;bottom:auto;left:50%;transform:translate(-50%,-50%);
+  z-index:200;flex-direction:column;align-items:center;gap:10px;
+  background:rgba(249,244,239,.97);border:1.5px solid var(--rose-soft);
+  border-radius:18px;padding:18px 22px 16px;
+  box-shadow:0 8px 28px rgba(85,60,40,.28);
+  text-align:center;min-width:200px}
 #nextPlatePrompt.show{display:flex}
-#nextPlatePrompt:hover{transform:translate(-50%,-50%) scale(1.04)}
-#nextPlatePrompt .np-ic{font-size:36px;line-height:1}
-#nextPlatePrompt .np-nm{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;
-  letter-spacing:.06em;color:var(--ink)}
-#nextPlatePrompt .np-lbl{font-size:11px;font-weight:800;letter-spacing:.14em;
-  color:var(--rose-deep);text-transform:uppercase}
+#nextPlatePrompt .np-close{
+  position:absolute;top:8px;right:10px;
+  background:none;border:none;font-size:15px;line-height:1;
+  color:var(--ink-soft);cursor:pointer;padding:2px 4px;border-radius:4px}
+#nextPlatePrompt .np-close:hover{color:var(--rose-deep)}
+#nextPlatePrompt .np-btn{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:var(--rose-deep);border:none;border-radius:12px;
+  padding:10px 20px;cursor:pointer;transition:transform .13s ease;width:100%}
+#nextPlatePrompt .np-btn:hover{transform:scale(1.04)}
+#nextPlatePrompt .np-ic{font-size:32px;line-height:1}
+#nextPlatePrompt .np-nm{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;
+  letter-spacing:.06em;color:#fdf4ef}
+#nextPlatePrompt .np-lbl{font-size:10px;font-weight:800;letter-spacing:.14em;
+  color:rgba(253,244,239,.8);text-transform:uppercase}
 
   
 </style>
@@ -651,11 +661,6 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <img class="plate-photo" src="/images/tallrik-vit.png" alt="">
       <div id="plateEmpty" data-i18n="plateEmpty">Drag food here to plan your plate</div>
       <div id="plateItems"></div>
-      <div id="nextPlatePrompt">
-        <span class="np-ic"></span>
-        <span class="np-nm"></span>
-        <span class="np-lbl"></span>
-      </div>
     </div>
   </section>
 
@@ -741,6 +746,14 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 <footer><b>NUTRI LOADER</b><br><span data-i18n="footer">This page is about what food gives you — never about counting or restricting. Values are friendly everyday approximations made by AI, not medical advice. CONTACT: ragdollhood@gmail.com</span></footer>
 
 <div id="toast"></div>
+<div id="nextPlatePrompt">
+  <button class="np-close" aria-label="Close">✕</button>
+  <button class="np-btn">
+    <span class="np-ic"></span>
+    <span class="np-nm"></span>
+    <span class="np-lbl"></span>
+  </button>
+</div>
 <script>
 /* ================= DATA ================= */
 const NUTRIENTS = {
@@ -1187,7 +1200,8 @@ function renderBars(eT,pT){
 
 function renderPlate(){
   const pr=document.getElementById('nextPlatePrompt');
-  if(pr) pr.classList.remove('show');
+  if(pr){ pr.classList.remove('show'); }
+  if(_npScrollHandler){ window.removeEventListener('scroll',_npScrollHandler); _npScrollHandler=null; }
   const box=$('#plateItems'); box.innerHTML='';
   const mealItems=items.filter(it=>it.meal===activeMeal);
   const mealName=MEALS.find(m=>m.id===activeMeal)[lang];
@@ -1267,7 +1281,7 @@ function renderPlate(){
   if(isMobile){
     const xR =  r1 * (Math.sqrt(3)/2); // right column x
     const xL = -r1 * (Math.sqrt(3)/2); // left column x
-    const yUp   = -r1 * 0.90;  // above ring 1
+    const yUp   = -r1 * 1.55;  // well above ring 1, clear of items below
     const yDown =  r1 * 1.55;  // below ring 1, clear of quantity text
     const mobileRing2 = [
       {x: xR, y: yUp,   s:1},  // slot 7  — nr 8,  upper-right
@@ -1628,20 +1642,47 @@ function addItem(foodId,eaten,announce){
   render();
 }
 
+let _npScrollHandler=null;
 function showNextPlatePrompt(){
   const mealIdx=MEALS.findIndex(m=>m.id===activeMeal);
   const nextMeal=MEALS[mealIdx+1];
-  if(!nextMeal) return; // already on last meal, do nothing
+  if(!nextMeal) return;
   const pr=document.getElementById('nextPlatePrompt');
   pr.querySelector('.np-ic').textContent=nextMeal.ic;
   pr.querySelector('.np-nm').textContent=nextMeal[lang];
   pr.querySelector('.np-lbl').textContent=t('nextPlate');
+
+  function positionPrompt(){
+    const pz=document.getElementById('plateZone');
+    const rect=pz.getBoundingClientRect();
+    const centerX=rect.left + rect.width/2;
+    const centerY=rect.top + rect.height*0.52;
+    pr.style.left=centerX+'px';
+    pr.style.top=Math.max(80, Math.min(window.innerHeight-160, centerY))+'px';
+  }
+
+  pr.style.position='fixed';
+  pr.style.bottom='auto';
+  pr.style.transform='translate(-50%,-50%)';
+  positionPrompt();
   pr.classList.add('show');
-  pr.onclick=()=>{
+
+  // Remove old scroll listener if any
+  if(_npScrollHandler) window.removeEventListener('scroll',_npScrollHandler);
+  _npScrollHandler=positionPrompt;
+  window.addEventListener('scroll',_npScrollHandler,{passive:true});
+
+  pr.querySelector('.np-btn').onclick=()=>{
     pr.classList.remove('show');
+    if(_npScrollHandler){ window.removeEventListener('scroll',_npScrollHandler); _npScrollHandler=null; }
     activeMeal=nextMeal.id;
     renderScene();
     renderPlate();
+  };
+  pr.querySelector('.np-close').onclick=(e)=>{
+    e.stopPropagation();
+    pr.classList.remove('show');
+    if(_npScrollHandler){ window.removeEventListener('scroll',_npScrollHandler); _npScrollHandler=null; }
   };
 }
 function toggleEaten(uid){
