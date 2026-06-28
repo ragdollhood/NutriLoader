@@ -7,6 +7,12 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: facebot
+Allow: /
+
+User-agent: facebookcatalog
+Allow: /
+
 # Block unnecessary paths from crawling
 Disallow: /cdn-cgi/
 Disallow: /*.json$
