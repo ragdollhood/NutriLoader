@@ -1257,12 +1257,22 @@ function renderPlate(){
     return all.slice(0, Math.max(0, total)).map(p=>({...p, s:1}));
   }
   let positions = circlePositions(n, r1, r2, r3);
-  // On mobile, slots 8 and 11 (matkälla 9 and 12) can fall outside the narrow screen.
-  // Remap them to the positions of slots 9 and 12 respectively (which stay on-screen).
-  if(isMobile && positions.length > 11){
-    const allPos = circlePositions(13, r1, r2, r3);
-    if(positions.length > 8)  positions[8]  = allPos[9];
-    if(positions.length > 11) positions[11] = allPos[12];
+  // On mobile: ring 2 gets only 4 slots at diagonal positions (fits narrow screen).
+  // Slot 7 = upper-right (~1 o'clock), slot 8 = lower-right (~5 o'clock),
+  // slot 9 = lower-left (~7 o'clock), slot 10 = upper-left (~11 o'clock).
+  if(isMobile){
+    const mobileR2 = r1 * 1.55; // slightly tighter radius for narrow screens
+    const mobileA2 = [
+      -Math.PI/2 + Math.PI/4,   // ~1:30 o'clock  (upper-right)
+       Math.PI/2 - Math.PI/4,   // ~4:30 o'clock  (lower-right)
+       Math.PI/2 + Math.PI/4,   // ~7:30 o'clock  (lower-left)
+      -Math.PI/2 - Math.PI/4,   // ~10:30 o'clock (upper-left)
+    ];
+    const mobileRing2 = mobileA2.map(a=>({x: mobileR2*Math.cos(a), y: mobileR2*Math.sin(a), s:1}));
+    // Overwrite slots 7–10 with mobile ring 2 positions
+    for(let i=0;i<4;i++){
+      if(positions[7+i]) positions[7+i] = mobileRing2[i];
+    }
   }
   mealItems.forEach((it,i)=>{
     const f=foodById(it.foodId);
@@ -1601,7 +1611,7 @@ function addItem(foodId,eaten,announce){
   const mealItems=items.filter(x=>x.meal===activeMeal);
   const plateZoneW=document.getElementById('plateZone').clientWidth||360;
   const isMob=plateZoneW<400;
-  const limit=isMob?13:19;
+  const limit=isMob?11:19;
   if(mealItems.length>=limit){
     showNextPlatePrompt();
     return;
