@@ -1263,10 +1263,10 @@ function renderPlate(){
   if(isMobile){
     const mobileR2 = r1 * 1.55; // slightly tighter radius for narrow screens
     const mobileA2 = [
-      -Math.PI/2 + Math.PI/4,   // ~1:30 o'clock  (upper-right)
-       Math.PI/2 - Math.PI/4,   // ~4:30 o'clock  (lower-right)
-       Math.PI/2 + Math.PI/4,   // ~7:30 o'clock  (lower-left)
-      -Math.PI/2 - Math.PI/4,   // ~10:30 o'clock (upper-left)
+      -Math.PI/2 + Math.PI/6,   // 1:00 o'clock  (upper-right)
+       Math.PI/2 - Math.PI/6,   // 5:00 o'clock  (lower-right)
+       Math.PI/2 + Math.PI/6,   // 7:00 o'clock  (lower-left)
+      -Math.PI/2 - Math.PI/6,   // 11:00 o'clock (upper-left)
     ];
     const mobileRing2 = mobileA2.map(a=>({x: mobileR2*Math.cos(a), y: mobileR2*Math.sin(a), s:1}));
     // Overwrite slots 7–10 with mobile ring 2 positions
