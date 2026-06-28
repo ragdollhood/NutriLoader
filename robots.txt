@@ -1,0 +1,16 @@
+# robots.txt – nutriloader.com
+# Generated for optimal SEO
+
+User-agent: *
+Allow: /
+
+# Block unnecessary paths from crawling
+Disallow: /cdn-cgi/
+Disallow: /*.json$
+Disallow: /api/
+
+# Crawl-delay for polite bots
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://nutriloader.com/sitemap.xml

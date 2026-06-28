@@ -1,10 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NUTRI LOADER</title>
+
+<!-- ═══════════════════════════════════════════════
+     PRIMARY SEO
+════════════════════════════════════════════════ -->
+<title>NutriLoader – Track Nutrients, Plan Meals & Learn What Food Does to Your Body</title>
+<meta name="description" content="NutriLoader is a free nutrition tracker and meal planner. See exactly what nutrients you consume, plan your daily meals, and discover how different foods affect your organs and body — all in one visual, interactive tool.">
+<meta name="keywords" content="nutrition tracker, meal planner, nutrient calculator, food nutrition, daily nutrition, macros tracker, vitamins minerals, healthy eating, food diary, calorie tracker, body nutrition, organ health, nutrition education, free nutrition app">
+<meta name="author" content="NutriLoader">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://nutriloader.com/">
+
+<!-- ═══════════════════════════════════════════════
+     OPEN GRAPH (Facebook, LinkedIn, iMessage, etc.)
+════════════════════════════════════════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NutriLoader">
+<meta property="og:title" content="NutriLoader – Track Nutrients & Learn What Food Does to Your Body">
+<meta property="og:description" content="Track your daily nutrient intake, plan meals, and see how food affects your body — organs, vitamins, minerals and more. Free and visual.">
+<meta property="og:url" content="https://nutriloader.com/">
+<meta property="og:image" content="https://nutriloader.com/images/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NutriLoader – Visual Nutrition Tracker and Meal Planner">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="sv_SE">
+
+<!-- ═══════════════════════════════════════════════
+     TWITTER / X CARD
+════════════════════════════════════════════════ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@nutriloader">
+<meta name="twitter:title" content="NutriLoader – Track Nutrients & Learn What Food Does to Your Body">
+<meta name="twitter:description" content="Visual nutrition tracker and meal planner. See exactly what nutrients you consume and how food affects your body.">
+<meta name="twitter:image" content="https://nutriloader.com/images/preview.png">
+<meta name="twitter:image:alt" content="NutriLoader – Visual Nutrition Tracker and Meal Planner">
+
+<!-- ═══════════════════════════════════════════════
+     FAVICONS & ICONS
+════════════════════════════════════════════════ -->
+<link rel="icon" type="image/png" href="/images/icon.png">
+<link rel="shortcut icon" href="/images/icon.png">
+<link rel="apple-touch-icon" href="/images/icon.png">
+<meta name="msapplication-TileImage" content="/images/icon.png">
+<meta name="msapplication-TileColor" content="#c2766e">
+<meta name="theme-color" content="#e9e4dd">
+
+<!-- ═══════════════════════════════════════════════
+     STRUCTURED DATA – WebApplication (JSON-LD)
+════════════════════════════════════════════════ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "NutriLoader",
+  "url": "https://nutriloader.com/",
+  "logo": "https://nutriloader.com/images/icon.png",
+  "image": "https://nutriloader.com/images/preview.png",
+  "description": "NutriLoader is a free, interactive nutrition tracker and meal planner. Track your daily nutrient intake, plan meals by time of day, and learn how different foods affect your organs and body.",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Daily nutrient intake tracking",
+    "Meal planning by time of day",
+    "Visual organ body map",
+    "Macro and micronutrient breakdown",
+    "Vitamin and mineral tracking",
+    "Food search and pantry",
+    "Interactive body effects visualization"
+  ],
+  "inLanguage": ["en", "sv"],
+  "publisher": {
+    "@type": "Organization",
+    "name": "NutriLoader",
+    "url": "https://nutriloader.com/",
+    "logo": "https://nutriloader.com/images/icon.png"
+  }
+}
+</script>
+
+<!-- ═══════════════════════════════════════════════
+     STRUCTURED DATA – FAQPage (JSON-LD)
+════════════════════════════════════════════════ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is NutriLoader?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NutriLoader is a free, visual nutrition tracker and meal planner. You can add foods to your daily plate, see a full nutrient breakdown, and learn how those nutrients affect different organs in your body."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What nutrients does NutriLoader track?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NutriLoader tracks macronutrients (protein, carbohydrates, fat, fiber, sugar) as well as micronutrients including vitamins (A, B1, B2, B6, B12, C, D, E, K, folate) and minerals (iron, calcium, magnesium, potassium, zinc, selenium)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is NutriLoader free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, NutriLoader is completely free to use in your browser with no login required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does NutriLoader show how food affects my body?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NutriLoader features an interactive body map showing organs such as the heart, liver, kidneys, brain, and muscles. When you add food to your plate, the relevant organs light up to show which nutrients from that food benefit which parts of your body."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- ═══════════════════════════════════════════════
+     PERFORMANCE & FONTS
+════════════════════════════════════════════════ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
