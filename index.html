@@ -306,7 +306,7 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
 /* window photo is set as #plateZone background by JS */
 
 /* ---------- plate in front of the time-of-day window ---------- */
-#plateZone{position:relative;height:540px;flex:0 0 auto;border-radius:14px;overflow:hidden;
+#plateZone{position:relative;height:600px;flex:0 0 auto;border-radius:14px;overflow:hidden;
   box-shadow:0 6px 14px rgba(60,40,20,.22), inset 0 0 0 1px rgba(255,255,255,.25);
   transition:outline .2s}
 #plateZone.dragover{outline:3px dashed var(--rose);outline-offset:-10px}
@@ -1182,10 +1182,8 @@ function renderPlate(){
   const r3 = r1 * 3;
   const plateD = n <= 7  ? r2 * 2 + ITEM_STEP  // empty + ring 1: ring-2 size
                :            r2 * 2 + ITEM_STEP + 60; // ring 2+: a bit larger
-  const neededH = plateD + 60;
-  if(neededH > h) z.style.minHeight = neededH + 'px';
-  else if(z.style.minHeight) z.style.minHeight = '';
-  const zh = Math.max(h, neededH), cyz = zh * 0.52;
+  // Zone height is always fixed — never changed dynamically to avoid background jumps
+  const zh = h, cyz = zh * 0.52;
   const img=z.querySelector('.plate-photo');
   img.style.width=plateD+'px'; img.style.height=plateD+'px';
   // cutlery
