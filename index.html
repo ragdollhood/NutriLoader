@@ -845,7 +845,7 @@ const FOODS = [
  {id:'lentils',cat:'nuts',em:'🫘',en:'Lentils',sv:'Linser',m:{sv:[1,'dl'],en:[0.5,'cup']},n:{folate:45,iron:35,fiber:30,protein:25,zinc:15}},
  {id:'chickpeas',cat:'nuts',em:'🧆',en:'Chickpeas',sv:'Kikärtor',m:{sv:[1,'dl'],en:[0.5,'cup']},n:{folate:35,iron:25,fiber:25,protein:20,zinc:15,magnesium:12}},
 
- {id:'cabbage',cat:'veg',em:'🥬',en:'White cabbage',sv:'Vitkål',m:{sv:[1,'dl'],en:[1,'cup']},n:{vitC:35,vitK:40,fiber:10,folate:8}},
+ {id:'cabbage',cat:'veg',em:'🌿',en:'White cabbage',sv:'Vitkål',m:{sv:[1,'dl'],en:[1,'cup']},n:{vitC:35,vitK:40,fiber:10,folate:8}},
  {id:'butter',cat:'dairy',em:'🧈',en:'Butter',sv:'Smör',m:{sv:[10,'g'],en:[0.5,'oz']},n:{vitA:8,vitD:3,vitE:3}},
  {id:'pumpkinseed',cat:'nuts',em:'🎃',en:'Pumpkin seeds',sv:'Pumpafrön',m:{sv:[30,'g'],en:[1,'oz']},n:{magnesium:40,zinc:25,iron:15,protein:12,fiber:8}},
  {id:'juice',cat:'fruit',em:'🧃',en:'Juice',sv:'Juice',m:{sv:[2,'dl'],en:[1,'cup']},n:{vitC:60,folate:10,vitA:5}},
@@ -1257,19 +1257,24 @@ function renderPlate(){
     return all.slice(0, Math.max(0, total)).map(p=>({...p, s:1}));
   }
   let positions = circlePositions(n, r1, r2, r3);
-  // On mobile: ring 2 gets only 4 slots at diagonal positions (fits narrow screen).
-  // Slot 7 = upper-right (~1 o'clock), slot 8 = lower-right (~5 o'clock),
-  // slot 9 = lower-left (~7 o'clock), slot 10 = upper-left (~11 o'clock).
+  // On mobile: ring 2 uses 4 slots placed in two vertical columns matching ring 1.
+  // Right column (x = r1·√3/2, same as slots 3 & 4):
+  //   slot 7  (nr 8)  = upper-right, above slot 3
+  //   slot 8  (nr 9)  = lower-right, below slot 3 (clear of its quantity badge)
+  // Left column (x = -r1·√3/2, same as slots 5 & 6):
+  //   slot 9  (nr 10) = lower-left,  below slot 6
+  //   slot 10 (nr 11) = upper-left,  above slot 6
   if(isMobile){
-    const mobileR2 = r1 * 1.55; // slightly tighter radius for narrow screens
-    const mobileA2 = [
-      -Math.PI/2 + Math.PI/6,   // 1:00 o'clock  (upper-right)
-       Math.PI/2 - Math.PI/6,   // 5:00 o'clock  (lower-right)
-       Math.PI/2 + Math.PI/6,   // 7:00 o'clock  (lower-left)
-      -Math.PI/2 - Math.PI/6,   // 11:00 o'clock (upper-left)
+    const xR =  r1 * (Math.sqrt(3)/2); // right column x
+    const xL = -r1 * (Math.sqrt(3)/2); // left column x
+    const yUp   = -r1 * 0.90;  // above ring 1
+    const yDown =  r1 * 1.55;  // below ring 1, clear of quantity text
+    const mobileRing2 = [
+      {x: xR, y: yUp,   s:1},  // slot 7  — nr 8,  upper-right
+      {x: xR, y: yDown, s:1},  // slot 8  — nr 9,  lower-right
+      {x: xL, y: yDown, s:1},  // slot 9  — nr 10, lower-left
+      {x: xL, y: yUp,   s:1},  // slot 10 — nr 11, upper-left
     ];
-    const mobileRing2 = mobileA2.map(a=>({x: mobileR2*Math.cos(a), y: mobileR2*Math.sin(a), s:1}));
-    // Overwrite slots 7–10 with mobile ring 2 positions
     for(let i=0;i<4;i++){
       if(positions[7+i]) positions[7+i] = mobileRing2[i];
     }
