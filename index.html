@@ -22,7 +22,7 @@
 <meta property="og:title" content="NutriLoader – Track Nutrients & Learn What Food Does to Your Body">
 <meta property="og:description" content="Track your daily nutrient intake, plan meals, and see how food affects your body — organs, vitamins, minerals and more. Free and visual.">
 <meta property="og:url" content="https://nutriloader.com/">
-<meta property="og:image" content="https://nutriloader.com/images/preview.jpg">
+<meta property="og:image" content="https://nutriloader.com/images/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="NutriLoader – Visual Nutrition Tracker and Meal Planner">
@@ -36,7 +36,7 @@
 <meta name="twitter:site" content="@nutriloader">
 <meta name="twitter:title" content="NutriLoader – Track Nutrients & Learn What Food Does to Your Body">
 <meta name="twitter:description" content="Visual nutrition tracker and meal planner. See exactly what nutrients you consume and how food affects your body.">
-<meta name="twitter:image" content="https://nutriloader.com/images/preview.jpg">
+<meta name="twitter:image" content="https://nutriloader.com/images/preview.png">
 <meta name="twitter:image:alt" content="NutriLoader – Visual Nutrition Tracker and Meal Planner">
 
 <!-- ═══════════════════════════════════════════════
@@ -59,7 +59,7 @@
   "name": "NutriLoader",
   "url": "https://nutriloader.com/",
   "logo": "https://nutriloader.com/images/icon.png",
-  "image": "https://nutriloader.com/images/preview.jpg",
+  "image": "https://nutriloader.com/images/preview.png",
   "description": "NutriLoader is a free, interactive nutrition tracker and meal planner. Track your daily nutrient intake, plan meals by time of day, and learn how different foods affect your organs and body.",
   "applicationCategory": "HealthApplication",
   "operatingSystem": "All",
@@ -206,8 +206,7 @@ g.organ.hovsel .hoverpart{transform:scale(1.16)}
 
 /* food flying from pantry to plate */
 .flyfood{position:fixed;z-index:90;font-size:30px;pointer-events:none;
-  transform:translate(-50%,-50%) scale(1.3);
-  transition:left .62s cubic-bezier(.35,.8,.35,1), top .62s cubic-bezier(.55,-.25,.45,1), transform .62s ease;
+  will-change:transform;
   filter:drop-shadow(0 5px 6px rgba(40,25,10,.4))}
 /* search */
 #pantryHead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:2px}
@@ -318,63 +317,59 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   filter:drop-shadow(0 16px 22px rgba(60,40,20,.45)) drop-shadow(0 4px 8px rgba(60,40,20,.3))}
 #plateItems{position:absolute;inset:0;z-index:2;pointer-events:none;}
 #plateItems .plate-item{pointer-events:auto;}
-#cutFork,#cutKnife{position:absolute;z-index:2;pointer-events:none;
-  filter:drop-shadow(0 5px 6px rgba(50,35,15,.45));
-  transition:left .45s ease, top .45s ease, height .45s ease}
-#cutFork{transform:rotate(90deg)}
-#cutKnife{transform:rotate(-90deg)}
-#plateEmpty{
-  position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);
-  width:auto;max-width:70%;text-align:center;color:#6e6050;font-size:13px;font-style:italic;
-  background:rgba(255,255,252,.82);padding:9px 18px;border-radius:999px;
-  box-shadow:0 3px 10px rgba(60,40,20,.25);pointer-events:none;z-index:2}
+#plateItems .plate-item *{pointer-events:auto;}
 .plate-item{
   position:absolute;transform:translate(-50%,-50%);
-  display:flex;flex-direction:column;align-items:center;gap:2px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
   background:none;border:none;box-shadow:none;padding:0;
   cursor:grab;user-select:none;z-index:3}
 .plate-item:active{cursor:grabbing}
-.plate-item .rowline{display:flex;align-items:center;gap:2px}
-.plate-item .em{font-size:37px;line-height:1.05;filter:drop-shadow(0 4px 4px rgba(60,40,20,.4))}
-.plate-item .nm{font-size:11px;font-weight:800;color:#473c2f;text-align:center;line-height:1.1;max-width:170px;
-  text-shadow:0 0 4px #fff,0 0 7px #fff,0 1px 1px #fff}
-.plate-item.eaten .em{
-  filter:drop-shadow(0 4px 4px rgba(60,40,20,.4)) drop-shadow(0 0 6px rgba(125,143,108,.9));
-  opacity:0.45}
-.plate-item.eaten .em-wrap{position:relative;display:inline-block;}
+.plate-item .rowline{display:flex;align-items:center;gap:0}
+/* Name above emoji */
+.plate-item .nm{
+  font-size:10px;font-weight:700;color:#3a3025;text-align:center;line-height:1.15;
+  max-width:90px;margin-bottom:2px;
+  text-shadow:0 0 5px #fff,0 0 9px #fff,0 1px 2px #fff;
+  letter-spacing:.02em}
+/* Eaten emoji */
+.plate-item.eaten .em{opacity:.5;
+  filter:drop-shadow(0 3px 6px rgba(60,30,15,.35)) drop-shadow(0 0 8px rgba(100,130,70,.8))}
+.plate-item.eaten .em-wrap{position:relative;display:inline-block}
 .plate-item.eaten .em-wrap::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,transparent 42%,rgba(80,60,40,.7) 42%,rgba(80,60,40,.7) 58%,transparent 58%);
+  background:linear-gradient(135deg,transparent 42%,rgba(60,50,30,.55) 42%,rgba(60,50,30,.55) 58%,transparent 58%);
   pointer-events:none}
 @keyframes eat-pulse{
-  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(190,50,40,.45)}
-  50%{transform:scale(1.05);box-shadow:0 0 0 6px rgba(190,50,40,0)}
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.07)}
 }
 .plate-item .foodbtn{
-  position:relative;width:78px;height:78px;background:none;border:none;padding:0;cursor:pointer;
-  display:grid;place-items:center;transition:transform .15s ease}
-.plate-item:not(.eaten) .foodbtn{
-  animation:eat-pulse 2s ease-in-out infinite}
-.plate-item .foodbtn:hover{transform:scale(1.07);animation:none}
-.plate-item .foodbtn .em{font-size:32px;line-height:1;z-index:1;
-  filter:drop-shadow(0 2px 3px rgba(60,30,15,.35))}
+  position:relative;width:72px;height:72px;background:none;border:none;padding:0;cursor:pointer;
+  display:grid;place-items:center;transition:transform .18s ease}
+.plate-item:not(.eaten) .foodbtn{animation:eat-pulse 2.4s ease-in-out infinite}
+.plate-item .foodbtn:hover{transform:scale(1.1);animation:none}
+.plate-item .foodbtn .em{font-size:46px;line-height:1;z-index:1;
+  filter:drop-shadow(0 3px 6px rgba(60,30,15,.35))}
 .plate-item .ringSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.plate-item .narcb{fill:none;stroke:#c8bca2;stroke-width:15.5;stroke-linecap:round}
-.plate-item .narcf{fill:none;stroke:#f7f2e7;stroke-width:12.5;stroke-linecap:round}
-.plate-item .earcb{fill:none;stroke:#a83228;stroke-width:15.5;stroke-linecap:round;transition:stroke .3s}
-.plate-item .earcf{fill:none;stroke:#e85043;stroke-width:12.5;stroke-linecap:round;transition:stroke .3s}
-.plate-item .ntx{fill:#5a4c38;font-weight:800}
-.plate-item .etx{fill:#fff;font-weight:800;font-size:11.5px;letter-spacing:.13em;transition:fill .3s}
-.plate-item .foodbtn:hover .earcf{stroke:#c94038}
+.plate-item .narcb{fill:none;stroke:#d6cfc3;stroke-width:11;stroke-linecap:round}
+.plate-item .narcf{fill:none;stroke:#f5f0e8;stroke-width:8.5;stroke-linecap:round}
+.plate-item .earcb{fill:none;stroke:#b03a30;stroke-width:11;stroke-linecap:round;transition:stroke .3s}
+.plate-item .earcf{fill:none;stroke:#e05548;stroke-width:8.5;stroke-linecap:round;transition:stroke .3s}
+.plate-item .ntx{display:none}
+.plate-item .etx{fill:#fff;font-weight:800;font-size:10px;letter-spacing:.15em;transition:fill .3s}
+.plate-item .foodbtn:hover .earcf{stroke:#c04038}
+.plate-item.eaten .foodbtn:hover .earcf{stroke:var(--good)}
 .plate-item.eaten .earcb{stroke:#4a6e30}
 .plate-item.eaten .earcf{stroke:var(--good)}
 .plate-item.eaten .etx{fill:#fff}
-.plate-item .qty{box-shadow:0 2px 5px rgba(60,40,20,.2);background:rgba(253,243,239,.95);
-  padding:2px 7px;font-size:10px;margin-right:-1px}
+.plate-item .qty{
+  box-shadow:0 1px 4px rgba(60,40,20,.18);
+  border:1px solid var(--rose-soft);background:#fdf3ef;color:var(--rose-deep);
+  padding:2px 8px;font-size:10px;font-weight:700;border-radius:999px;margin-bottom:3px;white-space:nowrap}
 .plate-item .rm{
-  position:absolute;top:-9px;right:-2px;width:18px;height:18px;border-radius:50%;
-  border:1px solid var(--line);background:rgba(255,255,255,.95);font-size:10px;line-height:1;
-  display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 2px 4px rgba(0,0,0,.2)}
+  position:absolute;top:-8px;right:-6px;width:17px;height:17px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(255,255,255,.95);font-size:9px;line-height:1;
+  display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .plate-item .rm:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
 
 /* ---------- body ---------- */
@@ -530,9 +525,10 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 #shelves{display:flex;flex-direction:column;gap:16px;margin-top:12px}
 .shelf{position:relative}
 .shelf-items{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;min-height:50px;padding:4px 10px 6px}
-.shelf-board{height:26px;border-radius:2px;position:relative;
+.shelf-board{height:26px;border-radius:0;position:relative;
   background:url(/images/hyllplan.png);background-size:100% 100%;
-  box-shadow:0 2px 3px rgba(90,70,40,.25)}
+  box-shadow:0 2px 3px rgba(90,70,40,.25);
+  margin-left:-16px;margin-right:-16px}
 .shelf-board::after{content:"";position:absolute;left:3px;right:3px;top:100%;height:26px;
   background:linear-gradient(180deg,rgba(95,75,45,.34),rgba(95,75,45,0))}
 .shelfTag{display:inline-block;margin:0 0 3px 12px;
@@ -1170,30 +1166,14 @@ function renderPlate(){
   const z=document.getElementById('plateZone');
   const w=z.clientWidth||360, h=z.clientHeight||520;
   const cx=w/2, n=mealItems.length;
-  const IW0=148, IH0=102;                               // cell base size
-  // the window image is FIXED — never grows. Food may sit outside the plate but
-  // always inside the image, never overlapping; items shrink only as a last resort.
-  let s=1, IW=IW0, IH=IH0, cols=1, rows=Math.max(1,n), maxCols=1, maxRows=1;
-  for(const sc of [1,.93,.86,.8,.74,.68,.62,.57,.52]){
-    IW=IW0*sc; IH=IH0*sc;
-    maxCols=Math.max(1,Math.floor((w*0.97)/IW));
-    maxRows=Math.max(1,Math.floor((h*0.95)/IH));
-    cols = (n<=9) ? Math.min(Math.max(1,n),3) : Math.ceil(n/3);
-    cols = Math.min(Math.max(cols, Math.ceil(Math.max(1,n)/maxRows)), maxCols);
-    rows = Math.ceil(Math.max(1,n)/cols);
-    s=sc;
-    if(rows<=maxRows) break;
-  }
-  // plate: always a circle, sized for up to a 3x3 grid, capped inside the image
+  // plate size
   const plateMaxD=Math.min(w*0.94, h*0.86);
-  const diag=Math.hypot(Math.min(cols,3)*IW, Math.min(rows,3)*IH);
-  const plateD=Math.min(plateMaxD, Math.max(245, diag/0.92));
-  const plateW=plateD, plateH=plateD;
+  const plateD=Math.min(plateMaxD, Math.max(245, w*0.88));
   const zh=h, cyz=h*0.52;
   if(z.style.minHeight) z.style.minHeight='';
   const img=z.querySelector('.plate-photo');
-  img.style.width=plateW+'px'; img.style.height=plateH+'px';
-  // cutlery resting on the windowsill (elements may not exist)
+  img.style.width=plateD+'px'; img.style.height=plateD+'px';
+  // cutlery
   const fork=document.getElementById('cutFork'), knife=document.getElementById('cutKnife');
   if(fork && knife){
     const L=Math.min(w*0.30,210), W=L*0.149, sillY=zh*0.935;
@@ -1201,38 +1181,90 @@ function renderPlate(){
     fork.style.left=(w*0.24 - W/2)+'px';
     knife.style.left=(w*0.76 - W/2)+'px';
   }
-  // food side by side in columns/rows, never overlapping, never outside the image
+  // ── Circular layout ──────────────────────────────────────────
+  // Rings: outer (up to 6), then centre slot (7th), then inner ring (8-12), then outer-2 (13+)
+  // Each ring gets a radius and the items placed evenly around it.
+  function circlePositions(total, platePx, cy){
+    const outerR = platePx * 0.355;   // outer ring radius
+    const innerR = platePx * 0.185;   // inner ring radius
+    const positions = [];
+    // Hexagonal layout:
+    // Slot 0 = centre
+    // Slots 1-6 = outer ring, fixed hex angles: top, top-right, bottom-right, bottom, bottom-left, top-left
+    // Slots 7-12 = second outer ring (outerR2), same hex angles offset by 30deg
+    // Slots 13+ = third ring, scaled down further
+    // Scale is reduced when total > 7 so nothing overlaps.
+    const hexAngles = [-Math.PI/2, -Math.PI/6, Math.PI/6, Math.PI/2, 5*Math.PI/6, -5*Math.PI/6];
+    // hex2 angles rotated 30° so they sit between ring-1 items
+    const hex2Angles = hexAngles.map(a => a + Math.PI/6);
+    const outerR2 = platePx * 0.46;
+    // item scale: reduce when rings stack up so they don't overlap
+    const itemScale = total <= 7 ? 1 : total <= 13 ? 0.82 : 0.68;
+    // centre slot
+    positions.push({x:0, y:0, s: itemScale});
+    // ring 1 (up to 6 items)
+    for(let i=0;i<Math.min(total-1,6);i++){
+      const a = hexAngles[i];
+      positions.push({x: outerR*Math.cos(a), y: outerR*Math.sin(a), s: itemScale});
+    }
+    // ring 2 (items 8-13)
+    if(total > 7){
+      for(let i=0;i<Math.min(total-7,6);i++){
+        const a = hex2Angles[i];
+        positions.push({x: outerR2*Math.cos(a), y: outerR2*Math.sin(a), s: itemScale});
+      }
+    }
+    // ring 3 (items 14+), even further out
+    if(total > 13){
+      const outerR3 = platePx * 0.54;
+      const sc3 = 0.58;
+      const restCount = total - 13;
+      for(let i=0;i<restCount;i++){
+        const a = hexAngles[i % 6];
+        positions.push({x: outerR3*Math.cos(a), y: outerR3*Math.sin(a), s: sc3});
+      }
+    }
+    return positions;
+  }
+  const positions = circlePositions(n, plateD, cyz);
   mealItems.forEach((it,i)=>{
     const f=foodById(it.foodId);
-    const row=Math.floor(i/cols);
-    const inRow=(row<rows-1)?cols:(n-(rows-1)*cols);
-    const col=i-row*cols;
+    const pos = positions[i] || {x:0, y:0, s:0.6};
     const el=document.createElement('div');
     el.className='plate-item'+(it.eaten?' eaten':'');
-    el.style.left=(cx+(col-(inRow-1)/2)*IW)+'px';
-    el.style.top =(cyz+(row-(rows-1)/2)*IH)+'px';
-    el.style.transform='translate(-50%,-50%) scale('+s+')';
+    el.style.left=(cx + pos.x)+'px';
+    el.style.top =(cyz + pos.y)+'px';
+    el.style.transform='translate(-50%,-50%) scale('+pos.s+')';
     el.draggable=true;
     const nm=f[lang], fs=Math.min(10.5, Math.max(6, 126/nm.length));
     const tid='tarc'+it.uid, bid='barc'+it.uid;
     el.innerHTML=`<button class="rm" title="✕">✕</button>
+      <div class="nm">${nm}</div>
+      <button class="foodbtn" title="${it.eaten?t('eatenBtn'):t('eatBtn')}">
+        <svg class="ringSvg" viewBox="0 0 78 78">
+          <path id="${tid}" d="M 11 41 A 28 28 0 0 1 67 41" fill="none"/>
+          <path id="${bid}" d="M 11 41 A 28 28 0 0 0 67 41" fill="none"/>
+          <use href="#${tid}" class="narcb"/><use href="#${tid}" class="narcf"/>
+          <use href="#${bid}" class="earcb"/><use href="#${bid}" class="earcf"/>
+          <text class="etx"><textPath href="#${bid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${it.eaten?'\u2713 '+t('eatenBtn'):t('eatBtn')}</textPath></text>
+        </svg>
+        <span class="em-wrap"><span class="em">${f.em}</span></span>
+      </button>
       <div class="rowline">
-        <button class="qty" title="${t('howMuch')}">${fmtMeasure(f,it.qty,lang)}</button>
-        <button class="foodbtn" title="${it.eaten?t('eatenBtn'):t('eatBtn')}">
-          <svg class="ringSvg" viewBox="0 0 78 78">
-            <path id="${tid}" d="M 11 41 A 28 28 0 0 1 67 41" fill="none"/>
-            <path id="${bid}" d="M 11 41 A 28 28 0 0 0 67 41" fill="none"/>
-            <use href="#${tid}" class="narcb"/><use href="#${tid}" class="narcf"/>
-            <use href="#${bid}" class="earcb"/><use href="#${bid}" class="earcf"/>
-            <text class="ntx" font-size="${fs}"><textPath href="#${tid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${nm}</textPath></text>
-            <text class="etx"><textPath href="#${bid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${it.eaten?'\u2713 '+t('eatenBtn'):t('eatBtn')}</textPath></text>
-          </svg>
-          <span class="em-wrap"><span class="em">${f.em}</span></span>
-        </button>
+        <button class="qty" title="${t('howMuch')}">${fmtMeasure(f,it.qty,lang)}${fmtMeasureAlt(f,it.qty,lang)?'<span style="font-weight:400;opacity:.7;font-size:9px;margin-left:3px">'+fmtMeasureAlt(f,it.qty,lang)+'</span>':''}</button>
       </div>`;
     el.addEventListener('dragstart',ev=>ev.dataTransfer.setData('text/plain','item:'+it.uid));
     el.querySelector('.qty').onclick=ev=>{ev.stopPropagation();openQtyPop(it,ev.currentTarget);};
-    el.querySelector('.foodbtn').onclick=()=>toggleEaten(it.uid);
+    el.dataset.uid=it.uid;
+    el.querySelector('.foodbtn').onclick=function(){
+      const item=items.find(x=>x.uid===it.uid); if(!item) return;
+      item.eaten=!item.eaten;
+      el.classList.toggle('eaten',item.eaten);
+      const etxEl=el.querySelector('.etx textPath');
+      if(etxEl) etxEl.textContent=item.eaten?'2713 '+t('eatenBtn'):t('eatBtn');
+      if(item.eaten) eatToast(foodById(item.foodId),item.qty);
+      requestAnimationFrame(()=>render());
+    };
     el.querySelector('.rm').onclick=()=>{ closeQtyPop(); items=items.filter(x=>x.uid!==it.uid); toast(t('removedToast').replace('{f}',f[lang])); render(); };
     box.appendChild(el);
   });
@@ -1315,15 +1347,58 @@ function flyToPlate(f, fromEl, done){
   try{
     const r=fromEl.getBoundingClientRect();
     const z=document.getElementById('plateZone').getBoundingClientRect();
+
+    // Compute the target slot for the incoming item
+    const mealItems=items.filter(x=>x.meal===activeMeal);
+    const existingIdx=mealItems.findIndex(x=>x.foodId===f.id);
+    const slotIdx = existingIdx>=0 ? existingIdx : mealItems.length;
+
+    // Replicate circlePositions logic to get landing spot in screen coords
+    const plateD = z.width * 0.46;
+    const platePx = plateD/2;
+    const cx = z.left + z.width/2;
+    const cyz_abs = z.top + z.height*0.55;
+    const outerR = platePx * 0.32;
+    const outerR2 = platePx * 0.46;
+    const hexAngles = [-Math.PI/2, -Math.PI/6, Math.PI/6, Math.PI/2, 5*Math.PI/6, -5*Math.PI/6];
+    const hex2Angles = hexAngles.map(a => a + Math.PI/6);
+    let tx=cx, ty=cyz_abs;
+    if(slotIdx===0){
+      tx=cx; ty=cyz_abs;
+    } else if(slotIdx<=6){
+      const a=hexAngles[slotIdx-1];
+      tx=cx+outerR*Math.cos(a); ty=cyz_abs+outerR*Math.sin(a);
+    } else if(slotIdx<=12){
+      const a=hex2Angles[slotIdx-7];
+      tx=cx+outerR2*Math.cos(a); ty=cyz_abs+outerR2*Math.sin(a);
+    } else {
+      const outerR3=platePx*0.54;
+      const a=hexAngles[(slotIdx-13)%6];
+      tx=cx+outerR3*Math.cos(a); ty=cyz_abs+outerR3*Math.sin(a);
+    }
+
+    // Place element at start position (fixed, centered on source)
+    const startX = r.left + r.width/2;
+    const startY = r.top + r.height/2;
     const fl=document.createElement('span');
     fl.className='flyfood'; fl.textContent=f.em;
-    fl.style.left=(r.left+r.width/2)+'px'; fl.style.top=(r.top+r.height/2)+'px';
+    // Pin to top-left corner of viewport; use transform to position+scale
+    fl.style.left='0px'; fl.style.top='0px';
+    fl.style.transform=`translate(${startX}px,${startY}px) translate(-50%,-50%) scale(1.3)`;
     document.body.appendChild(fl);
-    requestAnimationFrame(()=>{requestAnimationFrame(()=>{
-      fl.style.left=(z.left+z.width/2)+'px';
-      fl.style.top=(z.top+z.height*0.55)+'px';
-      fl.style.transform='translate(-50%,-50%) scale(.85)';
-    });});
+
+    // Animate directly from source to target slot using Web Animations API
+    const dx = tx - startX;
+    const dy = ty - startY;
+    fl.animate([
+      { transform: `translate(${startX}px,${startY}px) translate(-50%,-50%) scale(1.3)` },
+      { transform: `translate(${tx}px,${ty}px) translate(-50%,-50%) scale(0.85)` }
+    ], {
+      duration: 620,
+      easing: 'cubic-bezier(.35,.6,.35,1)',
+      fill: 'forwards'
+    });
+
     setTimeout(()=>{fl.remove(); done&&done();},640);
   }catch(e){ done&&done(); }
 }
@@ -1441,6 +1516,31 @@ function fmtMeasure(f,q,lng){
   if(unit==='egg')   return fr(amt)+(amt===1?' egg':' eggs');
   return fr(amt)+' '+unit;
 }
+function fmtMeasureAlt(f,q,lng){
+  // Returns an alternative measurement in parentheses for the other unit system
+  const [base,unit]=f.m[lng], amt=base*q;
+  // g → oz conversion
+  if(unit==='g'){
+    const oz=Math.round((amt/28.35)*4)/4;
+    return '('+fr(oz)+' oz)';
+  }
+  // oz → g conversion
+  if(unit==='oz'){
+    const g=Math.round(amt*28.35/5)*5;
+    return '('+g+' g)';
+  }
+  // dl → cups
+  if(unit==='dl'){
+    const cups=Math.round(amt*0.4226*4)/4;
+    return '('+fr(cups)+(cups===1?' cup':' cups')+')';
+  }
+  // cup → dl
+  if(unit==='cup'){
+    const dl=Math.round(amt*2.366*4)/4;
+    return '('+fr(dl)+' dl)';
+  }
+  return '';
+}
 function addItem(foodId,eaten,announce){
   const ex=items.find(x=>x.foodId===foodId && x.meal===activeMeal);
   if(ex){
@@ -1483,7 +1583,7 @@ function openQtyPop(it,anchor){
   const f=foodById(it.foodId);
   document.getElementById('qtyTitle').textContent=f.em+' '+f[lang]+' — '+t('howMuch');
   document.getElementById('qtyRange').value=it.qty;
-  document.getElementById('qtyLabel').textContent=fmtMeasure(f,it.qty,lang);
+  document.getElementById('qtyLabel').textContent=fmtMeasure(f,it.qty,lang)+(fmtMeasureAlt(f,it.qty,lang)?' '+fmtMeasureAlt(f,it.qty,lang):'');
   pop.classList.add('open');
   placePop(pop,anchor,140);
 }
@@ -1491,7 +1591,7 @@ function closeQtyPop(){pop.classList.remove('open');popItemUid=null;}
 document.getElementById('qtyRange').addEventListener('input',e=>{
   const it=items.find(x=>x.uid===popItemUid); if(!it){closeQtyPop();return;}
   it.qty=parseFloat(e.target.value);
-  document.getElementById('qtyLabel').textContent=fmtMeasure(foodById(it.foodId),it.qty,lang);
+  document.getElementById('qtyLabel').textContent=fmtMeasure(foodById(it.foodId),it.qty,lang)+(fmtMeasureAlt(foodById(it.foodId),it.qty,lang)?' '+fmtMeasureAlt(foodById(it.foodId),it.qty,lang):'');
   render();
 });
 
