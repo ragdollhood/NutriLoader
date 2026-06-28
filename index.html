@@ -1177,8 +1177,8 @@ function renderPlate(){
   const r1 = Math.max(Math.ceil(ITEM_STEP * 6 / (2 * Math.PI)), 100);
   const r2 = r1 * 2;
   const r3 = r1 * 3;
-  const plateD = n <= 7  ? r1 * 2 + ITEM_STEP
-               :            r2 * 2 + ITEM_STEP; // ring 3 shares ring 2 radius
+  const plateD = n <= 7  ? r2 * 2 + ITEM_STEP  // empty + ring 1: ring-2 size
+               :            r2 * 2 + ITEM_STEP + 60; // ring 2+: a bit larger
   const neededH = plateD + 60;
   if(neededH > h) z.style.minHeight = neededH + 'px';
   else if(z.style.minHeight) z.style.minHeight = '';
