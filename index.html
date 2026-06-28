@@ -307,10 +307,11 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
 
 /* ---------- plate in front of the time-of-day window ---------- */
 #plateZone{position:relative;height:540px;flex:0 0 auto;border-radius:14px;overflow:hidden;
-  background-size:cover;background-position:center;
   box-shadow:0 6px 14px rgba(60,40,20,.22), inset 0 0 0 1px rgba(255,255,255,.25);
   transition:outline .2s}
 #plateZone.dragover{outline:3px dashed var(--rose);outline-offset:-10px}
+#plateZoneBg{position:absolute;inset:0;border-radius:14px;
+  background-size:cover;background-position:center;z-index:0;pointer-events:none}
 #plateZone .plate-photo{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);
   width:46%;object-fit:fill;transition:width .45s ease, height .45s ease;
   z-index:1;pointer-events:none;
@@ -322,7 +323,10 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   position:absolute;transform:translate(-50%,-50%);
   display:flex;flex-direction:column;align-items:center;gap:0;
   background:none;border:none;box-shadow:none;padding:0;
-  cursor:grab;user-select:none;z-index:3}
+  cursor:grab;user-select:none;z-index:3;
+  transition:transform .18s ease}
+.plate-item:not(.eaten){animation:none}
+.plate-item:hover{transform:translate(-50%,-50%) scale(1.12);z-index:10;animation:eat-pulse 2.4s ease-in-out infinite}
 .plate-item:active{cursor:grabbing}
 .plate-item .rowline{display:flex;align-items:center;gap:0}
 /* Name below emoji */
@@ -340,14 +344,12 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   background:linear-gradient(135deg,transparent 42%,rgba(60,50,30,.55) 42%,rgba(60,50,30,.55) 58%,transparent 58%);
   pointer-events:none}
 @keyframes eat-pulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.07)}
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.07)}
 }
 .plate-item .foodbtn{
   position:relative;width:72px;height:72px;background:none;border:none;padding:0;cursor:pointer;
-  display:grid;place-items:center;transition:transform .18s ease}
-.plate-item:not(.eaten) .foodbtn{animation:eat-pulse 2.4s ease-in-out infinite}
-.plate-item .foodbtn:hover{transform:scale(1.1);animation:none}
+  display:grid;place-items:center}
 .plate-item .foodbtn .em{font-size:46px;line-height:1;z-index:1;
   filter:drop-shadow(0 3px 6px rgba(60,30,15,.35))}
 .plate-item .ringSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
@@ -630,6 +632,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     <p class="hint" data-i18n="step1hint">Drag food from the pantry below onto the plate — the body shows a striped preview of what it would give you.</p>
     <div id="mealTabs"></div>
     <div id="plateZone">
+      <div id="plateZoneBg"></div>
       <img class="plate-photo" src="/images/tallrik-vit.png" alt="">
       <div id="plateEmpty" data-i18n="plateEmpty">Drag food here to plan your plate</div>
       <div id="plateItems"></div>
@@ -1298,7 +1301,7 @@ function renderMealTabs(){
 }
 const WINDOWS={breakfast:'/images/window1-morning.png',snack1:'/images/window2-fm.png',lunch:'/images/window3-lunch.png',snack2:'/images/window4-em.png',dinner:'/images/window5-middag.png',supper:'/images/window6-night.png'};
 function renderScene(){
-  document.getElementById('plateZone').style.backgroundImage='url('+WINDOWS[activeMeal]+')';
+  document.getElementById('plateZoneBg').style.backgroundImage='url('+WINDOWS[activeMeal]+')';
 }
 
 function renderInfo(eT,pT){
