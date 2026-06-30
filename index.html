@@ -582,7 +582,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   border:none;background:none;padding:4px 0;box-shadow:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;width:100%;white-space:nowrap;
   transition:transform .15s ease}
-#logBtn img{width:28px;display:block}
+#logBtn img{width:100%;display:block}
 #logBtn:hover{transform:scale(2);position:relative;z-index:10}
 #logModal{
   display:none;position:fixed;inset:0;z-index:500;
@@ -701,7 +701,6 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       </svg>
       <span>Thank you!</span>
     </a>
-    <button id="logBtn" title="Food log"><img src="/images/logbook.png" alt="Food log"> <span id="logBtnLbl" style="display:none">Log</span></button>
   </div>
 <header>
   <h1><img src="images/logga-alpha.png" alt="Nutri Loader" class="title-image"></h1>
@@ -732,9 +731,12 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     </div>
   </section>
 
-<div style="display:flex;justify-content:center;padding:4px 2px 2px">
+<div style="display:flex;justify-content:center;align-items:center;gap:10px;padding:4px 2px 2px">
   <button id="resetBtnTop" style="background:none;border:none;padding:0;cursor:pointer;width:23%;min-width:80px">
     <img id="resetBtnTopImg" src="/images/clean-eng.png" alt="Clean plates" style="width:100%;display:block;filter:drop-shadow(0 6px 18px rgba(60,40,20,.3))">
+  </button>
+  <button id="logBtn" title="Food log" style="width:23%;min-width:80px">
+    <img src="/images/logbook.png" alt="Food log"> <span id="logBtnLbl" style="display:none">Log</span>
   </button>
 </div>
 
