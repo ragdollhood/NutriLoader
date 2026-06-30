@@ -700,15 +700,16 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-mode-btn.active{background:var(--good);color:#fdf6ee;border-color:var(--good)}
 #logWeeks{flex:1;min-width:0;padding:18px 16px;display:flex;flex-direction:column;gap:26px}
 .log-week{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fffdf8}
-.log-week-days{display:grid;grid-template-columns:minmax(0,35fr) repeat(7,minmax(0,95fr));background:var(--panel-deep);border-bottom:1px solid var(--line);border-top-left-radius:13px;border-top-right-radius:13px;overflow:hidden}
+.log-week-days{display:grid;grid-template-columns:minmax(0,35fr) repeat(7,minmax(0,95fr));border-bottom:1px solid var(--line);overflow:hidden}
 .log-week-gutter{background:#fffdf8}
 .log-week-day-h{
   text-align:center;padding:8px 4px;font-size:11px;font-weight:800;color:var(--ink-soft);
-  letter-spacing:.02em;border-right:1px solid var(--line);overflow:hidden}
+  letter-spacing:.02em;border-right:1px solid var(--line);overflow:hidden;
+  background:var(--panel-deep)}
 .log-week-day-h .lwd-full{display:inline}
 .log-week-day-h .lwd-abbr{display:none}
-.log-week-day-h:last-child{border-right:none}
-.log-week-gutter + .log-week-day-h{background:var(--panel-deep);border-top-left-radius:13px}
+.log-week-day-h:last-child{border-right:none;border-top-right-radius:13px}
+.log-week-gutter + .log-week-day-h{border-top-left-radius:13px}
 .log-week-day-h{cursor:pointer;transition:background .15s}
 .log-week-day-h:hover{background:#e6ddcf}
 .log-week-day-h.selected{background:var(--rose-soft);color:var(--rose-deep)}
@@ -2369,9 +2370,13 @@ function renderLog(){
   document.getElementById('modeNutritionBtn').classList.toggle('active', logViewMode==='nutrition');
   document.getElementById('modeHabitsBtn').classList.toggle('active', logViewMode==='habits');
 
-  const scoreExplainText = lang2==='sv'
-    ? 'Daglig näringspoäng — % av dagsbehovet (snitt över alla näringsämnen)'
-    : 'Daily nutrition score — % of daily need (avg across all nutrients)';
+  const scoreExplainText = logViewMode==='habits'
+    ? (lang2==='sv'
+        ? 'Dåliga vanor — 100% motsvarar alltid din högsta loggade mängd för respektive vana (en relativ skala per vana, inte ett mål att sikta mot)'
+        : 'Bad habits — 100% always represents your highest logged amount for that habit (a relative scale per habit, not a target to aim for)')
+    : (lang2==='sv'
+        ? 'Daglig näringspoäng — % av dagsbehovet (snitt över alla näringsämnen)'
+        : 'Daily nutrition score — % of daily need (avg across all nutrients)');
   const loggedCountText = log.length===0
     ? (lang2==='sv'?'Ingen mat loggad ännu. Tryck på loggboken för att spara dagens mat.':'No food logged yet. Press the log book to save your day.')
     : (lang2==='sv'?`${log.length} dag${log.length>1?'ar':''} loggad${log.length>1?'e':''}.`:`${log.length} day${log.length!==1?'s':''} logged.`);
