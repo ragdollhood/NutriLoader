@@ -157,7 +157,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--ink);font-family:'Karla',system-ui,sans-serif;font-size:15px;line-height:1.45}
-body{background:#eef3df url("/images/background-green.png") center/cover no-repeat fixed;
+body{background:#eef3df url("images/background-green.png") center/cover no-repeat fixed;
   min-height:100vh;padding-bottom:60px;position:relative}
 #bgFood{position:fixed;inset:0;pointer-events:none;z-index:0;
   background:linear-gradient(180deg,rgba(255,255,252,.46) 0%,rgba(255,255,250,.24) 38%,rgba(255,255,250,.40) 100%)}
@@ -187,10 +187,15 @@ g.organ.hovsel .hoverpart{transform:scale(1.16)}
   position:fixed;z-index:60;background:#fffdf8;border:1px solid var(--line);border-radius:14px;
   box-shadow:0 12px 30px rgba(85,60,40,.25);padding:12px 16px;width:240px;display:none}
 #qtyPop.open,#foodPop.open{display:block}
-#qtyPop h4,#foodPop h4{font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--ink);margin-bottom:2px}
+#qtyPop h4,#foodPop h4{font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--ink);margin-bottom:2px;padding-right:20px}
 #qtyPop .qlabel{font-size:16px;font-weight:700;color:var(--rose-deep);margin-bottom:8px}
 #qtyPop input[type=range]{width:100%;accent-color:var(--rose-deep)}
 #qtyPop .ticks{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft);margin-top:2px}
+#qtyPop .popClose{
+  position:absolute;top:9px;right:9px;width:18px;height:18px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(255,255,255,.95);font-size:9px;line-height:1;
+  display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 1px 3px rgba(0,0,0,.15);cursor:pointer}
+#qtyPop .popClose:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
 #foodPop .sub{font-size:11.5px;color:var(--ink-soft);margin-bottom:8px}
 #foodPop .nrow{display:grid;grid-template-columns:92px 1fr 34px;gap:6px;align-items:center;font-size:11.5px;margin-bottom:4px}
 #foodPop .nrow .tk{height:7px;border-radius:99px;background:#efe6d8;overflow:hidden}
@@ -267,8 +272,8 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   position:absolute;top:32px;right:26px;display:flex;align-items:center;gap:8px;
   border:1px solid var(--line);background:var(--panel);border-radius:999px;
   padding:1px 1px;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink);
-  box-shadow:0 3px 10px rgba(85,70,55,.10);transition:transform .15s ease:
- z-index: 9000;}
+  box-shadow:0 3px 10px rgba(85,70,55,.10);transition:transform .15s ease;
+  z-index: 9000;}
 #langBtn:hover{transform:translateY(-1px)}
 #langBtn .flag{width:22px;height:15px;border-radius:2px;overflow:hidden;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
 
@@ -325,51 +330,34 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   position:absolute;transform:translate(-50%,-50%);
   display:flex;flex-direction:column;align-items:center;gap:0;
   background:none;border:none;box-shadow:none;padding:0;
-  cursor:grab;user-select:none;z-index:3;
+  cursor:default;user-select:none;z-index:3;
   transition:transform .18s ease}
 .plate-item:not(.eaten){animation:none}
 .plate-item:hover{transform:translate(-50%,-50%) scale(1.12);z-index:10;animation:eat-pulse 2.4s ease-in-out infinite}
 .plate-item:active{cursor:grabbing}
 .plate-item .rowline{display:flex;align-items:center;gap:0}
-/* Name below emoji */
-.plate-item .nm{
-  font-size:10px;font-weight:700;color:#3a3025;text-align:center;line-height:1.15;
-  max-width:90px;margin-top:1px;margin-bottom:2px;
-  text-shadow:0 0 5px #fff,0 0 9px #fff,0 1px 2px #fff;
-  letter-spacing:.02em}
 /* Eaten emoji */
 .plate-item.eaten .em{opacity:.5;
   filter:drop-shadow(0 3px 6px rgba(60,30,15,.35)) drop-shadow(0 0 8px rgba(100,130,70,.8))}
 .plate-item.eaten .em-wrap{position:relative;display:inline-block}
-.plate-item.eaten .em-wrap::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,transparent 42%,rgba(60,50,30,.55) 42%,rgba(60,50,30,.55) 58%,transparent 58%);
-  pointer-events:none}
 @keyframes eat-pulse{
   0%,100%{transform:translate(-50%,-50%) scale(1)}
   50%{transform:translate(-50%,-50%) scale(1.07)}
 }
-.plate-item .foodbtn{
-  position:relative;width:72px;height:72px;background:none;border:none;padding:0;cursor:pointer;
-  display:grid;place-items:center}
-.plate-item .foodbtn .em{font-size:46px;line-height:1;z-index:1;
+.plate-item .foodicon{
+  position:relative;width:72px;height:72px;background:none;border:none;padding:0;
+  display:grid;place-items:center;cursor:pointer}
+.plate-item .foodicon .em{font-size:46px;line-height:1;z-index:1;
   filter:drop-shadow(0 3px 6px rgba(60,30,15,.35))}
-.plate-item .ringSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.plate-item .narcb{fill:none;stroke:#d6cfc3;stroke-width:11;stroke-linecap:round}
-.plate-item .narcf{fill:none;stroke:#f5f0e8;stroke-width:8.5;stroke-linecap:round}
-.plate-item .earcb{fill:none;stroke:#b03a30;stroke-width:11;stroke-linecap:round;transition:stroke .3s}
-.plate-item .earcf{fill:none;stroke:#e05548;stroke-width:8.5;stroke-linecap:round;transition:stroke .3s}
-.plate-item .ntx{display:none}
-.plate-item .etx{fill:#fff;font-weight:800;font-size:10px;letter-spacing:.15em;transition:fill .3s}
-.plate-item .foodbtn:hover .earcf{stroke:#c04038}
-.plate-item.eaten .foodbtn:hover .earcf{stroke:var(--good)}
-.plate-item.eaten .earcb{stroke:#4a6e30}
-.plate-item.eaten .earcf{stroke:var(--good)}
-.plate-item.eaten .etx{fill:#fff}
+/* Name curves right above the food, halfway around it */
+.plate-item .nmArc{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:2}
+.plate-item .nmtx{
+  fill:#3a3025;font-weight:800;letter-spacing:.03em;
+  paint-order:stroke fill;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
 .plate-item .qty{
   box-shadow:0 1px 4px rgba(60,40,20,.18);
   border:1px solid var(--rose-soft);background:#fdf3ef;color:var(--rose-deep);
-  padding:2px 8px;font-size:10px;font-weight:700;border-radius:999px;margin-bottom:3px;white-space:nowrap}
+  padding:2px 8px;font-size:10px;font-weight:700;border-radius:999px;margin-top:-7px;margin-bottom:3px;white-space:nowrap}
 .plate-item .rm{
   position:absolute;top:0px;right:-6px;width:17px;height:17px;border-radius:50%;
   border:1px solid var(--line);background:rgba(255,255,255,.95);font-size:9px;line-height:1;
@@ -518,9 +506,9 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 #resetBtn:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
 
 /* ---------- pantry (painted wood pantry, photo style) ---------- */
-#pantry{min-width:0}
+#pantry{min-width:0;display:block}
 #pantryInner{
-  background:url(/images/hyllwall1.png) repeat;background-size:400px auto;
+  background:url(images/hyllwall1.png) repeat;background-size:400px auto;
   border:1px solid var(--line);border-radius:14px;
   box-shadow:var(--shadow);
   padding:14px 16px 14px;overflow:hidden}
@@ -530,7 +518,7 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 .shelf{position:relative}
 .shelf-items{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;min-height:50px;padding:4px 10px 6px}
 .shelf-board{height:26px;border-radius:0;position:relative;
-  background:url(/images/hyllplan.png);background-size:100% 100%;
+  background:url(images/hyllplan.png);background-size:100% 100%;
   box-shadow:0 2px 3px rgba(90,70,40,.25);
   margin-left:-16px;margin-right:-16px}
 .shelf-board::after{content:"";position:absolute;left:3px;right:3px;top:100%;height:26px;
@@ -588,6 +576,81 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   #headerVisits{right:14px}
 }
 
+/* ========== FOOD LOG MODAL ========== */
+#logBtn{
+  border:1px solid var(--line);background:#fffdf9f2;
+  border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;
+  letter-spacing:.04em;color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12);cursor:pointer;
+  display:flex;align-items:center;gap:5px;white-space:nowrap}
+#logBtn:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
+#logModal{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(50,40,30,.55);backdrop-filter:blur(4px);
+  overflow-y:auto;padding:24px 16px}
+#logModal.open{display:flex;align-items:flex-start;justify-content:center}
+#logPanel{
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;
+  box-shadow:0 20px 60px rgba(50,35,20,.32);
+  width:100%;max-width:900px;padding:26px 28px 30px;position:relative;margin:auto}
+#logPanel h2{
+  font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;
+  letter-spacing:.06em;color:var(--ink);margin-bottom:4px}
+#logClose{
+  position:absolute;top:16px;right:18px;background:none;border:none;
+  font-size:20px;color:var(--ink-soft);cursor:pointer;padding:4px 8px;border-radius:8px}
+#logClose:hover{color:var(--rose-deep)}
+.log-day{
+  margin:18px 0 0;border:1px solid var(--line);border-radius:16px;
+  background:#fffdf8;overflow:hidden}
+.log-day-head{
+  padding:12px 18px;background:var(--panel-deep);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border-bottom:1px solid var(--line)}
+.log-day-date{
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;
+  letter-spacing:.05em;color:var(--rose-deep)}
+.log-day-score{
+  display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;
+  color:var(--ink-soft);letter-spacing:.04em}
+.log-day-score .score-pill{
+  background:var(--rose-deep);color:#fdf4ef;
+  border-radius:999px;padding:3px 12px;font-size:13px;font-weight:800}
+.log-day-score .score-pill.good{background:var(--good)}
+.log-meals{padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.log-meal-row{display:flex;align-items:flex-start;gap:10px}
+.log-meal-ic{font-size:18px;margin-top:1px;min-width:24px}
+.log-meal-name{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink-soft);
+  text-transform:uppercase;min-width:72px;padding-top:2px}
+.log-meal-foods{display:flex;flex-wrap:wrap;gap:5px}
+.log-food-tag{
+  background:var(--panel-deep);border:1px solid var(--line);border-radius:999px;
+  padding:3px 10px;font-size:12px;color:var(--ink);display:flex;align-items:center;gap:4px}
+.log-food-tag.eaten{background:#edf3e4;border-color:#b5cfa0;color:#4a6a37}
+.log-food-tag .lft-em{font-size:14px}
+.log-nutr-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:6px;padding:0 18px 16px}
+.log-nbar{display:flex;flex-direction:column;gap:2px}
+.log-nbar .ln-name{font-size:10.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.03em}
+.log-nbar .ln-track{height:7px;border-radius:999px;background:#e7dfd3;overflow:hidden;border:1px solid #ddd2c2;position:relative}
+.log-nbar .ln-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rose),var(--rose-deep));transition:width .4s ease}
+.log-nbar .ln-fill.full{background:linear-gradient(90deg,#7d8f6c,#5a7048)}
+.log-nbar .ln-pct{font-size:10px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.log-empty{padding:32px;text-align:center;color:var(--ink-soft);font-style:italic;font-size:14px}
+.log-chart-wrap{padding:14px 18px 4px}
+.log-chart-title{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink-soft);
+  text-transform:uppercase;margin-bottom:8px}
+.log-chart{display:flex;align-items:flex-end;gap:6px;height:90px;border-bottom:2px solid var(--line);padding-bottom:0}
+.log-bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;max-width:54px}
+.log-bar-col .lb-bar{
+  width:100%;border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg,var(--rose-deep),var(--rose));
+  min-height:3px;transition:height .4s ease}
+.log-bar-col .lb-bar.good{background:linear-gradient(180deg,#5a7048,var(--good))}
+.log-bar-col .lb-date{font-size:9.5px;color:var(--ink-soft);text-align:center;margin-top:5px;white-space:nowrap}
+.log-bar-col .lb-pct{font-size:9px;color:var(--ink-soft);font-weight:700}
+.log-header-meta{font-size:12.5px;color:var(--ink-soft);margin-bottom:18px}
+
 /* next-plate prompt — fixed so it's visible wherever the user is on the page */
 #nextPlatePrompt{
   display:none;position:fixed;bottom:auto;left:50%;transform:translate(-50%,-50%);
@@ -621,6 +684,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   
 <div id="bgFood" aria-hidden="true"></div>
 <div id="qtyPop">
+  <button class="popClose" title="✕" onclick="closeQtyPop()">✕</button>
   <h4 id="qtyTitle"></h4>
   <div class="qlabel" id="qtyLabel"></div>
   <input type="range" id="qtyRange" min="0.5" max="2" step="0.5">
@@ -629,6 +693,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 <div id="foodPop"></div>
 <div id="organLabel"></div>
   <div id="topLeftBtns">
+    <button id="logBtn" title="Food log">📋 <span id="logBtnLbl">Log</span></button>
     <a id="donateBtn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=ingenskit%40hotmail.com&item_name=NUTRILOADER&currency_code=SEK&no_shipping=1" target="_blank" rel="noopener">
       <svg class="ppmark" viewBox="0 0 24 28" width="14" height="16" aria-hidden="true">
         <path d="M7.4 27 l.9-5.6 H6 L8.6 4.3 h7.3 c3.7 0 6 1.9 5.4 5.8 -.6 4.2 -3.7 6.2 -7.8 6.2 H10 l-.9 5.7 -.2 1.4 Z" fill="#003087"/>
@@ -638,7 +703,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     </a>
   </div>
 <header>
-  <h1><img src="/images/logga-alpha.png" alt="Nutri Loader" class="title-image"></h1>
+  <h1><img src="images/logga-alpha.png" alt="Nutri Loader" class="title-image"></h1>
   <div class="tagline" data-i18n="tagline">With focus on nourishment - not calories</div>
 
 
@@ -660,7 +725,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     <div id="mealTabs"></div>
     <div id="plateZone">
       <div id="plateZoneBg"></div>
-      <img class="plate-photo" src="/images/tallrik-vit.png" alt="">
+      <img class="plate-photo" src="images/tallrik-vit.png" alt="">
       <div id="plateEmpty" data-i18n="plateEmpty">Drag food here to plan your plate</div>
       <div id="plateItems"></div>
     </div>
@@ -755,6 +820,21 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     <span class="np-nm"></span>
     <span class="np-lbl"></span>
   </button>
+</div>
+<!-- ========== FOOD LOG MODAL ========== -->
+<div id="logModal" role="dialog" aria-modal="true">
+  <div id="logPanel">
+    <button id="logClose" aria-label="Close">✕</button>
+    <h2>📋 <span id="logModalTitle">Food Log</span></h2>
+    <p class="log-header-meta" id="logModalMeta">A record of everything logged with Clean Plates.</p>
+    <div id="logChartSection" style="display:none">
+      <div class="log-chart-wrap">
+        <div class="log-chart-title" id="logChartLabel">Daily nutrition score — % of daily need (avg across all nutrients)</div>
+        <div class="log-chart" id="logChart"></div>
+      </div>
+    </div>
+    <div id="logDays"></div>
+  </div>
 </div>
 <script>
 /* ================= DATA ================= */
@@ -1304,35 +1384,22 @@ function renderPlate(){
     el.style.top =(cyz + pos.y)+'px';
     el.style.transform='translate(-50%,-50%) scale('+pos.s+')';
     el.draggable=true;
-    const nm=f[lang], fs=Math.min(10.5, Math.max(6, 126/nm.length));
-    const tid='tarc'+it.uid, bid='barc'+it.uid;
+    const nm=f[lang], fs=Math.min(11.5, Math.max(7.5, 125/nm.length)), tid='tarc'+it.uid;
     el.innerHTML=`<button class="rm" title="✕">✕</button>
-      <button class="foodbtn" title="${it.eaten?t('eatenBtn'):t('eatBtn')}">
-        <svg class="ringSvg" viewBox="0 0 78 78">
-          <path id="${tid}" d="M 11 41 A 28 28 0 0 1 67 41" fill="none"/>
-          <path id="${bid}" d="M 11 41 A 28 28 0 0 0 67 41" fill="none"/>
-          <use href="#${tid}" class="narcb"/><use href="#${tid}" class="narcf"/>
-          <use href="#${bid}" class="earcb"/><use href="#${bid}" class="earcf"/>
-          <text class="etx"><textPath href="#${bid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${it.eaten?'\u2713 '+t('eatenBtn'):t('eatBtn')}</textPath></text>
+      <div class="foodicon" title="${t('howMuch')}">
+        <svg class="nmArc" viewBox="0 0 78 78">
+          <path id="${tid}" d="M 8 41 A 31 31 0 0 1 70 41" fill="none"/>
+          <text class="nmtx" style="font-size:${fs}px"><textPath href="#${tid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${nm.toUpperCase()}</textPath></text>
         </svg>
         <span class="em-wrap"><span class="em">${f.em}</span></span>
-      </button>
-      <div class="nm">${nm}</div>
+      </div>
       <div class="rowline">
         <button class="qty" title="${t('howMuch')}">${fmtMeasure(f,it.qty,lang)}${fmtMeasureAlt(f,it.qty,lang)?'<span style="font-weight:400;opacity:.7;font-size:9px;margin-left:3px">'+fmtMeasureAlt(f,it.qty,lang)+'</span>':''}</button>
       </div>`;
     el.addEventListener('dragstart',ev=>ev.dataTransfer.setData('text/plain','item:'+it.uid));
     el.querySelector('.qty').onclick=ev=>{ev.stopPropagation();openQtyPop(it,ev.currentTarget);};
+    el.querySelector('.foodicon').onclick=ev=>{ev.stopPropagation();openQtyPop(it,ev.currentTarget);};
     el.dataset.uid=it.uid;
-    el.querySelector('.foodbtn').onclick=function(){
-      const item=items.find(x=>x.uid===it.uid); if(!item) return;
-      item.eaten=!item.eaten;
-      el.classList.toggle('eaten',item.eaten);
-      const etxEl=el.querySelector('.etx textPath');
-      if(etxEl) etxEl.textContent=item.eaten?'2713 '+t('eatenBtn'):t('eatBtn');
-      if(item.eaten) eatToast(foodById(item.foodId),item.qty);
-      requestAnimationFrame(()=>render());
-    };
     el.querySelector('.rm').onclick=()=>{ closeQtyPop(); items=items.filter(x=>x.uid!==it.uid); toast(t('removedToast').replace('{f}',f[lang])); render(); };
     box.appendChild(el);
   });
@@ -1637,7 +1704,7 @@ function addItem(foodId,eaten,announce){
     showNextPlatePrompt();
     return;
   }
-  items.push({uid:++uidc,foodId,eaten:!!eaten,qty:1,meal:activeMeal});
+  items.push({uid:++uidc,foodId,eaten,qty:1,meal:activeMeal});
   const f=foodById(foodId);
   if(announce) toast(t('addedToast').replace('{f}',f[lang]));
   if(eaten) eatToast(f,1);
@@ -1748,6 +1815,10 @@ document.addEventListener('pointerdown',e=>{
   if(pop.classList.contains('open') && !pop.contains(e.target) && !e.target.closest('.qty')) closeQtyPop();
   if(fpop.classList.contains('open') && !fpop.contains(e.target) && !e.target.closest('.chip .info')) closeFoodPop();
 });
+window.addEventListener('scroll',()=>{
+  if(pop.classList.contains('open')) closeQtyPop();
+  if(fpop.classList.contains('open')) closeFoodPop();
+},{passive:true,capture:true});
 
 /* ================= SEARCH ================= */
 const searchIn=document.getElementById('foodSearch');
@@ -1826,15 +1897,217 @@ document.getElementById('langBtn').onclick=()=>{
   closeQtyPop(); closeFoodPop();
   renderStatic(); renderPantry(); buildMicrowave(); buildSugarBox(); render();
 };
-document.getElementById('resetBtn').onclick=()=>{ items=[]; sel=null; sugarTotal=0; buildSugarBox(); closeQtyPop(); closeFoodPop(); render(); };
+document.getElementById('resetBtn').onclick=()=>{
+  saveLogSnapshot();
+  items=[]; sel=null; sugarTotal=0; buildSugarBox(); closeQtyPop(); closeFoodPop(); render();
+  openLog();
+};
 document.getElementById('resetBtnTop').onclick=()=>document.getElementById('resetBtn').onclick();
 
-/* ================= INIT ================= */
+/* ================= FOOD LOG ================= */
+const LOG_KEY = 'nutriloader_log_v1';
+
+function loadLog(){
+  try{ return JSON.parse(localStorage.getItem(LOG_KEY)||'[]'); }catch(e){ return []; }
+}
+function saveLog(entries){
+  try{ localStorage.setItem(LOG_KEY, JSON.stringify(entries)); }catch(e){}
+}
+
+function saveLogSnapshot(){
+  if(!items.length) return;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('sv-SE'); // YYYY-MM-DD style
+  const timeStr = now.toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'});
+
+  // Collect meal-by-meal food entries
+  const mealData = MEALS.map(m=>{
+    const mItems = items.filter(it=>it.meal===m.id);
+    if(!mItems.length) return null;
+    return {
+      mealId: m.id,
+      mealEn: m.en,
+      mealSv: m.sv,
+      mealIc: m.ic,
+      foods: mItems.map(it=>{
+        const f = foodById(it.foodId);
+        return {
+          id: it.foodId,
+          em: f.em,
+          en: f[lang]||f.en,
+          sv: f.sv||f.en,
+          qty: it.qty,
+          eaten: it.eaten,
+          n: f.n
+        };
+      })
+    };
+  }).filter(Boolean);
+
+  // Calculate nutrition totals for eaten items
+  const eT = totals(true);
+  const pT = totals(false);
+
+  // Average % of daily need across all nutrients (eaten)
+  const nutKeys = Object.keys(NUTRIENTS);
+  const avgScore = nutKeys.length
+    ? Math.round(nutKeys.reduce((a,k)=>a+Math.min(100,eT[k]||0),0)/nutKeys.length)
+    : 0;
+
+  const entry = {
+    date: dateStr,
+    time: timeStr,
+    timestamp: Date.now(),
+    meals: mealData,
+    nutrients: {},
+    avgScore,
+    sugarTotal
+  };
+  // store per-nutrient eaten %
+  nutKeys.forEach(k=>{ entry.nutrients[k] = Math.min(100, Math.round(eT[k]||0)); });
+
+  const log = loadLog();
+  // Group by date: merge if same date already exists (multiple cleans in one day)
+  const existingIdx = log.findIndex(e=>e.date===dateStr);
+  if(existingIdx>=0){
+    const ex = log[existingIdx];
+    // Merge meals
+    mealData.forEach(md=>{
+      const exMeal = ex.meals.find(m=>m.mealId===md.mealId);
+      if(exMeal){
+        // add foods not already present
+        md.foods.forEach(f=>{ if(!exMeal.foods.find(ef=>ef.id===f.id)) exMeal.foods.push(f); });
+      } else {
+        ex.meals.push(md);
+      }
+    });
+    // Merge nutrients (take higher value)
+    nutKeys.forEach(k=>{ ex.nutrients[k] = Math.max(ex.nutrients[k]||0, entry.nutrients[k]); });
+    ex.avgScore = Math.round(nutKeys.reduce((a,k)=>a+(ex.nutrients[k]||0),0)/nutKeys.length);
+    ex.sugarTotal = (ex.sugarTotal||0)+sugarTotal;
+    ex.time = timeStr;
+    log[existingIdx] = ex;
+  } else {
+    log.unshift(entry);
+  }
+  // Keep max 90 days
+  if(log.length>90) log.splice(90);
+  saveLog(log);
+}
+
+function openLog(){
+  const modal = document.getElementById('logModal');
+  modal.classList.add('open');
+  renderLog();
+}
+function closeLog(){
+  document.getElementById('logModal').classList.remove('open');
+}
+
+document.getElementById('logBtn').addEventListener('click', openLog);
+document.getElementById('logClose').addEventListener('click', closeLog);
+document.getElementById('logModal').addEventListener('pointerdown', e=>{
+  if(e.target===document.getElementById('logModal')) closeLog();
+});
+
+function renderLog(){
+  const log = loadLog();
+  const daysEl = document.getElementById('logDays');
+  const metaEl = document.getElementById('logModalMeta');
+  const chartSec = document.getElementById('logChartSection');
+  const lang2 = typeof lang !== 'undefined' ? lang : 'en';
+
+  metaEl.textContent = log.length===0
+    ? (lang2==='sv'?'Ingen mat loggad ännu. Tryck på Rena tallrikar för att spara dagens mat.':'No food logged yet. Press Clean Plates to save your day.')
+    : (lang2==='sv'?`${log.length} dag${log.length>1?'ar':''} loggad${log.length>1?'e':''}.`:`${log.length} day${log.length!==1?'s':''} logged.`);
+
+  if(!log.length){
+    daysEl.innerHTML=`<div class="log-empty">${lang2==='sv'?'Tryck på Rena tallrikar för att börja logga din mat 🥗':'Press Clean Plates to start logging your food 🥗'}</div>`;
+    chartSec.style.display='none';
+    return;
+  }
+
+  // Chart — last 14 days
+  chartSec.style.display='block';
+  const chartData = [...log].reverse().slice(-14);
+  const chartEl = document.getElementById('logChart');
+  chartEl.innerHTML='';
+  chartData.forEach(entry=>{
+    const pct = entry.avgScore||0;
+    const isGood = pct>=70;
+    const col = document.createElement('div');
+    col.className='log-bar-col';
+    const barH = Math.max(4, pct*0.85); // max 85px
+    const dateShort = entry.date.slice(5); // MM-DD
+    col.innerHTML=`<div class="lb-pct">${pct}%</div>
+      <div class="lb-bar${isGood?' good':''}" style="height:${barH}px"></div>
+      <div class="lb-date">${dateShort}</div>`;
+    chartEl.appendChild(col);
+  });
+
+  // Days
+  daysEl.innerHTML='';
+  log.forEach(entry=>{
+    const div = document.createElement('div');
+    div.className='log-day';
+    const scoreClass = entry.avgScore>=70?'good':'';
+
+    // Meals HTML
+    const mealsHTML = entry.meals.map(m=>{
+      const foodTags = m.foods.map(f=>{
+        const cls = f.eaten?'eaten':'';
+        return `<span class="log-food-tag ${cls}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}</span>`;
+      }).join('');
+      return `<div class="log-meal-row">
+        <span class="log-meal-ic">${m.mealIc}</span>
+        <span class="log-meal-name">${lang2==='sv'?m.mealSv:m.mealEn}</span>
+        <div class="log-meal-foods">${foodTags}</div>
+      </div>`;
+    }).join('');
+
+    // Nutrient bars
+    const nutKeys = Object.keys(NUTRIENTS);
+    const nutHTML = nutKeys.map(k=>{
+      const pct = entry.nutrients[k]||0;
+      const isFull = pct>=100;
+      return `<div class="log-nbar">
+        <div class="ln-name">${NUTRIENTS[k][lang2]||NUTRIENTS[k].en}</div>
+        <div class="ln-track"><div class="ln-fill${isFull?' full':''}" style="width:${Math.min(100,pct)}%"></div></div>
+        <div class="ln-pct">${isFull?'✓ 100%':pct+'%'}</div>
+      </div>`;
+    }).join('');
+
+    div.innerHTML=`
+      <div class="log-day-head">
+        <span class="log-day-date">📅 ${entry.date}${entry.time?' · '+entry.time:''}</span>
+        <span class="log-day-score">
+          ${lang2==='sv'?'Genomsnitt':'Avg'}
+          <span class="score-pill ${scoreClass}">${entry.avgScore||0}%</span>
+        </span>
+      </div>
+      <div class="log-meals">${mealsHTML}</div>
+      <div class="log-nutr-grid">${nutHTML}</div>`;
+    daysEl.appendChild(div);
+  });
+}
+
+// Update log button label in current language
+function updateLogBtnLabel(){
+  const lang2 = typeof lang !== 'undefined' ? lang : 'en';
+  const el = document.getElementById('logBtnLbl');
+  if(el) el.textContent = lang2==='sv'?'Logg':'Log';
+}
+// Hook into language button to also update log label
+document.getElementById('langBtn').addEventListener('click', ()=>{ setTimeout(updateLogBtnLabel,0); });
+updateLogBtnLabel();
+
+
 window.addEventListener('resize',()=>renderPlate());
 buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); renderStatic(); renderPantry(); renderScene(); render();
 </script>
+
 <script>
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener('DOMContentLoaded', () => {
   document.getElementById("headerVisits").textContent = "Visits: 1";
 });
 </script>
