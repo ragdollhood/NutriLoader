@@ -337,7 +337,7 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
 .plate-item:active{cursor:grabbing}
 .plate-item .rowline{display:flex;align-items:center;gap:0}
 /* Eaten emoji */
-.plate-item.eaten .em{opacity:.5;
+.plate-item.eaten .em{
   filter:drop-shadow(0 3px 6px rgba(60,30,15,.35)) drop-shadow(0 0 8px rgba(100,130,70,.8))}
 .plate-item.eaten .em-wrap{position:relative;display:inline-block}
 @keyframes eat-pulse{
@@ -1421,7 +1421,7 @@ function renderMealTabs(){
       e.preventDefault();
       const d=e.dataTransfer.getData('text/plain')||'';
       activeMeal=m.id; renderScene();
-      if(d.startsWith('food:')) addItem(d.slice(5),false,true); else renderPlate();
+      if(d.startsWith('food:')) addItem(d.slice(5),true,true); else renderPlate();
     });
     tb.appendChild(b);
   });
@@ -1464,7 +1464,7 @@ function renderInfo(eT,pT){
 ['infoCard','bodyInfoCard'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{
   const li=e.target.closest('li.src'); if(!li) return;
   const f=foodById(li.dataset.food);
-  flyToPlate(f,li,()=>addItem(f.id,false,true));
+  flyToPlate(f,li,()=>addItem(f.id,true,true));
 }));
 
 function renderHitTitles(){
@@ -1609,7 +1609,7 @@ function buildMicrowave(){
     FOODS.push(f);
     const lcd=document.getElementById('mwLcd');
     lcd.textContent=t('mwDing');
-    flyToPlate(f, ev.currentTarget, ()=>addItem(f.id,false,true));
+    flyToPlate(f, ev.currentTarget, ()=>addItem(f.id,true,true));
     mw.querySelectorAll('input[data-nut]').forEach(i=>i.value='');
     nameIn.value='';
     setTimeout(()=>{ lcd.textContent=t('mwReady'); }, 1800);
@@ -1627,7 +1627,7 @@ function renderPantry(){
       ch.className='chip'; ch.draggable=true; ch.dataset.food=f.id;
       ch.innerHTML=`<span class="em">${f.em}</span>${f[lang]}<span class="info" title="${t('contains')}">i</span>`;
       ch.addEventListener('dragstart',ev=>ev.dataTransfer.setData('text/plain','food:'+f.id));
-      ch.onclick=ev=>flyToPlate(f,ev.currentTarget,()=>addItem(f.id,false,true));
+      ch.onclick=ev=>flyToPlate(f,ev.currentTarget,()=>addItem(f.id,true,true));
       ch.querySelector('.info').addEventListener('click',ev=>{
         ev.stopPropagation(); openFoodPop(f,ev.currentTarget);
       });
@@ -1805,7 +1805,7 @@ function openFoodPop(f,anchor){
     <div class="sub" style="margin:8px 0 0"><b>${t('goodFor')}:</b></div>
     <div class="orgs">${orgSet.map(o=>`<span>${ORGANS[o][lang]}</span>`).join('')}</div>
     <button class="addBtn">${t('addToPlate')}</button>`;
-  fpop.querySelector('.addBtn').onclick=ev=>{ const a=ev.currentTarget; closeFoodPop(); flyToPlate(f,a,()=>addItem(f.id,false,true)); };
+  fpop.querySelector('.addBtn').onclick=ev=>{ const a=ev.currentTarget; closeFoodPop(); flyToPlate(f,a,()=>addItem(f.id,true,true)); };
   fpop.classList.add('open');
   placePop(fpop,anchor,320);
 }
@@ -1862,7 +1862,7 @@ function makeZone(zone,onDrop){
   });
 }
 makeZone(document.getElementById('plateZone'),data=>{
-  if(data.startsWith('food:')) addItem(data.slice(5),false,true);
+  if(data.startsWith('food:')) addItem(data.slice(5),true,true);
   else if(data.startsWith('item:')){ const it=items.find(x=>x.uid==data.slice(5)); if(it&&it.eaten){it.eaten=false;render();} }
 });
 makeZone(document.getElementById('bodyZone'),data=>{
