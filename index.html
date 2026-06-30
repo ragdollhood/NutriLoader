@@ -249,15 +249,6 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
 #topLeftBtns{position:absolute;top:4px;left:18px;z-index:200;display:flex;flex-direction:column;gap:2px}
   #langLbl {
   display: none;
-}#langBtn {
-  border: none;
-  background: none;
-  padding: 0;
-  box-shadow: none;
-}#langBtn .flag {
-  width: 28px;
-  display: block;
-  cursor: pointer;
 }
 #resetBtnTop{border:1px solid var(--line);background:#fffdf9f2;
   border-radius:999px;padding:4px 4px;font-size:12.5px;font-weight:700;
@@ -276,7 +267,7 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   box-shadow:0 3px 10px rgba(85,70,55,.10);transition:transform .15s ease;
   z-index: 9000;}
 #langBtn:hover{transform:translateY(-1px)}
-#langBtn .flag{width:22px;height:15px;border-radius:2px;overflow:hidden;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+#langBtn .flag{width:22px;height:15px;border-radius:2px;overflow:hidden;display:block;cursor:pointer;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
 
 /* ---------- layout ---------- */
 .layout{
@@ -558,6 +549,40 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
   background:var(--ink);color:#f6efe7;padding:10px 20px;border-radius:999px;font-size:13.5px;
   opacity:0;pointer-events:none;transition:all .35s ease;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:88vw;text-align:center;z-index:50}
 #toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 100% nutrition celebration ---------- */
+#celebrateOverlay{position:fixed;inset:0;z-index:650;display:none;
+  align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+#celebrateOverlay.show{display:flex}
+.celebrate-text{position:relative;z-index:2;text-align:center;
+  font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;line-height:1.1;
+  text-shadow:0 2px 0 #fffdf8,0 6px 18px rgba(60,40,20,.35);
+  animation:celebratePop .7s cubic-bezier(.34,1.56,.64,1) both}
+.celebrate-text .ct-line1{display:block;font-size:clamp(30px,7vw,62px);letter-spacing:.06em;color:var(--rose-deep)}
+.celebrate-text .ct-line2{display:block;font-size:clamp(18px,4vw,34px);letter-spacing:.12em;color:var(--good);margin-top:6px}
+@keyframes celebratePop{
+  0%{transform:scale(.35) rotate(-6deg);opacity:0}
+  55%{transform:scale(1.14) rotate(2deg);opacity:1}
+  100%{transform:scale(1) rotate(0deg);opacity:1}
+}
+#celebrateParticles{position:absolute;inset:0}
+.celebrate-piece{position:absolute;top:50%;left:50%;will-change:transform,opacity;
+  animation-name:celebrateFly;animation-timing-function:cubic-bezier(.22,.61,.36,1);animation-fill-mode:forwards;
+  filter:drop-shadow(0 3px 5px rgba(60,30,15,.3))}
+@keyframes celebrateFly{
+  0%{transform:translate(-50%,-50%) translate(0,0) scale(.3) rotate(0deg);opacity:0}
+  14%{opacity:1}
+  100%{transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(var(--sc)) rotate(var(--rot));opacity:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .celebrate-piece{display:none}
+  .celebrate-text{animation:none}
+}
+@media (max-width:680px){
+  .celebrate-text .ct-line1{font-size:clamp(24px,8vw,40px)}
+  .celebrate-text .ct-line2{font-size:clamp(15px,5vw,24px)}
+}
+
 footer{max-width:1300px;margin:26px auto 0;padding:0 22px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.6}
 footer b{color:var(--rose-deep);letter-spacing:.05em}
 
@@ -634,10 +659,6 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   border-radius:999px;padding:3px 12px;font-size:13px;font-weight:800}
 .log-day-score .score-pill.good{background:var(--good)}
 .log-meals{padding:14px 18px;display:flex;flex-direction:column;gap:10px}
-.log-meal-row{display:flex;align-items:flex-start;gap:10px}
-.log-meal-ic{font-size:18px;margin-top:1px;min-width:24px}
-.log-meal-name{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink-soft);
-  text-transform:uppercase;min-width:72px;padding-top:2px}
 .log-meal-foods{display:flex;flex-wrap:wrap;gap:5px;padding:0 18px 16px}
 .log-food-tag{
   background:var(--panel-deep);border:1px solid var(--line);border-radius:999px;
@@ -654,31 +675,23 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-nbar .ln-fill.full{background:linear-gradient(90deg,#7d8f6c,#5a7048)}
 .log-nbar .ln-pct{font-size:10px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .log-empty{padding:32px;text-align:center;color:var(--ink-soft);font-style:italic;font-size:14px}
-.log-vice-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 16px}
-.log-vice-tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
-.log-vice-tag.vsugar{background:#f3ead4;color:#6e5c3c}
-.log-vice-tag.valc{background:#dfe9f6;color:#3d5a82}
-.log-vice-tag.vcig{background:#ecdfd0;color:#6e4c34}
-.log-vice-tag.vsec{background:#ecdce8;color:#6e3a5c}
-.log-chart-wrap{padding:14px 18px 4px}
-.log-chart-title{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink-soft);
-  text-transform:uppercase;margin-bottom:8px}
-.log-chart{display:flex;align-items:flex-end;gap:6px;height:90px;border-bottom:2px solid var(--line);padding-bottom:0}
-.log-chart.vice{height:64px}
-.log-chart.vice .lb-bar{background:#cfc4ad}
-.log-chart.vice.sugarc .lb-bar{background:linear-gradient(180deg,#e3d199,#cdb35e)}
-.log-chart.vice.alcc .lb-bar{background:linear-gradient(180deg,#aac3e3,#5d83b3)}
-.log-chart.vice.cigc .lb-bar{background:linear-gradient(180deg,#d3b596,#a87f56)}
-.log-chart.vice.secc .lb-bar{background:linear-gradient(180deg,#d3a8c5,#a8588d)}
-.log-bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;max-width:54px}
-.log-bar-col .lb-bar{
-  width:100%;border-radius:6px 6px 0 0;
-  background:linear-gradient(180deg,var(--rose-deep),var(--rose));
-  min-height:3px;transition:height .4s ease}
-.log-bar-col .lb-bar.good{background:linear-gradient(180deg,#5a7048,var(--good))}
-.log-bar-col .lb-date{font-size:9.5px;color:var(--ink-soft);text-align:center;margin-top:5px;white-space:nowrap}
-.log-bar-col .lb-pct{font-size:9px;color:var(--ink-soft);font-weight:700}
 .log-header-meta{font-size:12.5px;color:var(--ink-soft);margin-bottom:18px}
+#logAuth{margin:0 0 16px;padding:10px 14px;border:1px dashed var(--line);border-radius:12px;background:#fbf8f2}
+.logauth-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.logauth-label{color:var(--ink-soft);font-size:12px;font-weight:700}
+.logauth-label b{color:var(--ink)}
+#logAuthEmail{flex:1;min-width:160px;border:1px solid var(--line);border-radius:999px;
+  padding:6px 12px;font-family:inherit;font-size:12.5px;background:#fffdf9;color:var(--ink)}
+#logAuthEmail:focus{outline:none;border-color:var(--rose)}
+#logAuthSendBtn,#logAuthSignOutBtn{border:1px solid var(--rose-soft);background:#fbeee9;color:var(--rose-deep);
+  border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.03em;white-space:nowrap}
+#logAuthSendBtn:hover,#logAuthSignOutBtn:hover{background:var(--rose-soft)}
+#logAuthSendBtn:disabled{opacity:.55;cursor:default}
+.logauth-msg{margin-top:6px;font-size:11.5px;color:var(--ink-soft);min-height:14px}
+@media (max-width:680px){
+  .logauth-row{flex-direction:column;align-items:stretch}
+  #logAuthEmail{width:100%}
+}
 
 #logTableWrap{display:flex;flex-direction:column;gap:14px}
 #logSideBar{
@@ -696,12 +709,11 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-week-day-h{
   text-align:center;padding:2px 4px;font-size:11px;font-weight:800;color:var(--ink-soft);
   letter-spacing:.02em;border-right:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;
-  background:var(--panel-deep)}
+  background:var(--panel-deep);cursor:pointer;transition:background .15s}
 .log-week-day-h .lwd-full{display:inline}
 .log-week-day-h .lwd-abbr{display:none}
 .log-week-day-h:last-child{border-right:none;border-top-right-radius:13px}
 .log-week-day-h:first-child{border-top-left-radius:13px}
-.log-week-day-h{cursor:pointer;transition:background .15s}
 .log-week-day-h:hover{background:#e6ddcf}
 .log-week-day-h.selected{background:var(--rose-soft);color:var(--rose-deep)}
 .log-week-day-h .lwd-date{display:block;font-size:10px;font-weight:600;color:var(--ink-soft);opacity:.8;margin-top:1px}
@@ -934,6 +946,13 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 <footer><b>NUTRI LOADER - DISCLAIMER</b><br><span data-i18n="footer">This page is about what food gives you — never about counting or restricting. Values are friendly everyday approximations made by AI, not medical advice. The information provided on this website is for informational and educational purposes only. It should not be considered medical or professional advice and is not intended to replace consultation with a qualified healthcare provider. We strive to provide accurate and up-to-date information about nutrition and health, but we make no guarantees regarding the completeness, accuracy, or suitability of the information for any individual. Nutritional needs and physical conditions vary from person to person. Your use of the information on this website is at your own risk. We are not responsible for any decisions, actions, or consequences resulting from the use of this information. Always consult a qualified healthcare professional before making changes to your diet or lifestyle, especially if you have existing health conditions or specific dietary needs. By using this website, you agree to these terms. \nDisclaimer\nThe information provided on this website is for informational and educational purposes only. It should not be considered medical or professional advice and is not intended to replace consultation with a qualified healthcare provider. We strive to provide accurate and up-to-date information about nutrition and health, but we make no guarantees regarding the completeness, accuracy, or suitability of the information for any individual. Nutritional needs and physical conditions vary from person to person. Your use of the information on this website is at your own risk. We are not responsible for any decisions, actions, or consequences resulting from the use of this information. Always consult a qualified healthcare professional before making changes to your diet or lifestyle, especially if you have existing health conditions or specific dietary needs. By using this website, you agree to these terms. CONTACT: ragdollhood@gmail.com</span></footer>
 
 <div id="toast"></div>
+<div id="celebrateOverlay" aria-hidden="true">
+  <div class="celebrate-text">
+    <span class="ct-line1">YOU MADE IT!</span>
+    <span class="ct-line2">GOOD WORK!</span>
+  </div>
+  <div id="celebrateParticles"></div>
+</div>
 <div id="nextPlatePrompt">
   <button class="np-close" aria-label="Close">✕</button>
   <button class="np-btn">
@@ -946,8 +965,20 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 <div id="logModal" role="dialog" aria-modal="true">
   <div id="logPanel">
     <button id="logClose" aria-label="Close">✕</button>
-    <h2>📋 <span id="logModalTitle">Food Log - THIS IS UNDER CONSTRUCTION AND MAY NOT WORK!</span></h2>
+    <h2>📋 <span id="logModalTitle">Food Log - THE LOG IS UNDER CONSTRUCTION! IT MIGHT NOT WORK YET!</span></h2>
     <p class="log-header-meta" id="logModalMeta">A record of everything logged with Clean Plates.</p>
+    <div id="logAuth">
+      <div id="logAuthLoggedOut" class="logauth-row">
+        <span class="logauth-label" id="logAuthLabel">Sync your log across devices:</span>
+        <input type="email" id="logAuthEmail" placeholder="you@email.com" autocomplete="email">
+        <button id="logAuthSendBtn">Send login link</button>
+      </div>
+      <div id="logAuthLoggedIn" class="logauth-row" style="display:none">
+        <span class="logauth-label"><span id="logAuthLoggedInAs"></span> <b id="logAuthEmailLabel"></b></span>
+        <button id="logAuthSignOutBtn">Sign out</button>
+      </div>
+      <div id="logAuthMsg" class="logauth-msg"></div>
+    </div>
     <div id="logTableWrap">
       <div id="logSideBar">
         <button id="modeNutritionBtn" class="log-mode-btn">NUTRITION GRAPH</button>
@@ -958,6 +989,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     <div id="logEmpty" class="log-empty" style="display:none"></div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ================= DATA ================= */
 const NUTRIENTS = {
@@ -1121,6 +1153,8 @@ const I18N = {
   plateEmpty:{en:'Drag food here to plan your plate',sv:'Dra mat hit för att planera din tallrik'},
   pantryTitle:{en:'Pantry — pick what looks good',sv:'Skafferi — välj det som lockar'},
   reset:{en:'Clean plates',sv:'Rena tallrikar'},
+  celebrateLine1:{en:'YOU MADE IT!',sv:'DU KLARADE DET!'},
+  celebrateLine2:{en:'GOOD WORK!',sv:'BRA JOBBAT!'},
   footer:{en:'This page is about what food gives you — never about counting or restricting. Values are friendly everyday approximations made by AI, not medical advice. The information provided on this website is for informational and educational purposes only. It should not be considered medical or professional advice and is not intended to replace consultation with a qualified healthcare provider. We strive to provide accurate and up-to-date information about nutrition and health, but we make no guarantees regarding the completeness, accuracy, or suitability of the information for any individual. Nutritional needs and physical conditions vary from person to person. Your use of the information on this website is at your own risk. We are not responsible for any decisions, actions, or consequences resulting from the use of this information. Always consult a qualified healthcare professional before making changes to your diet or lifestyle, especially if you have existing health conditions or specific dietary needs. By using this website, you agree to these terms. CONTACT: ragdollhood@gmail.com',
           sv:'ANSVARSFRISKRIVNING: Den här sidan handlar om vad maten ger dig — inte om att räkna eller begränsa. Värdena är vänliga vardagsuppskattningar gjorda av AI och ska inte ses som medicinska råd. Informationen på denna webbplats är endast avsedd för informations- och utbildningsändamål. Innehållet ska inte betraktas som medicinsk eller professionell rådgivning och är inte en ersättning för konsultation med läkare, dietist eller annan kvalificerad vårdpersonal. Vi strävar efter att tillhandahålla korrekt och uppdaterad information om näring och hälsa, men vi kan inte garantera att all information är fullständig, korrekt eller lämplig för varje individ. Näringsbehov och kroppsliga förutsättningar varierar från person till person. All användning av information på denna webbplats sker på egen risk. Vi ansvarar inte för eventuella beslut, resultat eller konsekvenser som uppstår baserat på information från denna webbplats. Vi rekommenderar att du alltid rådfrågar en kvalificerad vårdgivare innan du gör förändringar i din kost eller livsstil, särskilt om du har medicinska tillstånd eller särskilda behov. Genom att använda denna webbplats accepterar du dessa villkor. Kontakt: ragdollhood@gmail.com'},
   infoDefault:{en:'Click a body part or a nutrient to see what helps what — and which foods are generous sources.',
@@ -1322,8 +1356,6 @@ function moveLabel(ev){
   if(x+lw>window.innerWidth-8) x=ev.clientX-lw-12;
   organLabel.style.left=x+'px'; organLabel.style.top=y+'px';
 }
-function mkTitle(){return document.createElementNS(SVGNS,'title')}
-
 /* ================= NUTRITION MATH ================= */
 function totals(eatenOnly){
   const T={};
@@ -1380,6 +1412,51 @@ function renderOrganBars(eT,pT){
 function render(){
   const eT=totals(true), pT=totals(false);
   renderBody(eT,pT); renderOrganBars(eT,pT); renderBars(eT,pT); renderPlate(); renderInfo(eT,pT); renderHitTitles();
+  checkNutritionCelebration(eT);
+}
+
+/* ---- 100%-of-everything celebration ---- */
+let nutritionWasFull = false, celebrateTimer = null;
+function checkNutritionCelebration(eT){
+  const nutKeys = Object.keys(NUTRIENTS);
+  const isFull = nutKeys.length>0 && nutKeys.every(k=>(eT[k]||0)>=100);
+  if(isFull && !nutritionWasFull){
+    nutritionWasFull = true;
+    launchNutritionCelebration();
+  } else if(!isFull){
+    nutritionWasFull = false;
+  }
+}
+function launchNutritionCelebration(){
+  const overlay = document.getElementById('celebrateOverlay');
+  const particles = document.getElementById('celebrateParticles');
+  if(!overlay || !particles) return;
+  overlay.querySelector('.ct-line1').textContent = t('celebrateLine1');
+  overlay.querySelector('.ct-line2').textContent = t('celebrateLine2');
+  particles.innerHTML = '';
+  const symbols = ['⭐','✨','❤️','💖','🌟','💛','💫'];
+  const spread = Math.max(window.innerWidth, window.innerHeight) * 0.45;
+  for(let i=0;i<28;i++){
+    const piece = document.createElement('span');
+    piece.className = 'celebrate-piece';
+    piece.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    const angle = Math.random()*Math.PI*2;
+    const dist = 110 + Math.random()*spread;
+    piece.style.setProperty('--dx', (Math.cos(angle)*dist)+'px');
+    piece.style.setProperty('--dy', (Math.sin(angle)*dist)+'px');
+    piece.style.setProperty('--sc', (0.8+Math.random()*1.2).toFixed(2));
+    piece.style.setProperty('--rot', (Math.random()*360-180)+'deg');
+    piece.style.fontSize = (18+Math.random()*22)+'px';
+    piece.style.animationDuration = (1.5+Math.random()*1.5)+'s';
+    piece.style.animationDelay = (Math.random()*0.5)+'s';
+    particles.appendChild(piece);
+  }
+  overlay.classList.add('show');
+  clearTimeout(celebrateTimer);
+  celebrateTimer = setTimeout(()=>{
+    overlay.classList.remove('show');
+    particles.innerHTML = '';
+  }, 3400);
 }
 
 function renderBody(eT,pT){
@@ -1798,7 +1875,6 @@ function renderPantry(){
 }
 
 /* ================= ACTIONS ================= */
-function fmtQty(q){return q===0.5?'½':q===1.5?'1½':String(q)}
 function fr(x){
   const w=Math.floor(x+1e-6), f=Math.round((x-w)*4)/4;
   const fs={0:'',0.25:'¼',0.5:'½',0.75:'¾'}[f]||'';
@@ -1845,7 +1921,7 @@ function fmtMeasureAlt(f,q,lng){
 function addItem(foodId,eaten,announce){
   const ex=items.find(x=>x.foodId===foodId && x.meal===activeMeal);
   if(ex){
-    ex.qty=Math.min(4,(ex.qty||1)+1);
+    ex.qty=(ex.qty||1)+1;
     if(eaten) ex.eaten=true;
     const f=foodById(foodId);
     toast(t('qtyUpToast').replace('{f}',f[lang]).replace('{m}',fmtMeasure(f,ex.qty,lang)));
@@ -2070,6 +2146,7 @@ function loadLog(){
 }
 function saveLog(entries){
   try{ localStorage.setItem(LOG_KEY, JSON.stringify(entries)); }catch(e){}
+  if(currentUser) pushLogToCloud(entries);
 }
 
 function saveLogSnapshot(){
@@ -2150,6 +2227,7 @@ function saveLogSnapshot(){
     ex.cigTotal = (ex.cigTotal||0)+cigTotal;
     ex.secretTotal = (ex.secretTotal||0)+secretTotal;
     ex.time = timeStr;
+    ex.timestamp = Date.now();
     log[existingIdx] = ex;
   } else {
     log.unshift(entry);
@@ -2178,6 +2256,111 @@ document.getElementById('logClose').addEventListener('click', closeLog);
 document.getElementById('logModal').addEventListener('pointerdown', e=>{
   if(e.target===document.getElementById('logModal')) closeLog();
 });
+
+/* ================= LOG ACCOUNT (magic-link login + cloud sync) ================= */
+const SUPABASE_URL = "https://ibytawdimgthoqwtbtgv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_X4l9e5OPXE9Cq4XVc1jm_A_Hb6tbJUO";
+const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+let currentUser = null;
+
+const AUTH_STR = {
+  label:{en:'Sync your log across devices:', sv:'Synka din logg mellan enheter:'},
+  placeholder:{en:'you@email.com', sv:'din@epost.se'},
+  send:{en:'Send login link', sv:'Skicka login-länk'},
+  sending:{en:'Sending…', sv:'Skickar…'},
+  sent:{en:'Check your inbox for the link!', sv:'Kolla din inkorg för länken!'},
+  error:{en:'Something went wrong — try again.', sv:'Något gick fel — försök igen.'},
+  invalidEmail:{en:'Enter a valid email first.', sv:'Skriv in en giltig e-postadress.'},
+  loggedInAs:{en:'Logged in as', sv:'Inloggad som'},
+  signOut:{en:'Sign out', sv:'Logga ut'},
+  syncedDown:{en:'Your saved log was synced from the cloud.', sv:'Din sparade logg synkades från molnet.'}
+};
+function authText(key){
+  const lang2 = typeof lang!=='undefined'?lang:'en';
+  return AUTH_STR[key][lang2];
+}
+
+function updateAuthUI(){
+  const outBox=$('#logAuthLoggedOut'), inBox=$('#logAuthLoggedIn');
+  if(!outBox||!inBox) return;
+  $('#logAuthLabel').textContent = authText('label');
+  $('#logAuthEmail').placeholder = authText('placeholder');
+  $('#logAuthSendBtn').textContent = authText('send');
+  $('#logAuthSignOutBtn').textContent = authText('signOut');
+  $('#logAuthLoggedInAs').textContent = authText('loggedInAs');
+  if(currentUser){
+    outBox.style.display='none'; inBox.style.display='flex';
+    $('#logAuthEmailLabel').textContent = currentUser.email||'';
+  } else {
+    outBox.style.display='flex'; inBox.style.display='none';
+  }
+}
+
+// Push the whole local log up to the cloud (small dataset, simplest reliable approach)
+async function pushLogToCloud(log){
+  if(!sb || !currentUser || !log.length) return;
+  const rows = log.map(e=>({ user_id: currentUser.id, date: e.date, entry: e }));
+  try{ await sb.from('log_entries').upsert(rows, { onConflict:'user_id,date' }); }catch(e){}
+}
+
+// On login: merge cloud + local per day (keep whichever copy is newer), save merged
+// copy locally, then push it back up so the cloud also has any local-only days.
+async function pullAndMergeCloudLog(){
+  if(!sb || !currentUser) return;
+  try{
+    const { data, error } = await sb.from('log_entries').select('entry').eq('user_id', currentUser.id);
+    if(error || !data) return;
+    const local = loadLog();
+    const byDate = {};
+    local.forEach(e=>{ byDate[e.date]=e; });
+    let changed = false;
+    data.forEach(row=>{
+      const ce = row.entry;
+      const le = byDate[ce.date];
+      if(!le || (ce.timestamp||0) > (le.timestamp||0)){ byDate[ce.date]=ce; changed=true; }
+    });
+    const merged = Object.values(byDate).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+    if(merged.length>90) merged.splice(90);
+    try{ localStorage.setItem(LOG_KEY, JSON.stringify(merged)); }catch(e){}
+    pushLogToCloud(merged);
+    if(changed) toast(authText('syncedDown'));
+    if(document.getElementById('logModal').classList.contains('open')) renderLog();
+  }catch(e){}
+}
+
+async function initAuth(){
+  updateAuthUI();
+  if(!sb) return;
+  const { data:{ session } } = await sb.auth.getSession();
+  currentUser = session ? session.user : null;
+  updateAuthUI();
+  if(currentUser) pullAndMergeCloudLog();
+  sb.auth.onAuthStateChange((event, session)=>{
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+    if(event==='SIGNED_IN') pullAndMergeCloudLog();
+  });
+}
+
+document.getElementById('logAuthSendBtn').addEventListener('click', async ()=>{
+  const emailEl = $('#logAuthEmail'), msgEl = $('#logAuthMsg');
+  const email = emailEl.value.trim();
+  if(!sb){ msgEl.textContent = authText('error'); return; }
+  if(!email || !email.includes('@')){ msgEl.textContent = authText('invalidEmail'); return; }
+  msgEl.textContent = authText('sending');
+  $('#logAuthSendBtn').disabled = true;
+  try{
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.href } });
+    msgEl.textContent = error ? authText('error') : authText('sent');
+  }catch(e){ msgEl.textContent = authText('error'); }
+  $('#logAuthSendBtn').disabled = false;
+});
+document.getElementById('logAuthSignOutBtn').addEventListener('click', async ()=>{
+  if(sb) await sb.auth.signOut();
+  currentUser = null;
+  updateAuthUI();
+});
+initAuth();
 
 /* ================= WEEKLY LOG TABLE ================= */
 const VICE_DEFS = [
@@ -2563,7 +2746,7 @@ function updateLogBtnLabel(){
   if(el) el.textContent = lang2==='sv'?'Logg':'Log';
 }
 // Hook into language button to also update log label
-document.getElementById('langBtn').addEventListener('click', ()=>{ setTimeout(updateLogBtnLabel,0); });
+document.getElementById('langBtn').addEventListener('click', ()=>{ setTimeout(()=>{ updateLogBtnLabel(); updateAuthUI(); },0); });
 updateLogBtnLabel();
 
 
@@ -2578,9 +2761,6 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
-const SUPABASE_URL = "https://ibytawdimgthoqwtbtgv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_X4l9e5OPXE9Cq4XVc1jm_A_Hb6tbJUO";
-
 async function updateCounter() {
   let res = await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
     headers: {
