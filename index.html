@@ -182,9 +182,10 @@ g.organ[data-organ="brain"] .hoverimg{opacity:1}
 #organLabel{position:fixed;z-index:70;pointer-events:none;display:none;
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
-#organPin{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:6;display:none;
-  background:var(--rose-deep);color:#fdf4ef;padding:7px 18px;border-radius:999px;
-  font-size:14px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 16px rgba(120,40,30,.35);white-space:nowrap}
+#organPin{position:absolute;z-index:6;display:none;
+  background:#faf3e1;border:1px solid #c7b893;border-radius:3px;padding:2px 11px;
+  font-size:10.5px;font-weight:800;letter-spacing:.1em;color:#6e5c3c;text-transform:uppercase;
+  box-shadow:0 2px 4px rgba(90,70,40,.30);transform:rotate(-1deg);white-space:nowrap}
 
 /* qty badge + popovers */
 .plate-item .qty{
@@ -1799,10 +1800,38 @@ function renderHitTitles(){
   if(sel && sel.type==='organ'){
     pin.textContent=labelText(sel.key);
     pin.style.display='block';
+    positionOrganPin();
   }else{
     pin.style.display='none';
   }
 }
+function positionOrganPin(){
+  const pin=document.getElementById('organPin');
+  if(pin.style.display==='none' || !sel || sel.type!=='organ') return;
+  const flex=document.getElementById('bodyFlex');
+  const isMobile=window.matchMedia('(max-width:680px)').matches;
+  if(isMobile){
+    pin.style.right='auto'; pin.style.top='auto';
+    pin.style.left='6px'; pin.style.bottom='6px';
+    pin.style.transform='rotate(-1deg)';
+    return;
+  }
+  const bar=flex.querySelector(`.obar[data-organ="${sel.key}"]`);
+  if(bar){
+    const barRect=bar.getBoundingClientRect();
+    const flexRect=flex.getBoundingClientRect();
+    const centerX=barRect.left-flexRect.left+barRect.width/2;
+    const topY=Math.max(0, barRect.top-flexRect.top-pin.offsetHeight-6);
+    pin.style.right='auto'; pin.style.bottom='auto';
+    pin.style.left=centerX+'px'; pin.style.top=topY+'px';
+    pin.style.transform='translateX(-50%) rotate(-1deg)';
+  }else{
+    pin.style.right='auto'; pin.style.top='auto';
+    pin.style.left='50%'; pin.style.bottom='0';
+    pin.style.transform='translateX(-50%) rotate(-1deg)';
+  }
+}
+window.addEventListener('resize',()=>{ if(sel&&sel.type==='organ') positionOrganPin(); });
 
 
 function flyToPlate(f, fromEl, done){
