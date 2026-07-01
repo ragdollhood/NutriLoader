@@ -174,11 +174,10 @@ g.organ.hovsel .hoverpart{transform:scale(1.7)}
 g.organ .hoverimg{opacity:0;transform:scale(1);transition:opacity .16s ease, transform .22s ease;
   transform-box:fill-box;transform-origin:center;pointer-events:none;
   filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
-g.organ.hov .hoverimg, g.organ.hovsel .hoverimg{opacity:1;transform:scale(1.6)}
-g.organ.hovsel .hoverimg{transform:scale(1.7)}
-/* blood.png is already the same size as the body image, so skip the big enlarge-scale used for
-   the small localized organ icons — just fade it in at its natural (full-body) size */
-g.organ[data-organ="blood"].hov .hoverimg, g.organ[data-organ="blood"].hovsel .hoverimg{transform:scale(1.03)}
+/* organ images are full-body sized (same box as body.png), so hover just fades them in
+   with a subtle scale rather than the large enlarge used for small icons */
+g.organ.hov .hoverimg, g.organ.hovsel .hoverimg{opacity:1;transform:scale(1.03)}
+g.organ.hovsel .hoverimg{transform:scale(1.05)}
 #organLabel{position:fixed;z-index:70;pointer-events:none;display:none;
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
@@ -1310,8 +1309,8 @@ const HIT_SHAPES = {
   eyes:'<rect x="284" y="110" width="144" height="44" rx="22"/>',
   immune:'<circle cx="300" cy="252" r="17"/><circle cx="412" cy="252" r="17"/><circle cx="216" cy="330" r="17"/><circle cx="496" cy="330" r="17"/><circle cx="292" cy="866" r="17"/><circle cx="422" cy="866" r="17"/><ellipse cx="478" cy="576" rx="27" ry="44"/>'
 };
-/* organ hover images — shown enlarged at a fixed, uniform size (ORGAN_IMG_SIZE) centered on
-   each organ's anatomical position (ORGAN_IMG_CENTER, defined near buildBody) */
+/* organ hover images — rendered at full body size, same box as body.png (see ORGAN_IMG_BOX
+   near buildBody), so each organ's artwork must already be positioned correctly within that canvas */
 const ORGAN_IMAGES = {
   heart:'/images/heart.png',
   lungs:'/images/lungs.png',
@@ -1344,25 +1343,11 @@ const foodById=id=>FOODS.find(f=>f.id===id);
 const SVGNS='http://www.w3.org/2000/svg';
 
 /* ================= BODY BUILD ================= */
-/* Uniform outer size for every organ hover image (same "yttermått" for all), so brain.png,
-   lungs.png, bones.png etc. all render at the same footprint — only their on-body anchor point differs. */
-const ORGAN_IMG_SIZE = 180;
-const ORGAN_IMG_CENTER = {
-  brain:  [360, 91],   // top of the head
-  eyes:   [356, 132],  // face
-  lungs:  [355, 409],  // chest, centered
-  heart:  [364, 425],  // chest
-  gut:    [358, 683],  // abdomen
-  muscles:[327, 702],  // torso/limb reference point
-  bones:  [271, 1157], // leg
-  immune: [356, 550],  // torso
-  skin:   [356, 650]   // torso
-};
-/* blood runs through the whole body (not one localized spot), so instead of the small uniform
-   organ box it gets the same box as body.png itself — full canvas, same size as the body image. */
-const ORGAN_IMG_BOX_OVERRIDE = {
-  blood: [0, 0, 724, 1536]
-};
+/* Every organ image is treated as a full-body canvas — same size & position as body.png itself
+   (0,0 to 724x1536). The organ artwork is already drawn at its correct anatomical spot inside
+   that canvas, so no per-organ coordinates are needed; this guarantees identical outer size
+   ("yttermått") and correct placement for every organ, exactly like blood.png. */
+const ORGAN_IMG_BOX = [0, 0, 724, 1536];
 function buildBody(){
   const defs=$('#clipDefs'), layer=$('#organLayer'), hits=$('#hitLayer');
   $('#artLayer').innerHTML=BODY_ART;
@@ -1394,13 +1379,7 @@ function buildBody(){
     const hov=document.createElementNS(SVGNS,'g');
     if(ORGAN_IMAGES[id]){
       hov.setAttribute('class','hoverimg');
-      let ix,iy,iw,ih;
-      if(ORGAN_IMG_BOX_OVERRIDE[id]){
-        [ix,iy,iw,ih]=ORGAN_IMG_BOX_OVERRIDE[id];
-      }else{
-        const [cx,cy]=ORGAN_IMG_CENTER[id]||[362,768];
-        const s=ORGAN_IMG_SIZE; ix=cx-s/2; iy=cy-s/2; iw=s; ih=s;
-      }
+      const [ix,iy,iw,ih]=ORGAN_IMG_BOX;
       const img=document.createElementNS(SVGNS,'image');
       img.setAttributeNS('http://www.w3.org/1999/xlink','href',ORGAN_IMAGES[id]);
       img.setAttribute('href',ORGAN_IMAGES[id]);
