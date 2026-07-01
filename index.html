@@ -1809,9 +1809,28 @@ function renderHitTitles(){
 function positionOrganPin(){
   const pin=document.getElementById('organPin');
   if(pin.style.display==='none' || !sel || sel.type!=='organ') return;
-  pin.style.right='auto'; pin.style.top='auto';
-  pin.style.left='6px'; pin.style.bottom='6px';
-  pin.style.transform='rotate(-1deg)';
+  const isMobile=window.matchMedia('(max-width:680px)').matches;
+  if(isMobile){
+    pin.style.right='auto'; pin.style.top='auto';
+    pin.style.left='6px'; pin.style.bottom='6px';
+    pin.style.transform='rotate(-1deg)';
+    return;
+  }
+  const flex=document.getElementById('bodyFlex');
+  const bar=flex.querySelector(`.obar[data-organ="${sel.key}"]`);
+  if(bar){
+    const barRect=bar.getBoundingClientRect();
+    const flexRect=flex.getBoundingClientRect();
+    const centerX=barRect.left-flexRect.left+barRect.width/2;
+    const topY=barRect.bottom-flexRect.top+6;
+    pin.style.right='auto'; pin.style.bottom='auto';
+    pin.style.left=centerX+'px'; pin.style.top=topY+'px';
+    pin.style.transform='translateX(-50%) rotate(-1deg)';
+  }else{
+    pin.style.right='auto'; pin.style.top='auto';
+    pin.style.left='6px'; pin.style.bottom='6px';
+    pin.style.transform='rotate(-1deg)';
+  }
 }
 window.addEventListener('resize',()=>{ if(sel&&sel.type==='organ') positionOrganPin(); });
 
