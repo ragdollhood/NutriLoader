@@ -182,7 +182,7 @@ g.organ[data-organ="brain"] .hoverimg{opacity:1}
 #organLabel{position:fixed;z-index:70;pointer-events:none;display:none;
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
-#organPin{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:6;display:none;
+#organPin{position:relative;margin:10px auto 0;width:fit-content;z-index:6;display:none;
   background:var(--rose-deep);color:#fdf4ef;padding:7px 18px;border-radius:999px;
   font-size:14px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 16px rgba(120,40,30,.35);white-space:nowrap}
 
@@ -416,11 +416,26 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 .obar.sel .otrack{outline:2px solid var(--rose-deep);outline-offset:1px}
 .obar.pulse .oefill{animation:pulse 1.1s ease-in-out infinite}
 @media (max-width:680px){
-  .obar{width:21px}
-  .obar .oem{font-size:15px}
-  .obar .otrack{width:9px;min-height:120px}
-  .organBars{gap:3px;height:390px}
-  #bodyWrap{max-height:430px}
+  #bodyFlex{
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-rows:1fr 1fr;
+    grid-template-areas:"body bars1" "body bars2";
+    align-items:stretch;
+    justify-content:center;
+    column-gap:10px;
+    row-gap:6px;
+    height:auto;
+    min-height:0;
+  }
+  #bodyWrap{grid-area:body;width:100%;max-width:none;max-height:none;margin:0}
+  #obarsL{grid-area:bars1}
+  #obarsR{grid-area:bars2}
+  .organBars{height:100%;gap:3px;padding:0}
+  .obar{width:auto;flex:1 1 0;min-width:0;height:100%}
+  .obar .otrack{flex:1 1 auto;min-height:0;width:9px}
+  .obar .oem{font-size:13px}
+  .obar .opc{font-size:7.5px}
 }
 
 /* ---------- microwave: add a ready meal from its label ---------- */
@@ -935,7 +950,6 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
     <h2><span class="step">2</span><span data-i18n="step2">Feed your body</span></h2>
     <p class="hint" data-i18n="step2hint">Watch the body fill up where it does good. Click a body part to learn more.</p>
     <div id="bodyZone">
-      <div id="organPin"></div>
       <div id="bodyFlex">
       <div class="organBars" id="obarsL"></div>
       <div id="bodyWrap">
@@ -951,6 +965,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       </div>
       <div class="organBars" id="obarsR"></div>
       </div>
+      <div id="organPin"></div>
       <div id="bodyInfoCard"></div>
     </div>
   </section>
