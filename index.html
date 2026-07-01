@@ -2340,6 +2340,9 @@ const AUTH_STR = {
   lswBody:{en:'Right now your log is only saved on this device and browser. It won\u2019t follow you to another phone, computer, or browser, and it can disappear if you clear your browsing data. Sign in with the email link above for a stable, synced log.',
            sv:'Just nu sparas din logg bara p\u00e5 den h\u00e4r enheten och webbl\u00e4saren. Den f\u00f6ljer inte med till en annan telefon, dator eller webbl\u00e4sare, och kan f\u00f6rsvinna om du rensar webbl\u00e4sardata. Logga in med e-postl\u00e4nken ovan f\u00f6r en stabil, synkad logg.'},
   lswDismiss:{en:'Got it, continue', sv:'Ok, forts\u00e4tt'},
+  linkExpired:{en:'Your login link has expired or was already used. Please request a new one.',
+               sv:'Din inloggningsl\u00e4nk har g\u00e5tt ut eller redan anv\u00e4nts. Beg\u00e4r en ny.'},
+  verifying:{en:'Logging you in…', sv:'Loggar in dig…'},
 };
 function authText(key){
   const lang2 = typeof lang!=='undefined'?lang:'en';
@@ -2414,9 +2417,47 @@ async function pullAndMergeCloudLog(){
   }catch(e){}
 }
 
+// Handles the case where the email template links straight to our own page with
+// ?token_hash=...&type=magiclink (recommended), instead of Supabase's own
+// /auth/v1/verify endpoint. Doing the verification ourselves avoids the common
+// "otp_expired" problem caused by email link-scanners (Outlook Safe Links etc.)
+// pre-visiting and burning the one-time verify link before the user clicks it.
+async function handleEmailLinkVerification(){
+  if(!sb) return false;
+  const params = new URLSearchParams(window.location.search);
+  const tokenHash = params.get('token_hash');
+  const type = params.get('type');
+  if(tokenHash && type){
+    const msgEl = $('#logAuthMsg');
+    if(msgEl) msgEl.textContent = authText('verifying');
+    const { error } = await sb.auth.verifyOtp({ token_hash: tokenHash, type });
+    // Strip the auth params from the URL either way, so a refresh doesn't re-trigger this
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    if(error){
+      if(msgEl) msgEl.textContent = authText('linkExpired');
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+// Fallback: also catch the "otp_expired" / "access_denied" error that Supabase
+// appends as a URL hash when using its own default verify link, or when a
+// token_hash link above turns out to be expired/used.
+function checkExpiredLinkHash(){
+  if(window.location.hash.includes('error_code=otp_expired') || window.location.hash.includes('error=access_denied')){
+    const msgEl = $('#logAuthMsg');
+    if(msgEl) msgEl.textContent = authText('linkExpired');
+    window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+  }
+}
+
 async function initAuth(){
   updateAuthUI();
   if(!sb) return;
+  checkExpiredLinkHash();
+  await handleEmailLinkVerification();
   const { data:{ session } } = await sb.auth.getSession();
   currentUser = session ? session.user : null;
   updateAuthUI();
