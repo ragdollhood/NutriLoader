@@ -1318,7 +1318,8 @@ const ORGAN_IMAGES = {
   muscles:'/images/muscles.png',
   bones:'/images/bones.png',
   immune:'/images/imun.png',
-  skin:'/images/skin.png'
+  skin:'/images/skin.png',
+  blood:'/images/blood.png'
 };
 /* hand-drawn additions in the illustration's own style: brain, leg skeleton, vessels, lymph nodes & spleen */
 const BODY_ART =
@@ -1352,7 +1353,8 @@ const ORGAN_IMG_CENTER = {
   muscles:[327, 702],  // torso/limb reference point
   bones:  [271, 1157], // leg
   immune: [356, 550],  // torso
-  skin:   [356, 650]   // torso
+  skin:   [356, 650],  // torso
+  blood:  [362, 460]   // upper chest, where the drawn vessels originate
 };
 function buildBody(){
   const defs=$('#clipDefs'), layer=$('#organLayer'), hits=$('#hitLayer');
