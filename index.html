@@ -413,6 +413,10 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 /* ---------- microwave: add a ready meal from its label ---------- */
 #microwave{margin:18px 2px 10px}
 #badHabitsImg{display:block;max-width:300px;height:auto;margin:14px auto}
+#viceResetBtn{display:block;border:none;background:none;padding:0;margin:10px auto 4px;cursor:pointer;transition:transform .15s ease}
+#viceResetBtn:hover{transform:scale(1.06)}
+#viceResetBtn:active{transform:scale(.96)}
+#viceResetImg{display:block;max-width:70px;height:auto;margin:0 auto}
 .mw-tag{display:inline-block;margin:0 0 5px 12px;background:#faf3e1;border:1px solid #c7b893;border-radius:3px;
   padding:2px 11px;font-size:10.5px;font-weight:800;letter-spacing:.1em;color:#6e5c3c;
   box-shadow:0 2px 4px rgba(90,70,40,.30);transform:rotate(-1deg)}
@@ -913,6 +917,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <div id="cigBox"></div>
       <div id="secretBox"></div>
     </div>
+    <button id="viceResetBtn" type="button" aria-label=""><img src="/images/emptytrash.png" alt="" id="viceResetImg"></button>
     <div class="pantry-base"><div class="baseB"></div><div class="floorB"></div></div>
   </div>
 </section>
@@ -962,8 +967,8 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <div>
         <div id="infoCard"></div>
         <div style="display:flex;justify-content:center;margin-top:12px">
-          <button id="resetBtn" style="background:none;border:none;padding:0;cursor:pointer">
-            <img id="resetBtnImg" src="/images/clean-eng.png" alt="Clean plates" style="height:90px;display:block">
+          <button id="logBtnBottom" title="Food log" style="background:none;border:none;padding:0;cursor:pointer">
+            <img src="/images/logbook.png" alt="Food log" style="height:90px;display:block">
           </button>
         </div>
       </div>
@@ -1254,6 +1259,9 @@ const I18N = {
   secAdd:{en:'Add',sv:'L\u00e4gg till'},
   secTotal:{en:'Total: {g}',sv:'Totalt: {g}'},
   secUnit:{en:'units',sv:'enheter'},
+  viceResetAlt:{en:'Empty the trash — reset sugar, alcohol, cigarettes & secret vice totals',sv:'T\u00f6m soptunnan \u2014 nollst\u00e4ll totalerna f\u00f6r socker, alkohol, cigaretter och bara du vet'},
+  viceResetConfirm:{en:'Reset all bad-habit totals (sugar, alcohol, cigarettes, only you know) to 0?',sv:'Nollst\u00e4ll alla totaler f\u00f6r d\u00e5liga vanor (socker, alkohol, cigaretter, bara du vet) till 0?'},
+  viceResetToast:{en:'Bad-habit totals reset',sv:'Totalerna f\u00f6r d\u00e5liga vanor nollst\u00e4llda'},
   nextPlate:{en:'PLAN NEXT PLATE',sv:'PLANERA N\u00c4STA TALLRIK'},
   dayAvgLabel:{en:'Avg. daily intake',sv:'Snitt dagligt intag'},
   dayNutrLabel:{en:'NUTRIENTS THAT DAY',sv:'N\u00c4RINGS\u00c4MNEN DEN DAGEN'},
@@ -2177,8 +2185,10 @@ function renderStatic(){
   $('#langLbl').textContent=t('langLbl');
   document.getElementById('foodSearch').placeholder=t('searchPh');
   const cleanSrc = lang==='en' ? '/images/clean-eng.png' : '/images/clean-swe.png';
-  document.getElementById('resetBtnImg').src = cleanSrc;
   document.getElementById('resetBtnTopImg').src = cleanSrc;
+  const viceResetBtn = document.getElementById('viceResetBtn');
+  if(viceResetBtn) viceResetBtn.setAttribute('aria-label', t('viceResetAlt'));
+  if(viceResetBtn) viceResetBtn.title = t('viceResetAlt');
   // update next-plate label if visible
   const npLbl=document.querySelector('#nextPlatePrompt .np-lbl');
   if(npLbl) npLbl.textContent=t('nextPlate');
@@ -2194,14 +2204,24 @@ document.getElementById('langBtn').onclick=()=>{
   closeQtyPop(); closeFoodPop();
   renderStatic(); renderPantry(); buildMicrowave(); buildSugarBox(); buildAlcoholBox(); buildCigBox(); buildSecretBox(); render();
 };
-document.getElementById('resetBtn').onclick=()=>{
+function doCleanPlates(){
   saveLogSnapshot();
   items=[]; sel=null; sugarTotal=0; alcoholTotal=0; cigTotal=0; secretTotal=0;
   buildSugarBox(); buildAlcoholBox(); buildCigBox(); buildSecretBox();
   closeQtyPop(); closeFoodPop(); render();
   openLog();
+}
+document.getElementById('resetBtnTop').onclick=doCleanPlates;
+document.getElementById('logBtnBottom').addEventListener('click', ()=>{
+  saveLogSnapshot();
+  openLog();
+});
+document.getElementById('viceResetBtn').onclick=()=>{
+  if(!confirm(t('viceResetConfirm'))) return;
+  sugarTotal=0; alcoholTotal=0; cigTotal=0; secretTotal=0;
+  buildSugarBox(); buildAlcoholBox(); buildCigBox(); buildSecretBox();
+  toast(t('viceResetToast'));
 };
-document.getElementById('resetBtnTop').onclick=()=>document.getElementById('resetBtn').onclick();
 
 /* ================= FOOD LOG ================= */
 const LOG_KEY = 'nutriloader_log_v1';
