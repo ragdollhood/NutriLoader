@@ -433,6 +433,7 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 .mw-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
 .mw-row{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#3c352b}
 .mw-row span.nl{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mw-inp-wrap{display:flex;align-items:center;gap:5px;flex:0 0 auto}
 .mw-row input{width:46px;border:1px solid #cfc4ad;border-radius:5px;padding:2px 4px;font-size:11.5px;text-align:right;background:#fffef9}
 .mw-row span.un{color:#8d8270;font-size:10px;width:18px}
 .mw-more{margin-top:5px}
@@ -455,6 +456,9 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
   .mw-panel .mw-lcd{flex:1}
   .mw-panel .mw-vents{display:none}
   #mwStart{flex:1}
+  .mw-row{flex-direction:column;align-items:flex-start;gap:2px}
+  .mw-row span.nl{white-space:normal;max-width:100%}
+  .mw-inp-wrap{align-self:stretch}
 }
 
 /* ---------- sugar tally (not added to the plate) ---------- */
@@ -1253,6 +1257,8 @@ const I18N = {
   nextPlate:{en:'PLAN NEXT PLATE',sv:'PLANERA N\u00c4STA TALLRIK'},
   dayAvgLabel:{en:'Avg. daily intake',sv:'Snitt dagligt intag'},
   dayNutrLabel:{en:'NUTRIENTS THAT DAY',sv:'N\u00c4RINGS\u00c4MNEN DEN DAGEN'},
+  dayViceLabel:{en:'BAD HABITS THAT DAY',sv:'D\u00c5LIGA VANOR DEN DAGEN'},
+  dayViceEmpty:{en:'Nothing logged this day.',sv:'Inget loggat den h\u00e4r dagen.'},
   dayMealsEmpty:{en:'Nothing logged this day.',sv:'Inget loggat den h\u00e4r dagen.'}
 };
 
@@ -1851,7 +1857,7 @@ const MW_MORE=[['vitA','\u00b5g',800],['vitE','mg',12],['vitK','\u00b5g',75],['b
 let customC=0;
 function mwRows(list){
   return list.map(([k,u,v])=>`<label class="mw-row"><span class="nl">${NUTRIENTS[k][lang]}</span>
-    <input type="number" min="0" step="any" inputmode="decimal" data-nut="${k}" data-nrv="${v}"><span class="un">${u}</span></label>`).join('');
+    <span class="mw-inp-wrap"><input type="number" min="0" step="any" inputmode="decimal" data-nut="${k}" data-nrv="${v}"><span class="un">${u}</span></span></label>`).join('');
 }
 function buildMicrowave(){
   const mw=document.getElementById('microwave');
@@ -2638,32 +2644,60 @@ function buildBigDayHTML(dStr, lang2){
   const wnameCap = wname.charAt(0).toUpperCase()+wname.slice(1);
   const avg = e ? Math.round(e.avgScore||0) : 0;
 
-  const mealsWithFood = e ? MEALS.filter(m=> (e.meals||[]).find(em=>em.mealId===m.id && em.foods && em.foods.length)) : [];
-  const mealBtns = mealsWithFood.length ? mealsWithFood.map(m=>{
-    const active = selectedLogMeal===m.id ? ' active' : '';
-    return `<button class="log-meal-toggle-btn${active}" data-meal="${m.id}">
-      <span class="lmt-ic">${m.ic}</span><span class="lmt-name">${lang2==='sv'?m.sv:m.en}</span>
-    </button>`;
-  }).join('') : `<div class="log-day-info-empty">${t('dayMealsEmpty')}</div>`;
+  let bodyHTML;
+  if(logViewMode==='habits'){
+    // Bad-habits mode: show every habit's logged amount for this day directly,
+    // no click needed. Bar length is relative to the highest amount ever logged
+    // for that habit (same relative scale used by the week chart).
+    const allEntries = loadLog();
+    const hasAny = e && VICE_DEFS.some(vd=>e[vd.key]);
+    const viceRowsHTML = VICE_DEFS.map(vd=>{
+      const val = e ? Math.round((e[vd.key]||0)*10)/10 : 0;
+      const unit = vd.unitKey ? t(vd.unitKey) : (vd.unitLit||'');
+      const max = Math.max(1, ...allEntries.map(en=>en[vd.key]||0));
+      const pct = Math.min(100, Math.round((val/max)*100));
+      return `<div class="log-nbar">
+        <span class="ln-name">${vd.em} ${t(vd.titleKey)}</span>
+        <div class="ln-track"><div class="ln-fill" style="width:${pct}%;background:${vd.color}"></div></div>
+        <span class="ln-pct">${val}${unit?(' '+unit):''}</span>
+      </div>`;
+    }).join('');
+    bodyHTML = hasAny
+      ? `<div class="log-nutr-label">${t('dayViceLabel')}</div><div class="log-nutr-grid">${viceRowsHTML}</div>`
+      : `<div class="log-day-info-empty" style="padding:14px 18px">${t('dayViceEmpty')}</div>`;
+  } else {
+    const mealsWithFood = e ? MEALS.filter(m=> (e.meals||[]).find(em=>em.mealId===m.id && em.foods && em.foods.length)) : [];
+    const mealBtns = mealsWithFood.length ? mealsWithFood.map(m=>{
+      const active = selectedLogMeal===m.id ? ' active' : '';
+      return `<button class="log-meal-toggle-btn${active}" data-meal="${m.id}">
+        <span class="lmt-ic">${m.ic}</span><span class="lmt-name">${lang2==='sv'?m.sv:m.en}</span>
+      </button>`;
+    }).join('') : `<div class="log-day-info-empty">${t('dayMealsEmpty')}</div>`;
 
-  let foodsHTML = '';
-  if(selectedLogMeal && e){
-    const meal = (e.meals||[]).find(mm=>mm.mealId===selectedLogMeal);
-    const foods = meal ? meal.foods : [];
-    foodsHTML = `<div class="log-meal-foods">${foods.map(f=>
-      `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}<button class="lft-del" data-date="${dStr}" data-meal="${selectedLogMeal}" data-food="${f.id}" title="${lang2==='sv'?'Ta bort':'Remove'}">🗑️</button></span>`
-    ).join('')}</div>`;
+    let foodsHTML = '';
+    if(selectedLogMeal && e){
+      const meal = (e.meals||[]).find(mm=>mm.mealId===selectedLogMeal);
+      const foods = meal ? meal.foods : [];
+      foodsHTML = `<div class="log-meal-foods">${foods.map(f=>
+        `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}<button class="lft-del" data-date="${dStr}" data-meal="${selectedLogMeal}" data-food="${f.id}" title="${lang2==='sv'?'Ta bort':'Remove'}">🗑️</button></span>`
+      ).join('')}</div>`;
+    }
+
+    const nutKeys = Object.keys(NUTRIENTS);
+    const nutrHTML = nutKeys.map(k=>{
+      const val = e ? Math.min(100, Math.round((e.nutrients&&e.nutrients[k])||0)) : 0;
+      return `<div class="log-nbar">
+        <span class="ln-name">${NUTRIENTS[k][lang2]}</span>
+        <div class="ln-track"><div class="ln-fill${val>=100?' full':''}" style="width:${val}%"></div></div>
+        <span class="ln-pct">${val}%</span>
+      </div>`;
+    }).join('');
+
+    bodyHTML = `<div class="log-meals">${mealBtns}</div>
+    ${foodsHTML}
+    <div class="log-nutr-label">${t('dayNutrLabel')}</div>
+    <div class="log-nutr-grid">${nutrHTML}</div>`;
   }
-
-  const nutKeys = Object.keys(NUTRIENTS);
-  const nutrHTML = nutKeys.map(k=>{
-    const val = e ? Math.min(100, Math.round((e.nutrients&&e.nutrients[k])||0)) : 0;
-    return `<div class="log-nbar">
-      <span class="ln-name">${NUTRIENTS[k][lang2]}</span>
-      <div class="ln-track"><div class="ln-fill${val>=100?' full':''}" style="width:${val}%"></div></div>
-      <span class="ln-pct">${val}%</span>
-    </div>`;
-  }).join('');
 
   return `<div class="log-day">
     <div class="log-day-head">
@@ -2675,10 +2709,7 @@ function buildBigDayHTML(dStr, lang2){
       <button class="log-day-nav-btn log-day-nav-next" data-nav="1" aria-label="${lang2==='sv'?'Nästa dag':'Next day'}">›</button>
       <button class="log-day-info-close log-bigday-close" aria-label="Close">✕</button>
     </div>
-    <div class="log-meals">${mealBtns}</div>
-    ${foodsHTML}
-    <div class="log-nutr-label">${t('dayNutrLabel')}</div>
-    <div class="log-nutr-grid">${nutrHTML}</div>
+    ${bodyHTML}
   </div>`;
 }
 
@@ -2796,17 +2827,11 @@ function renderLog(){
     const btnGridHTML = days.map(dStr=>{
       const e = byDate[dStr];
       let btns = '';
-      if(e){
-        if(logViewMode==='nutrition'){
-          (e.meals||[]).forEach(m=>{
-            const meal = MEALS.find(mm=>mm.id===m.mealId);
-            if(meal) btns += `<button class="log-icon-btn" data-date="${dStr}" data-type="meal" data-key="${meal.id}" title="${lang2==='sv'?meal.sv:meal.en}">${meal.ic}</button>`;
-          });
-        } else {
-          VICE_DEFS.forEach(vd=>{
-            if(e[vd.key]) btns += `<button class="log-icon-btn vice-btn" style="background:${vd.color}" data-date="${dStr}" data-type="vice" data-key="${vd.key}" title="${t(vd.titleKey)}">${vd.em}</button>`;
-          });
-        }
+      if(e && logViewMode==='nutrition'){
+        (e.meals||[]).forEach(m=>{
+          const meal = MEALS.find(mm=>mm.id===m.mealId);
+          if(meal) btns += `<button class="log-icon-btn" data-date="${dStr}" data-type="meal" data-key="${meal.id}" title="${lang2==='sv'?meal.sv:meal.en}">${meal.ic}</button>`;
+        });
       }
       const sel = dStr===selectedLogDay ? ' selected' : '';
       return `<div class="log-day-col${sel}" data-date="${dStr}">
