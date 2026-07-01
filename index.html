@@ -169,13 +169,13 @@ g.organ .hoverpart{opacity:0;transform:scale(1);transition:opacity .16s ease, tr
   transform-box:fill-box;transform-origin:center;pointer-events:none;
   fill:rgba(166,79,71,.17);stroke:#a8332e;stroke-width:2.5;mix-blend-mode:multiply}
 g.organ .hoverpart.strokehov{fill:none;stroke-width:10;stroke:rgba(168,35,30,.55)}
-g.organ.hov .hoverpart, g.organ.hovsel .hoverpart{opacity:1;transform:scale(1.28)}
-g.organ.hovsel .hoverpart{transform:scale(1.34)}
+g.organ.hov .hoverpart, g.organ.hovsel .hoverpart{opacity:1;transform:scale(1.6)}
+g.organ.hovsel .hoverpart{transform:scale(1.7)}
 g.organ .hoverimg{opacity:0;transform:scale(1);transition:opacity .16s ease, transform .22s ease;
   transform-box:fill-box;transform-origin:center;pointer-events:none;
   filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
-g.organ.hov .hoverimg, g.organ.hovsel .hoverimg{opacity:1;transform:scale(1.28)}
-g.organ.hovsel .hoverimg{transform:scale(1.34)}
+g.organ.hov .hoverimg, g.organ.hovsel .hoverimg{opacity:1;transform:scale(1.6)}
+g.organ.hovsel .hoverimg{transform:scale(1.7)}
 #organLabel{position:fixed;z-index:70;pointer-events:none;display:none;
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
@@ -936,7 +936,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <div id="bodyFlex">
       <div class="organBars" id="obarsL"></div>
       <div id="bodyWrap">
-        <img id="bodyImg" src="/images/body.jpg" alt="Human body">
+        <img id="bodyImg" src="/images/body.png" alt="Human body">
         <svg id="bodySvg" viewBox="0 0 724 1536" role="img" aria-label="Human body overlay">
           <defs id="clipDefs">
             <filter id="skinBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="16"/></filter>
@@ -1409,7 +1409,12 @@ function buildBody(){
   }
   hits.addEventListener('click',e=>{
     const g=e.target.closest('.organ-hit'); if(!g) return;
-    sel = (sel&&sel.type==='organ'&&sel.key===g.dataset.organ)?null:{type:'organ',key:g.dataset.organ};
+    const id=g.dataset.organ;
+    sel = (sel&&sel.type==='organ'&&sel.key===id)?null:{type:'organ',key:id};
+    if(sel && sel.type==='organ' && sel.key===id){
+      const grp=organGroup(id);
+      if(grp) grp.parentNode.appendChild(grp); // bring to front on tap too
+    }
     render();
   });
 }
@@ -1423,7 +1428,9 @@ function wireHit(g){
   const id=g.dataset.organ;
   g.addEventListener('pointerenter',ev=>{
     if(ev.pointerType==='touch') return;        // touch handled via selection pin
-    organGroup(id).classList.add('hov');
+    const grp=organGroup(id);
+    grp.classList.add('hov');
+    grp.parentNode.appendChild(grp); // bring to front: paints above all other organ images
     if(sel && sel.type==='organ' && sel.key===id) return;
     organLabel.textContent=labelText(id);
     organLabel.style.display='block';
