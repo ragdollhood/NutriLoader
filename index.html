@@ -2457,11 +2457,16 @@ async function initAuth(){
   updateAuthUI();
   if(!sb) return;
   checkExpiredLinkHash();
-  await handleEmailLinkVerification();
+  const justVerified = await handleEmailLinkVerification();
   const { data:{ session } } = await sb.auth.getSession();
   currentUser = session ? session.user : null;
   updateAuthUI();
-  if(currentUser) pullAndMergeCloudLog();
+  if(currentUser){
+    await pullAndMergeCloudLog();
+    // Just arrived via the email link and successfully signed in: skip the
+    // landing page and take them straight to their log book.
+    if(justVerified) openLog();
+  }
   sb.auth.onAuthStateChange((event, session)=>{
     currentUser = session ? session.user : null;
     updateAuthUI();
