@@ -183,8 +183,8 @@ g.organ[data-organ="brain"] .hoverimg{opacity:1}
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
 #organPin{position:absolute;z-index:6;display:none;
-  background:#1b1712;border:1px solid #1b1712;border-radius:3px;padding:5px 15px;
-  font-size:13px;font-weight:800;letter-spacing:.1em;color:#fff;text-transform:uppercase;
+  background:#1b1712;border:1px solid #1b1712;border-radius:3px;padding:2px 11px;
+  font-size:10.5px;font-weight:800;letter-spacing:.1em;color:#fff;text-transform:uppercase;
   box-shadow:0 2px 4px rgba(90,70,40,.30);transform:rotate(-1deg);white-space:nowrap}
 
 /* qty badge + popovers */
@@ -437,6 +437,7 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
   .obar .otrack{flex:1 1 auto;min-height:0;width:9px}
   .obar .oem{font-size:13px}
   .obar .opc{font-size:7.5px}
+  #organPin{font-size:11.5px;padding:4px 13px}
 }
 
 /* ---------- microwave: add a ready meal from its label ---------- */
@@ -1808,28 +1809,9 @@ function renderHitTitles(){
 function positionOrganPin(){
   const pin=document.getElementById('organPin');
   if(pin.style.display==='none' || !sel || sel.type!=='organ') return;
-  const flex=document.getElementById('bodyFlex');
-  const isMobile=window.matchMedia('(max-width:680px)').matches;
-  if(isMobile){
-    pin.style.right='auto'; pin.style.top='auto';
-    pin.style.left='6px'; pin.style.bottom='6px';
-    pin.style.transform='rotate(-1deg)';
-    return;
-  }
-  const bar=flex.querySelector(`.obar[data-organ="${sel.key}"]`);
-  if(bar){
-    const barRect=bar.getBoundingClientRect();
-    const flexRect=flex.getBoundingClientRect();
-    const centerX=barRect.left-flexRect.left+barRect.width/2;
-    const topY=Math.max(0, barRect.top-flexRect.top-pin.offsetHeight-6);
-    pin.style.right='auto'; pin.style.bottom='auto';
-    pin.style.left=centerX+'px'; pin.style.top=topY+'px';
-    pin.style.transform='translateX(-50%) rotate(-1deg)';
-  }else{
-    pin.style.right='auto'; pin.style.top='auto';
-    pin.style.left='50%'; pin.style.bottom='0';
-    pin.style.transform='translateX(-50%) rotate(-1deg)';
-  }
+  pin.style.right='auto'; pin.style.top='auto';
+  pin.style.left='6px'; pin.style.bottom='6px';
+  pin.style.transform='rotate(-1deg)';
 }
 window.addEventListener('resize',()=>{ if(sel&&sel.type==='organ') positionOrganPin(); });
 
