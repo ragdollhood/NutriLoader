@@ -828,7 +828,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   #logSideBar{gap:5px}
   .log-mode-btn{font-size:8.5px;padding:5px 9px}
   #logWeeks{gap:18px}
-  .log-icon-btn{width:24px;height:24px;font-size:12px}
+  .log-icon-btn{width:24px;height:24px;font-size:12px;pointer-events:none;cursor:default}
 }
 
 
@@ -2534,10 +2534,10 @@ function mondayOf(dateStr){
 function fmtShortDate(d){ return `${d.getDate()}/${d.getMonth()+1}`; }
 
 document.getElementById('modeNutritionBtn').addEventListener('click', ()=>{
-  logViewMode='nutrition'; renderLog();
+  logViewMode='nutrition'; openLogInfoPopup=null; renderLog();
 });
 document.getElementById('modeHabitsBtn').addEventListener('click', ()=>{
-  logViewMode='habits'; renderLog();
+  logViewMode='habits'; openLogInfoPopup=null; renderLog();
 });
 
 function buildWeekChartSvg(days, byDate, selectedDate){
@@ -2831,6 +2831,11 @@ function renderLog(){
         (e.meals||[]).forEach(m=>{
           const meal = MEALS.find(mm=>mm.id===m.mealId);
           if(meal) btns += `<button class="log-icon-btn" data-date="${dStr}" data-type="meal" data-key="${meal.id}" title="${lang2==='sv'?meal.sv:meal.en}">${meal.ic}</button>`;
+        });
+      }
+      if(e && logViewMode==='habits'){
+        VICE_DEFS.forEach(vd=>{
+          if(e[vd.key]) btns += `<button class="log-icon-btn vice-btn" data-date="${dStr}" data-type="vice" data-key="${vd.key}" style="background:${vd.color}" title="${t(vd.titleKey)}">${vd.em}</button>`;
         });
       }
       const sel = dStr===selectedLogDay ? ' selected' : '';
