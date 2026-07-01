@@ -171,13 +171,11 @@ g.organ .hoverpart{opacity:0;transform:scale(1);transition:opacity .16s ease, tr
 g.organ .hoverpart.strokehov{fill:none;stroke-width:10;stroke:rgba(168,35,30,.55)}
 g.organ.hov .hoverpart, g.organ.hovsel .hoverpart{opacity:1;transform:scale(1.6)}
 g.organ.hovsel .hoverpart{transform:scale(1.7)}
-/* organ overlay images: identical box (position + size) as #bodyImg, so brain.png / bones.png / etc.
-   always line up with body.png with no separate coordinates needed */
-.organImgOverlay{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  pointer-events:none;opacity:0;transition:opacity .16s ease, transform .22s ease;
-  transform-origin:center;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
-.organImgOverlay.hov, .organImgOverlay.hovsel{opacity:1;transform:scale(1.6)}
-.organImgOverlay.hovsel{transform:scale(1.7)}
+g.organ .hoverimg{opacity:0;transform:scale(1);transition:opacity .16s ease, transform .22s ease;
+  transform-box:fill-box;transform-origin:center;pointer-events:none;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+g.organ.hov .hoverimg, g.organ.hovsel .hoverimg{opacity:1;transform:scale(1.6)}
+g.organ.hovsel .hoverimg{transform:scale(1.7)}
 #organLabel{position:fixed;z-index:70;pointer-events:none;display:none;
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
@@ -1309,7 +1307,8 @@ const HIT_SHAPES = {
   eyes:'<rect x="284" y="110" width="144" height="44" rx="22"/>',
   immune:'<circle cx="300" cy="252" r="17"/><circle cx="412" cy="252" r="17"/><circle cx="216" cy="330" r="17"/><circle cx="496" cy="330" r="17"/><circle cx="292" cy="866" r="17"/><circle cx="422" cy="866" r="17"/><ellipse cx="478" cy="576" rx="27" ry="44"/>'
 };
-/* organ hover images — full-canvas overlays, same size & position as body.png (see .organImgOverlay) */
+/* organ hover images — shown enlarged at a fixed, uniform size (ORGAN_IMG_SIZE) centered on
+   each organ's anatomical position (ORGAN_IMG_CENTER, defined near buildBody) */
 const ORGAN_IMAGES = {
   heart:'/images/heart.png',
   lungs:'/images/lungs.png',
@@ -1341,11 +1340,23 @@ const foodById=id=>FOODS.find(f=>f.id===id);
 const SVGNS='http://www.w3.org/2000/svg';
 
 /* ================= BODY BUILD ================= */
+/* Uniform outer size for every organ hover image (same "yttermått" for all), so brain.png,
+   lungs.png, bones.png etc. all render at the same footprint — only their on-body anchor point differs. */
+const ORGAN_IMG_SIZE = 180;
+const ORGAN_IMG_CENTER = {
+  brain:  [360, 91],   // top of the head
+  eyes:   [356, 132],  // face
+  lungs:  [355, 409],  // chest, centered
+  heart:  [364, 425],  // chest
+  gut:    [358, 683],  // abdomen
+  muscles:[327, 702],  // torso/limb reference point
+  bones:  [271, 1157], // leg
+  immune: [356, 550],  // torso
+  skin:   [356, 650]   // torso
+};
 function buildBody(){
   const defs=$('#clipDefs'), layer=$('#organLayer'), hits=$('#hitLayer');
   $('#artLayer').innerHTML=BODY_ART;
-  const wrap=$('#bodyWrap'), svgEl=$('#bodySvg');
-  wrap.querySelectorAll('.organImgOverlay').forEach(n=>n.remove()); // clear if buildBody ever re-runs
   for(const [id,o] of Object.entries(ORGAN_SHAPES)){
     const g=document.createElementNS(SVGNS,'g');
     g.setAttribute('class','organ'); g.dataset.organ=id;
@@ -1370,25 +1381,25 @@ function buildBody(){
         '<g class="ghostpart" '+ghost+' style="mix-blend-mode:multiply;opacity:0">'+o.s+'</g>'+
         '<g class="fillpart" '+top+' style="mix-blend-mode:multiply;opacity:0">'+o.s+'</g>';
     }
-    // hover-enlarge fallback (abstract shape) — only used for organs with no dedicated PNG (e.g. blood)
-    if(!ORGAN_IMAGES[id]){
-      const hov=document.createElementNS(SVGNS,'g');
+    // hover-enlarge layer (shown on mouse-over / selection)
+    const hov=document.createElementNS(SVGNS,'g');
+    if(ORGAN_IMAGES[id]){
+      hov.setAttribute('class','hoverimg');
+      const [cx,cy]=ORGAN_IMG_CENTER[id]||[362,768];
+      const s=ORGAN_IMG_SIZE, ix=cx-s/2, iy=cy-s/2;
+      const img=document.createElementNS(SVGNS,'image');
+      img.setAttributeNS('http://www.w3.org/1999/xlink','href',ORGAN_IMAGES[id]);
+      img.setAttribute('href',ORGAN_IMAGES[id]);
+      img.setAttribute('x',ix); img.setAttribute('y',iy);
+      img.setAttribute('width',s); img.setAttribute('height',s);
+      img.setAttribute('preserveAspectRatio','xMidYMid meet');
+      hov.appendChild(img);
+    }else{
       hov.setAttribute('class','hoverpart'+(o.stroke?' strokehov':''));
       hov.innerHTML=o.s||'';
-      g.appendChild(hov);
     }
+    g.appendChild(hov);
     layer.appendChild(g);
-  }
-  // organ overlay images: same box (position + size) as body.png, stacked directly above it,
-  // below the interactive/decorative svg layer. No per-organ coordinates needed — the PNGs
-  // are already framed like body.png, so identical sizing guarantees alignment.
-  for(const [id,src] of Object.entries(ORGAN_IMAGES)){
-    const img=document.createElement('img');
-    img.className='organImgOverlay';
-    img.dataset.organ=id;
-    img.src=src;
-    img.alt='';
-    wrap.insertBefore(img, svgEl);
   }
   // hit areas — skin first (underneath), then organs
   const skinHit=document.createElementNS(SVGNS,'g');
@@ -1408,15 +1419,12 @@ function buildBody(){
     if(sel && sel.type==='organ' && sel.key===id){
       const grp=organGroup(id);
       if(grp) grp.parentNode.appendChild(grp); // bring to front on tap too
-      const oimg=organImgEl(id);
-      if(oimg) oimg.parentNode.insertBefore(oimg, svgEl); // bring image to front too
     }
     render();
   });
 }
 const organLabel=document.getElementById('organLabel');
 function organGroup(id){return document.querySelector(`#organLayer g.organ[data-organ="${id}"]`)}
-function organImgEl(id){return document.querySelector(`.organImgOverlay[data-organ="${id}"]`)}
 function labelText(id){
   const e=Math.round(organPct(totals(true),id));
   return ORGANS[id][lang]+' · '+e+'%';
@@ -1426,9 +1434,7 @@ function wireHit(g){
   g.addEventListener('pointerenter',ev=>{
     if(ev.pointerType==='touch') return;        // touch handled via selection pin
     const grp=organGroup(id);
-    if(grp){ grp.classList.add('hov'); grp.parentNode.appendChild(grp); }
-    const oimg=organImgEl(id);
-    if(oimg){ oimg.classList.add('hov'); oimg.parentNode.insertBefore(oimg, $('#bodySvg')); } // bring to front
+    if(grp){ grp.classList.add('hov'); grp.parentNode.appendChild(grp); } // bring to front
     if(sel && sel.type==='organ' && sel.key===id) return;
     organLabel.textContent=labelText(id);
     organLabel.style.display='block';
@@ -1441,7 +1447,6 @@ function wireHit(g){
   });
   g.addEventListener('pointerleave',ev=>{
     const grp=organGroup(id); if(grp) grp.classList.remove('hov');
-    const oimg=organImgEl(id); if(oimg) oimg.classList.remove('hov');
     organLabel.style.display='none';
   });
 }
@@ -1573,8 +1578,6 @@ function renderBody(eT,pT){
     g.classList.toggle('sel', !!(sel&&sel.type==='organ'&&sel.key===id));
     g.classList.toggle('hovsel', !!(sel&&sel.type==='organ'&&sel.key===id));
     g.classList.toggle('pulse', !!(sel&&sel.type==='nutrient'&&NUTRIENTS[sel.key].organs.includes(id)));
-    const oimg=organImgEl(id);
-    if(oimg) oimg.classList.toggle('hovsel', !!(sel&&sel.type==='organ'&&sel.key===id));
   }
 }
 
