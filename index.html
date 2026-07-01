@@ -666,9 +666,13 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-meal-foods{display:flex;flex-wrap:wrap;gap:5px;padding:0 18px 16px}
 .log-food-tag{
   background:var(--panel-deep);border:1px solid var(--line);border-radius:999px;
-  padding:3px 10px;font-size:12px;color:var(--ink);display:flex;align-items:center;gap:4px}
+  padding:3px 6px 3px 10px;font-size:12px;color:var(--ink);display:flex;align-items:center;gap:4px}
 .log-food-tag.eaten{background:#edf3e4;border-color:#b5cfa0;color:#4a6a37}
 .log-food-tag .lft-em{font-size:14px}
+.lft-del{
+  border:none;background:none;padding:1px 2px;margin-left:1px;line-height:1;
+  font-size:11px;color:var(--ink-soft);opacity:.55;border-radius:6px;cursor:pointer}
+.lft-del:hover{opacity:1;color:#a4392f;background:rgba(164,57,47,.1)}
 .log-nutr-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
   gap:6px;padding:0 18px 16px}
@@ -692,10 +696,28 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 #logAuthSendBtn:hover,#logAuthSignOutBtn:hover{background:var(--rose-soft)}
 #logAuthSendBtn:disabled{opacity:.55;cursor:default}
 .logauth-msg{margin-top:6px;font-size:11.5px;color:var(--ink-soft);min-height:14px}
+.logauth-sender-note{margin-top:4px;font-size:10.5px;color:var(--ink-soft);opacity:.85;line-height:1.4}
+.logauth-sender-note b{color:var(--ink)}
 @media (max-width:680px){
   .logauth-row{flex-direction:column;align-items:stretch}
   #logAuthEmail{width:100%}
 }
+
+#logStabilityWarning{
+  position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
+  background:rgba(60,48,32,.5);backdrop-filter:blur(2px);border-radius:14px;padding:16px}
+#logStabilityWarning.show{display:flex}
+.lsw-box{
+  background:#fffdf8;border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 14px 36px rgba(50,35,20,.28);padding:20px 22px;max-width:400px;text-align:center}
+.lsw-ic{font-size:28px;margin-bottom:6px}
+.lsw-free{color:var(--good);font-size:16px;font-weight:800;letter-spacing:.02em;vertical-align:middle}
+.lsw-box h4{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;letter-spacing:.03em;line-height:1.3;color:var(--rose-deep);margin-bottom:6px}
+.lsw-box p{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:14px}
+#lswDismiss{
+  border:1px solid var(--rose-soft);background:#fbeee9;color:var(--rose-deep);
+  border-radius:999px;padding:7px 18px;font-size:12.5px;font-weight:700;letter-spacing:.03em}
+#lswDismiss:hover{background:var(--rose-soft)}
 
 #logTableWrap{display:flex;flex-direction:column;gap:14px}
 #logSideBar{
@@ -982,8 +1004,17 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
         <button id="logAuthSignOutBtn">Sign out</button>
       </div>
       <div id="logAuthMsg" class="logauth-msg"></div>
+      <div id="logAuthSenderNote" class="logauth-sender-note"></div>
     </div>
-    <div id="logTableWrap">
+    <div id="logTableWrap" style="position:relative">
+      <div id="logStabilityWarning">
+        <div class="lsw-box">
+          <div class="lsw-ic">✅ <span class="lsw-free">IT'S FREE!</span> 👆</div>
+          <h4 id="lswTitle"></h4>
+          <p id="lswBody"></p>
+          <button id="lswDismiss"></button>
+        </div>
+      </div>
       <div id="logSideBar">
         <button id="modeNutritionBtn" class="log-mode-btn">NUTRITION GRAPH</button>
         <button id="modeHabitsBtn" class="log-mode-btn">BAD HABITS GRAPH</button>
@@ -2271,6 +2302,7 @@ function openLog(){
   selectedLogDay = dateStrOfToday();
   selectedLogMeal = null;
   renderLog();
+  updateStabilityWarning();
 }
 function closeLog(){
   document.getElementById('logModal').classList.remove('open');
@@ -2301,7 +2333,13 @@ const AUTH_STR = {
   invalidEmail:{en:'Enter a valid email first.', sv:'Skriv in en giltig e-postadress.'},
   loggedInAs:{en:'Logged in as', sv:'Inloggad som'},
   signOut:{en:'Sign out', sv:'Logga ut'},
-  syncedDown:{en:'Your saved log was synced from the cloud.', sv:'Din sparade logg synkades från molnet.'}
+  syncedDown:{en:'Your saved log was synced from the cloud.', sv:'Din sparade logg synkades från molnet.'},
+  senderNote:{en:'The link will arrive in an email from <b>Supabase</b> (your login provider) — check spam/junk if it doesn\u2019t show up.',
+              sv:'L\u00e4nken kommer i ett mejl fr\u00e5n <b>Supabase</b> (din inloggningsleverant\u00f6r) — kolla skr\u00e4pposten om du inte ser det.'},
+  lswTitle:{en:'LOG IN ABOVE TO SAVE YOUR PROGRESS', sv:'LOGGA IN OVAN F\u00d6R ATT SPARA DITT FRAMSTEG'},
+  lswBody:{en:'Right now your log is only saved on this device and browser. It won\u2019t follow you to another phone, computer, or browser, and it can disappear if you clear your browsing data. Sign in with the email link above for a stable, synced log.',
+           sv:'Just nu sparas din logg bara p\u00e5 den h\u00e4r enheten och webbl\u00e4saren. Den f\u00f6ljer inte med till en annan telefon, dator eller webbl\u00e4sare, och kan f\u00f6rsvinna om du rensar webbl\u00e4sardata. Logga in med e-postl\u00e4nken ovan f\u00f6r en stabil, synkad logg.'},
+  lswDismiss:{en:'Got it, continue', sv:'Ok, forts\u00e4tt'},
 };
 function authText(key){
   const lang2 = typeof lang!=='undefined'?lang:'en';
@@ -2316,13 +2354,33 @@ function updateAuthUI(){
   $('#logAuthSendBtn').textContent = authText('send');
   $('#logAuthSignOutBtn').textContent = authText('signOut');
   $('#logAuthLoggedInAs').textContent = authText('loggedInAs');
+  $('#logAuthSenderNote').innerHTML = authText('senderNote');
   if(currentUser){
     outBox.style.display='none'; inBox.style.display='flex';
     $('#logAuthEmailLabel').textContent = currentUser.email||'';
   } else {
     outBox.style.display='flex'; inBox.style.display='none';
   }
+  updateStabilityWarning();
 }
+
+// Sign-in stability notice: shown over the log data whenever the visitor
+// hasn't authenticated, so they understand the log is local-only / not synced.
+const LSW_DISMISS_KEY = 'nutriloader_lsw_dismissed';
+function updateStabilityWarning(){
+  const box = document.getElementById('logStabilityWarning');
+  if(!box) return;
+  document.getElementById('lswTitle').textContent = authText('lswTitle');
+  document.getElementById('lswBody').textContent = authText('lswBody');
+  document.getElementById('lswDismiss').textContent = authText('lswDismiss');
+  let dismissed = false;
+  try{ dismissed = sessionStorage.getItem(LSW_DISMISS_KEY)==='1'; }catch(e){}
+  box.classList.toggle('show', !currentUser && !dismissed);
+}
+document.getElementById('lswDismiss').addEventListener('click', ()=>{
+  try{ sessionStorage.setItem(LSW_DISMISS_KEY,'1'); }catch(e){}
+  document.getElementById('logStabilityWarning').classList.remove('show');
+});
 
 // Push the whole local log up to the cloud (small dataset, simplest reliable approach)
 async function pushLogToCloud(log){
@@ -2404,6 +2462,7 @@ const WEEKDAY_NAMES = {
 let logViewMode = 'nutrition'; // 'nutrition' | 'habits'
 let selectedLogDay = dateStrOfToday(); // date string of the currently expanded big day panel — defaults to today
 let selectedLogMeal = null; // meal id currently expanded inside the big day panel
+let openLogInfoPopup = null; // {dStr,type,key} of the small per-icon popup, if one is open
 
 function pad2(n){ return String(n).padStart(2,'0'); }
 function dateStrOf(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -2504,7 +2563,7 @@ function buildDayInfoHTML(dStr, type, key, lang2){
     const meal = e && e.meals.find(mm=>mm.mealId===key);
     const foods = meal ? meal.foods : [];
     const foodsHTML = foods.length ? foods.map(f=>
-      `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}</span>`
+      `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}<button class="lft-del" data-date="${dStr}" data-meal="${key}" data-food="${f.id}" title="${lang2==='sv'?'Ta bort':'Remove'}">🗑️</button></span>`
     ).join('') : `<div class="log-day-info-empty">${lang2==='sv'?'Inget loggat.':'Nothing logged.'}</div>`;
     return `<button class="log-day-info-close" aria-label="Close">✕</button>
       <div class="log-day-info-title">${m.ic} ${mealName} · ${dStr}</div>
@@ -2540,7 +2599,7 @@ function buildBigDayHTML(dStr, lang2){
     const meal = (e.meals||[]).find(mm=>mm.mealId===selectedLogMeal);
     const foods = meal ? meal.foods : [];
     foodsHTML = `<div class="log-meal-foods">${foods.map(f=>
-      `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}</span>`
+      `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}<button class="lft-del" data-date="${dStr}" data-meal="${selectedLogMeal}" data-food="${f.id}" title="${lang2==='sv'?'Ta bort':'Remove'}">🗑️</button></span>`
     ).join('')}</div>`;
   }
 
@@ -2569,6 +2628,40 @@ function buildBigDayHTML(dStr, lang2){
     <div class="log-nutr-label">${t('dayNutrLabel')}</div>
     <div class="log-nutr-grid">${nutrHTML}</div>
   </div>`;
+}
+
+function recalcEntryNutrition(e){
+  const nutKeys = Object.keys(NUTRIENTS);
+  const T={};
+  (e.meals||[]).forEach(m=>{
+    (m.foods||[]).forEach(f=>{
+      if(!f.eaten) return;
+      const q=f.qty||1;
+      for(const [k,v] of Object.entries(f.n||{})) T[k]=(T[k]||0)+v*q;
+    });
+  });
+  e.nutrients = {};
+  nutKeys.forEach(k=>{ e.nutrients[k] = Math.min(100, Math.round(T[k]||0)); });
+  e.avgScore = nutKeys.length ? Math.round(nutKeys.reduce((a,k)=>a+(e.nutrients[k]||0),0)/nutKeys.length) : 0;
+}
+function deleteLoggedFood(dStr, mealId, foodId){
+  const log = loadLog();
+  const e = log.find(en=>en.date===dStr);
+  if(!e) return;
+  const meal = (e.meals||[]).find(m=>m.mealId===mealId);
+  if(!meal) return;
+  const f = meal.foods.find(ff=>ff.id===foodId);
+  meal.foods = meal.foods.filter(ff=>ff.id!==foodId);
+  if(!meal.foods.length){
+    e.meals = e.meals.filter(m=>m.mealId!==mealId);
+    if(selectedLogMeal===mealId) selectedLogMeal = null;
+    if(openLogInfoPopup && openLogInfoPopup.type==='meal' && openLogInfoPopup.key===mealId && openLogInfoPopup.dStr===dStr) openLogInfoPopup = null;
+  }
+  recalcEntryNutrition(e);
+  saveLog(log);
+  const lang2 = typeof lang !== 'undefined' ? lang : 'en';
+  if(f) toast((lang2==='sv'?'Togs bort: ':'Removed: ')+f.em+' '+(f[lang2]||f.en||f.id));
+  renderLog();
 }
 
 function renderLog(){
@@ -2695,15 +2788,35 @@ function renderLog(){
       const isOpenSame = infoEl.style.display==='block' && infoEl.dataset.type===type && infoEl.dataset.key===key;
       // close any other open info boxes
       weeksEl.querySelectorAll('.log-day-info').forEach(box=>{ box.style.display='none'; });
-      if(isOpenSame) return;
+      if(isOpenSame){ openLogInfoPopup=null; return; }
+      infoEl.dataset.type = type; infoEl.dataset.key = key;
+      infoEl.innerHTML = buildDayInfoHTML(dStr, type, key, lang2);
+      infoEl.style.display='block';
+      openLogInfoPopup = {dStr, type, key};
+      infoEl.querySelector('.log-day-info-close').addEventListener('click', ()=>{
+        infoEl.style.display='none';
+        openLogInfoPopup = null;
+      });
+    });
+  });
+
+  // Restore a small info popup that was open before this re-render (e.g. after deleting a food inside it)
+  if(openLogInfoPopup){
+    const {dStr, type, key} = openLogInfoPopup;
+    const col = weeksEl.querySelector(`.log-day-col[data-date="${dStr}"]`);
+    const infoEl = col && col.querySelector('.log-day-info');
+    if(infoEl){
       infoEl.dataset.type = type; infoEl.dataset.key = key;
       infoEl.innerHTML = buildDayInfoHTML(dStr, type, key, lang2);
       infoEl.style.display='block';
       infoEl.querySelector('.log-day-info-close').addEventListener('click', ()=>{
         infoEl.style.display='none';
+        openLogInfoPopup = null;
       });
-    });
-  });
+    } else {
+      openLogInfoPopup = null;
+    }
+  }
 
   // Open/close the big day panel from the weekday header or the chart column
   function toggleBigDay(dStr){
@@ -2766,6 +2879,13 @@ function renderLog(){
     }, {passive:true});
   }
 }
+
+document.getElementById('logWeeks').addEventListener('click', e=>{
+  const btn = e.target.closest('.lft-del');
+  if(!btn) return;
+  e.stopPropagation();
+  deleteLoggedFood(btn.dataset.date, btn.dataset.meal, btn.dataset.food);
+});
 
 // Update log button label in current language
 function updateLogBtnLabel(){
