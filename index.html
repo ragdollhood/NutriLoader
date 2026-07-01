@@ -2484,8 +2484,13 @@ document.getElementById('logAuthSendBtn').addEventListener('click', async ()=>{
   try{
     const cleanRedirect = window.location.origin + window.location.pathname;
     const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: cleanRedirect } });
-    msgEl.textContent = error ? authText('error') : authText('sent');
-  }catch(e){ msgEl.textContent = authText('error'); }
+    if(error){
+      console.error('signInWithOtp error:', error);
+      msgEl.textContent = authText('error') + ' (' + (error.message || error.status || 'unknown') + ')';
+    } else {
+      msgEl.textContent = authText('sent');
+    }
+  }catch(e){ console.error('signInWithOtp exception:', e); msgEl.textContent = authText('error') + ' (' + (e.message||'unknown') + ')'; }
   $('#logAuthSendBtn').disabled = false;
 });
 document.getElementById('logAuthSignOutBtn').addEventListener('click', async ()=>{
