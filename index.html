@@ -382,6 +382,10 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 #bodyInfoCard li{background:#f6f1e8;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px}
 #bodyInfoCard li.src{cursor:pointer}
 #bodyInfoCard li.src:hover{border-color:var(--rose-soft);background:#fdf3ef}
+#bodyInfoCard li.cap-full{background:#eaf3e2;border-color:#b9d2a2;color:#4a6338}
+#bodyInfoCard li.cap-full b{color:#3e5a2c}
+#bodyInfoCard .cap-check{color:var(--good);font-weight:800;margin-right:2px}
+#bodyInfoCard .cap-note{width:100%;font-size:11px;color:var(--ink-soft);font-style:italic;margin-top:2px;background:none;border:none;padding:2px 0 0}
 #bodyInfoCard .sub{color:var(--ink-soft);font-size:12.5px;margin:2px 0 6px}
 #bodyInfoCard .tip{font-size:11px;color:var(--ink-soft);margin-top:6px;font-style:italic}
 /* vertical organ-level bars beside the body */
@@ -813,7 +817,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   <h4 id="qtyTitle"></h4>
   <div class="qlabel" id="qtyLabel"></div>
   <input type="range" id="qtyRange" min="0.5" max="2" step="0.5">
-  <div class="ticks"><span>½</span><span>1</span><span>1½</span><span>2</span></div>
+  <div class="ticks" id="qtyTicks"></div>
 </div>
 <div id="foodPop"></div>
 <div id="organLabel"></div>
@@ -965,7 +969,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 <div id="logModal" role="dialog" aria-modal="true">
   <div id="logPanel">
     <button id="logClose" aria-label="Close">✕</button>
-    <h2>📋 <span id="logModalTitle">Food Log - THE LOG IS UNDER CONSTRUCTION! IT MIGHT NOT WORK YET!</span></h2>
+    <h2>📋 <span id="logModalTitle">Food Log</span></h2>
     <p class="log-header-meta" id="logModalMeta">A record of everything logged with Clean Plates.</p>
     <div id="logAuth">
       <div id="logAuthLoggedOut" class="logauth-row">
@@ -1140,7 +1144,7 @@ const MEALS = [
 
 const I18N = {
   tagline:{en:'With focus on nourishment - not calories',sv:'Med focus på näring - inte kalorier'},
-  step1:{en:'Plan your plate - THIS PAGE IS UNDER CONSTRUCTION AND DOES NOT WORK AT THE MOMENT. Thank you for your patience!',sv:'Planera din tallrik - SIDAN FUNGERAR INTE JUST NU FÖR DEN ÄR UNDER UPPBYGGNAD. Tack för ditt tålamod!'},
+  step1:{en:'Plan your plate',sv:'Planera din tallrik'},
   step1hint:{en:'Drag food from the pantry below onto the plate — the body shows a striped preview of what it would give you. (Read the disclaimer at the bottom.)',
              sv:'Dra mat från skafferiet nedan till tallriken — kroppen visar en randig förhandsvisning av vad den skulle ge dig. (Läs ansvarsfriskrivning längst ner.)'},
   step2:{en:'Feed your body',sv:'Ge kroppen näring'},
@@ -1160,6 +1164,8 @@ const I18N = {
   infoDefault:{en:'Click a body part or a nutrient to see what helps what — and which foods are generous sources.',
                sv:'Klicka på en kroppsdel eller ett näringsämne för att se vad som hjälper vad — och vilken mat som är en bra källa.'},
   supports:{en:'Cared for by',sv:'Tas om hand av'},
+  capNote:{en:'✓ = fully met for today — more won\u2019t move this organ until the others catch up.',
+           sv:'✓ = fullt tillgodosett för idag — mer p\u00e5verkar inte organet f\u00f6rr\u00e4n de andra hinner ikapp.'},
   caresFor:{en:'Cares for',sv:'Tar hand om'},
   sources:{en:'Generous sources',sv:'Generösa källor'},
   ofDay:{en:'of today\u2019s need',sv:'av dagens behov'},
@@ -1658,11 +1664,15 @@ function renderInfo(eT,pT){
     c.innerHTML=`<p class="sub" style="margin-top:6px">${t('infoDefault')}</p>`;
     const k=sel.key, e=Math.round(organPct(eT,k)), p=Math.round(organPct(pT,k));
     const ks=Object.keys(NUTRIENTS).filter(n=>NUTRIENTS[n].organs.includes(k));
+    const anyCapped = ks.some(n=>Math.round(eT[n]||0)>=100);
     bc.style.display='block';
     bc.innerHTML=`<h3>${ORGANS[k][lang]} · ${e}%</h3>
       <div class="sub">${ORGANS[k].d[lang]} — ${e}% ${t('eatenWord')}, ${p}% ${t('plannedWord')} ${t('ofDay')}.</div>
       <div><b style="font-size:12px">${t('supports')}:</b></div>
-      <ul>${ks.map(n=>`<li><b>${NUTRIENTS[n][lang]}</b> ${Math.min(100,Math.round(eT[n]||0))}%</li>`).join('')}</ul>
+      <ul>${ks.map(n=>{
+        const pct=Math.round(eT[n]||0), capped=pct>=100;
+        return `<li class="${capped?'cap-full':''}"><b>${NUTRIENTS[n][lang]}</b> ${capped?'<span class="cap-check">✓</span>100%':pct+'%'}</li>`;
+      }).join('')}${anyCapped?`<li class="cap-note">${t('capNote')}</li>`:''}</ul>
       <div style="margin-top:8px"><b style="font-size:12px">${t('sources')}:</b></div>
       <ul>${topSources(ks,4).map(f=>`<li class="src" data-food="${f.id}" title="${t('srcTip')}">${f.em} ${f[lang]}</li>`).join('')}</ul>
       <div class="tip">${t('srcTip')}</div>`;
@@ -2008,11 +2018,25 @@ function placePop(el,anchor,hEst){
   let y=r.bottom+8; if(y+hEst>window.innerHeight) y=Math.max(8,r.top-hEst);
   el.style.left=x+'px'; el.style.top=y+'px';
 }
+// Slider always reaches at least a little past the item's current amount,
+// so it never clips a quantity that was built up via repeated "add" clicks.
+function qtyMaxFor(qty){ return Math.max(4, Math.ceil((qty+1)*2)/2); }
+function buildQtyTicks(min,max){
+  const snap=v=>Math.round(v*2)/2;
+  const vals=[min, snap(min+(max-min)*0.25), snap(min+(max-min)*0.5), snap(min+(max-min)*0.75), max];
+  return [...new Set(vals)].map(v=>`<span>${fr(v)}</span>`).join('');
+}
+function refreshQtyRangeBounds(qty){
+  const range=document.getElementById('qtyRange');
+  const max=qtyMaxFor(qty);
+  range.max=max; range.value=qty;
+  document.getElementById('qtyTicks').innerHTML=buildQtyTicks(0.5,max);
+}
 function openQtyPop(it,anchor){
   closeFoodPop(); popItemUid=it.uid;
   const f=foodById(it.foodId);
   document.getElementById('qtyTitle').textContent=f.em+' '+f[lang]+' — '+t('howMuch');
-  document.getElementById('qtyRange').value=it.qty;
+  refreshQtyRangeBounds(it.qty);
   document.getElementById('qtyLabel').textContent=fmtMeasure(f,it.qty,lang)+(fmtMeasureAlt(f,it.qty,lang)?' '+fmtMeasureAlt(f,it.qty,lang):'');
   pop.classList.add('open');
   placePop(pop,anchor,140);
@@ -2021,9 +2045,13 @@ function closeQtyPop(){pop.classList.remove('open');popItemUid=null;}
 document.getElementById('qtyRange').addEventListener('input',e=>{
   const it=items.find(x=>x.uid===popItemUid); if(!it){closeQtyPop();return;}
   it.qty=parseFloat(e.target.value);
+  // dragged all the way to the current ceiling — stretch the slider further
+  const range=document.getElementById('qtyRange');
+  if(it.qty>=parseFloat(range.max)) refreshQtyRangeBounds(it.qty);
   document.getElementById('qtyLabel').textContent=fmtMeasure(foodById(it.foodId),it.qty,lang)+(fmtMeasureAlt(foodById(it.foodId),it.qty,lang)?' '+fmtMeasureAlt(foodById(it.foodId),it.qty,lang):'');
   render();
 });
+
 
 /* food contents popover (pantry ⓘ) */
 function openFoodPop(f,anchor){
