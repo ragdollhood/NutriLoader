@@ -2436,7 +2436,8 @@ document.getElementById('logAuthSendBtn').addEventListener('click', async ()=>{
   msgEl.textContent = authText('sending');
   $('#logAuthSendBtn').disabled = true;
   try{
-    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.href } });
+    const cleanRedirect = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: cleanRedirect } });
     msgEl.textContent = error ? authText('error') : authText('sent');
   }catch(e){ msgEl.textContent = authText('error'); }
   $('#logAuthSendBtn').disabled = false;
