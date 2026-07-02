@@ -3358,7 +3358,7 @@ async function registerVisit() {
   const visitorId = getVisitorId();
   const today = new Date().toISOString().slice(0, 10);
 
-  await fetch(
+const response = await fetch(
 `${SUPABASE_URL}/rest/v1/visitors`,
     {
       method: "POST",
@@ -3374,6 +3374,9 @@ async function registerVisit() {
       })
     }
   );
+     if (response.status === 409) {
+  return;
+}
 }
 
 registerVisit();
