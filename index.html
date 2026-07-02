@@ -208,8 +208,12 @@ g.organ[data-organ="brain"] .hoverimg{opacity:1}
 #pantryQtyPop .addBtn{margin-top:10px;width:100%;border:1px solid var(--rose-soft);background:#fbeee9;color:var(--rose-deep);
   border-radius:999px;padding:7px 0;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
 #pantryQtyPop .addBtn:hover{background:var(--rose-soft)}
-#qtyPop .qtyRemoveBtn{margin-top:10px;width:100%;border:1px solid var(--line);background:#fbeee9;color:var(--rose-deep);
-  border-radius:999px;padding:7px 0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+#qtyPop .qtyBtnRow{margin-top:10px;display:flex;gap:8px}
+#qtyPop .qtyBtnRow button{flex:1;border-radius:999px;padding:7px 0;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+#qtyPop .qtyOkBtn{border:1px solid #2f9e52;background:#2f9e52;color:#fff}
+#qtyPop .qtyOkBtn:hover{opacity:.9}
+#qtyPop .qtyRemoveBtn{border:1px solid var(--line);background:#fbeee9;color:var(--rose-deep)}
 #qtyPop .qtyRemoveBtn:hover{background:var(--rose-soft);border-color:var(--rose-soft)}
 #qtyPop .qtyRemoveIc{font-size:13px;line-height:1}
 #pantryQtyPop .addBtn .plateIc{font-size:14px;line-height:1}
@@ -905,7 +909,10 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   <div class="qlabel" id="qtyLabel"></div>
   <input type="range" id="qtyRange" min="0.5" max="2" step="0.5">
   <div class="ticks" id="qtyTicks"></div>
-  <button class="qtyRemoveBtn" id="qtyRemoveBtn"><span class="qtyRemoveIc" aria-hidden="true">🗑️</span><span data-i18n="removeFromPlate">Remove from plate</span></button>
+  <div class="qtyBtnRow">
+    <button class="qtyOkBtn" id="qtyOkBtn"><span data-i18n="qtyOk">OK</span></button>
+    <button class="qtyRemoveBtn" id="qtyRemoveBtn"><span class="qtyRemoveIc" aria-hidden="true">🚫</span><span data-i18n="removeFromPlate2">REMOVE</span></button>
+  </div>
 </div>
 <div id="foodPop"></div>
 <div id="pantryQtyPop">
@@ -1288,6 +1295,8 @@ const I18N = {
               sv:'{f} — på väg till {o}. Fint att du ger dig själv näring!'},
   removedToast:{en:'{f} removed from the plate',sv:'{f} borttagen från tallriken'},
   removeFromPlate:{en:'Remove from plate',sv:'Ta bort från tallriken'},
+  removeFromPlate2:{en:'REMOVE',sv:'REMOVE'},
+  qtyOk:{en:'OK',sv:'OK'},
   langLbl:{en:'Svenska',sv:'English'},
   howMuch:{en:'How much?',sv:'Hur mycket?'},
   q05:{en:'a small taste',sv:'en liten smak'},
@@ -2226,6 +2235,9 @@ function openQtyPop(it,anchor){
     toast(t('removedToast').replace('{f}',f[lang]));
     render();
   };
+  const okBtn=document.getElementById('qtyOkBtn');
+  okBtn.title=t('qtyOk');
+  okBtn.onclick=()=>{ closeQtyPop(); };
   pop.classList.add('open');
   placePop(pop,anchor,180);
 }
