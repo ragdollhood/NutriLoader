@@ -192,19 +192,23 @@ g.organ[data-organ="brain"] .hoverimg{opacity:1}
   border:1px solid var(--rose-soft);background:#fdf3ef;color:var(--rose-deep);
   border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;line-height:1;white-space:nowrap}
 .plate-item .qty:hover{background:var(--rose-soft)}
-#qtyPop,#foodPop{
+#qtyPop,#foodPop,#pantryQtyPop{
   position:fixed;z-index:60;background:#fffdf8;border:1px solid var(--line);border-radius:14px;
   box-shadow:0 12px 30px rgba(85,60,40,.25);padding:12px 16px;width:240px;display:none}
-#qtyPop.open,#foodPop.open{display:block}
-#qtyPop h4,#foodPop h4{font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--ink);margin-bottom:2px;padding-right:20px}
-#qtyPop .qlabel{font-size:16px;font-weight:700;color:var(--rose-deep);margin-bottom:8px}
-#qtyPop input[type=range]{width:100%;accent-color:var(--rose-deep)}
-#qtyPop .ticks{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft);margin-top:2px}
-#qtyPop .popClose{
+#qtyPop.open,#foodPop.open,#pantryQtyPop.open{display:block}
+#qtyPop h4,#foodPop h4,#pantryQtyPop h4{font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--ink);margin-bottom:2px;padding-right:20px}
+#qtyPop .qlabel,#pantryQtyPop .qlabel{font-size:16px;font-weight:700;color:var(--rose-deep);margin-bottom:8px}
+#qtyPop input[type=range],#pantryQtyPop input[type=range]{width:100%;accent-color:var(--rose-deep)}
+#qtyPop .ticks,#pantryQtyPop .ticks{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft);margin-top:2px}
+#qtyPop .popClose,#pantryQtyPop .popClose{
   position:absolute;top:9px;right:9px;width:18px;height:18px;border-radius:50%;
   border:1px solid var(--line);background:rgba(255,255,255,.95);font-size:9px;line-height:1;
   display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 1px 3px rgba(0,0,0,.15);cursor:pointer}
-#qtyPop .popClose:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
+#qtyPop .popClose:hover,#pantryQtyPop .popClose:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
+#pantryQtyPop .addBtn{margin-top:10px;width:100%;border:1px solid var(--rose-soft);background:#fbeee9;color:var(--rose-deep);
+  border-radius:999px;padding:7px 0;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+#pantryQtyPop .addBtn:hover{background:var(--rose-soft)}
+#pantryQtyPop .addBtn .plateIc{font-size:14px;line-height:1}
 #foodPop .sub{font-size:11.5px;color:var(--ink-soft);margin-bottom:8px}
 #foodPop .nrow{display:grid;grid-template-columns:92px 1fr 34px;gap:6px;align-items:center;font-size:11.5px;margin-bottom:4px}
 #foodPop .nrow .tk{height:7px;border-radius:99px;background:#efe6d8;overflow:hidden}
@@ -904,6 +908,14 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   <div class="ticks" id="qtyTicks"></div>
 </div>
 <div id="foodPop"></div>
+<div id="pantryQtyPop">
+  <button class="popClose" title="✕" onclick="closePantryQtyPop()">✕</button>
+  <h4 id="pantryQtyTitle"></h4>
+  <div class="qlabel" id="pantryQtyLabel"></div>
+  <input type="range" id="pantryQtyRange" min="0.5" max="4" step="0.5" value="1">
+  <div class="ticks" id="pantryQtyTicks"></div>
+  <button class="addBtn" id="pantryAddBtn"><span class="plateIc" aria-hidden="true">🍽️</span><span data-i18n="addToPlate">Add to plate</span></button>
+</div>
 <div id="organLabel"></div>
   <div id="topLeftBtns">
     <a id="donateBtn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=ingenskit%40hotmail.com&item_name=NUTRILOADER&currency_code=SEK&no_shipping=1" target="_blank" rel="noopener">
@@ -2037,7 +2049,7 @@ function renderPantry(){
       ch.className='chip'; ch.draggable=true; ch.dataset.food=f.id;
       ch.innerHTML=`<span class="em">${f.em}</span>${f[lang]}<span class="info" title="${t('contains')}">i</span>`;
       ch.addEventListener('dragstart',ev=>ev.dataTransfer.setData('text/plain','food:'+f.id));
-      ch.onclick=ev=>flyToPlate(f,ev.currentTarget,()=>addItem(f.id,true,true));
+      ch.onclick=ev=>openPantryQtyPop(f,ev.currentTarget);
       ch.querySelector('.info').addEventListener('click',ev=>{
         ev.stopPropagation(); openFoodPop(f,ev.currentTarget);
       });
@@ -2095,10 +2107,11 @@ function fmtMeasureAlt(f,q,lng){
   }
   return '';
 }
-function addItem(foodId,eaten,announce){
+function addItem(foodId,eaten,announce,qty){
+  qty=qty||1;
   const ex=items.find(x=>x.foodId===foodId && x.meal===activeMeal);
   if(ex){
-    ex.qty=(ex.qty||1)+1;
+    ex.qty=(ex.qty||1)+qty;
     if(eaten) ex.eaten=true;
     const f=foodById(foodId);
     toast(t('qtyUpToast').replace('{f}',f[lang]).replace('{m}',fmtMeasure(f,ex.qty,lang)));
@@ -2113,10 +2126,10 @@ function addItem(foodId,eaten,announce){
     showNextPlatePrompt();
     return;
   }
-  items.push({uid:++uidc,foodId,eaten,qty:1,meal:activeMeal});
+  items.push({uid:++uidc,foodId,eaten,qty:qty,meal:activeMeal});
   const f=foodById(foodId);
   if(announce) toast(t('addedToast').replace('{f}',f[lang]));
-  if(eaten) eatToast(f,1);
+  if(eaten) eatToast(f,qty);
   render();
 }
 
@@ -2238,13 +2251,51 @@ function openFoodPop(f,anchor){
 }
 function closeFoodPop(){fpop.classList.remove('open');}
 
+/* quantity slider popover for pantry sources (choose amount, then add to plate) */
+const ppop=document.getElementById('pantryQtyPop');
+let pendingPantryFood=null;
+function refreshPantryQtyRangeBounds(qty){
+  const range=document.getElementById('pantryQtyRange');
+  const max=qtyMaxFor(qty);
+  range.max=max; range.value=qty;
+  document.getElementById('pantryQtyTicks').innerHTML=buildQtyTicks(0.5,max);
+}
+function openPantryQtyPop(f,anchor){
+  closeQtyPop(); closeFoodPop();
+  pendingPantryFood=f.id;
+  document.getElementById('pantryQtyTitle').textContent=f.em+' '+f[lang]+' — '+t('howMuch');
+  refreshPantryQtyRangeBounds(1);
+  document.getElementById('pantryQtyLabel').textContent=fmtMeasure(f,1,lang)+(fmtMeasureAlt(f,1,lang)?' '+fmtMeasureAlt(f,1,lang):'');
+  ppop.classList.add('open');
+  placePop(ppop,anchor,220);
+}
+function closePantryQtyPop(){ppop.classList.remove('open');pendingPantryFood=null;}
+document.getElementById('pantryQtyRange').addEventListener('input',e=>{
+  if(!pendingPantryFood) return;
+  const f=foodById(pendingPantryFood);
+  const qty=parseFloat(e.target.value);
+  const range=document.getElementById('pantryQtyRange');
+  if(qty>=parseFloat(range.max)) refreshPantryQtyRangeBounds(qty);
+  document.getElementById('pantryQtyLabel').textContent=fmtMeasure(f,qty,lang)+(fmtMeasureAlt(f,qty,lang)?' '+fmtMeasureAlt(f,qty,lang):'');
+});
+document.getElementById('pantryAddBtn').addEventListener('click',ev=>{
+  if(!pendingPantryFood) return;
+  const f=foodById(pendingPantryFood);
+  const qty=parseFloat(document.getElementById('pantryQtyRange').value)||1;
+  const a=ev.currentTarget;
+  closePantryQtyPop();
+  flyToPlate(f,a,()=>addItem(f.id,true,true,qty));
+});
+
 document.addEventListener('pointerdown',e=>{
   if(pop.classList.contains('open') && !pop.contains(e.target) && !e.target.closest('.qty')) closeQtyPop();
   if(fpop.classList.contains('open') && !fpop.contains(e.target) && !e.target.closest('.chip .info')) closeFoodPop();
+  if(ppop.classList.contains('open') && !ppop.contains(e.target) && !e.target.closest('.chip')) closePantryQtyPop();
 });
 window.addEventListener('scroll',()=>{
   if(pop.classList.contains('open')) closeQtyPop();
   if(fpop.classList.contains('open')) closeFoodPop();
+  if(ppop.classList.contains('open')) closePantryQtyPop();
 },{passive:true,capture:true});
 
 /* ================= SEARCH ================= */
@@ -3261,7 +3312,8 @@ buildBody(); buildOrganBars(); buildMicrowave(); buildSugarBox(); buildAlcoholBo
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById("headerVisits").textContent = "Visits: 1";
+  const hv = document.getElementById("headerVisits");
+  if (hv) hv.textContent = "Visits: 1";
 });
 </script>
 
