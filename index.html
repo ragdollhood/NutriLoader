@@ -3359,7 +3359,7 @@ async function registerVisit() {
   const today = new Date().toISOString().slice(0, 10);
 
   await fetch(
-`${SUPABASE_URL}/rest/v1/visitors?on_conflict=visitor_id`,
+`${SUPABASE_URL}/rest/v1/visitors`
     {
       method: "POST",
       headers: {
