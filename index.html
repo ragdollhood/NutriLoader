@@ -263,7 +263,7 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   border-radius:999px;padding:4px 4px;font-size:12.5px;font-weight:700;
   letter-spacing:.04em;color:var(--ink-soft);box-shadow:0 2px 8px rgba(85,70,55,.12);cursor:pointer;
   transition:transform .15s ease}
-#resetBtnTop:hover{color:var(--rose-deep);border-color:var(--rose-soft);transform:scale(2);position:relative;z-index:10}
+#resetBtnTop:hover{color:var(--rose-deep);border-color:var(--rose-soft);transform:scale(1.6);position:relative;z-index:10}
 #donateBtn{display:flex;align-items:center;gap:6px;border:1px solid #b0c8f0;background:#fffdf9f2;
   border-radius:999px;padding:4px 4px;font-size:12.5px;font-weight:700;
   letter-spacing:.04em;color:#003087;box-shadow:0 2px 8px rgba(85,70,55,.12);
@@ -502,26 +502,21 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 .sg-row{display:flex;align-items:center;gap:6px}
 .sg-row input{width:64px;border:1px solid #cfc4ad;border-radius:6px;padding:4px 6px;font-size:13px;text-align:right;background:#fffef9}
 .sg-row .un{font-size:12px;color:#8d8270}
-.sg-add{border:1px solid #b9a87e;background:#f3ead4;color:#6e5c3c;border-radius:999px;
+.sg-add{border:1px solid #7e9ec9;background:#dfe9f6;color:#3d5a82;border-radius:999px;
   padding:5px 14px;font-size:12px;font-weight:800;letter-spacing:.06em;cursor:pointer}
-.sg-add:hover{background:#ecdfc0}
-.sg-total{margin-left:auto;font-size:13px;font-weight:800;color:#5a4c38;background:#f3ead4;
+.sg-add:hover{background:#cfe0f2}
+.sg-total{margin-left:auto;font-size:13px;font-weight:800;color:#3d5a82;background:#dfe9f6;
   border-radius:999px;padding:5px 14px;transition:transform .2s}
 .sg-total.bump{transform:scale(1.12)}
 .sg-body.alc .sg-name{color:#3d5a82}
-.sg-body.alc .sg-add{border-color:#7e9ec9;background:#dfe9f6;color:#3d5a82}
-.sg-body.alc .sg-add:hover{background:#cfe0f2}
-.sg-body.alc .sg-total{color:#3d5a82;background:#dfe9f6}
 .sg-body.cig .sg-name{color:#6e4c34}
-.sg-body.cig .sg-add{border-color:#b58e6c;background:#ecdfd0;color:#6e4c34}
-.sg-body.cig .sg-add:hover{background:#e2cfb8}
-.sg-body.cig .sg-total{color:#6e4c34;background:#ecdfd0}
 .sg-body.sec .sg-name{color:#6e3a5c}
-.sg-body.sec .sg-add{border-color:#b07ba1;background:#ecdce8;color:#6e3a5c}
-.sg-body.sec .sg-add:hover{background:#e2c5d8}
-.sg-body.sec .sg-total{color:#6e3a5c;background:#ecdce8}
 @media (max-width:680px){
   .sg-name{flex-basis:100%}
+  .sg-body{gap:6px 8px}
+  .sg-total{margin-left:0}
+  .sg-add,.sg-total{padding:5px 10px;font-size:11px}
+  .sg-row input{width:54px}
 }
 /* ---------- nutrients ---------- */
 .bar-row{display:grid;grid-template-columns:96px 1fr 52px;gap:8px;align-items:center;
@@ -663,7 +658,13 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   display:flex;align-items:center;justify-content:center;width:100%;white-space:nowrap;
   transition:transform .15s ease}
 #logBtn img{width:100%;display:block}
-#logBtn:hover{transform:scale(2);position:relative;z-index:10}
+#logBtn:hover{transform:scale(1.6);position:relative;z-index:10}
+#logBtnHabits{
+  border:none;background:none;padding:4px 0;box-shadow:none;cursor:pointer;
+  display:block;margin:10px auto 0;width:23%;min-width:80px;
+  transition:transform .15s ease}
+#logBtnHabits img{width:100%;display:block}
+#logBtnHabits:hover{transform:scale(1.6);position:relative;z-index:10}
 #logModal{
   display:none;position:fixed;inset:0;z-index:500;
   background:rgba(50,40,30,.55);backdrop-filter:blur(4px);
@@ -701,13 +702,12 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-meal-foods{display:flex;flex-wrap:wrap;gap:5px;padding:0 18px 16px}
 .log-food-tag{
   background:var(--panel-deep);border:1px solid var(--line);border-radius:999px;
-  padding:3px 6px 3px 10px;font-size:12px;color:var(--ink);display:flex;align-items:center;gap:4px}
+  padding:3px 10px;font-size:12px;color:var(--ink);display:flex;align-items:center;gap:4px;
+  font-family:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+.log-food-tag:hover{background:var(--rose-soft);border-color:var(--rose)}
 .log-food-tag.eaten{background:#edf3e4;border-color:#b5cfa0;color:#4a6a37}
+.log-food-tag.eaten:hover{background:#e0ecd2}
 .log-food-tag .lft-em{font-size:14px}
-.lft-del{
-  border:none;background:none;padding:1px 2px;margin-left:1px;line-height:1;
-  font-size:11px;color:var(--ink-soft);opacity:.55;border-radius:6px;cursor:pointer}
-.lft-del:hover{opacity:1;color:#a4392f;background:rgba(164,57,47,.1)}
 .log-nutr-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
   gap:6px;padding:0 18px 16px}
@@ -825,6 +825,26 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-day-info-foods{display:flex;flex-direction:column;gap:3px}
 .log-day-info-empty{color:var(--ink-soft);font-style:italic}
 .log-day-info-val{font-size:16px;font-weight:800;color:var(--ink)}
+.log-nbar-wrap{display:flex;flex-direction:column;gap:4px}
+.log-adjust{
+  margin-top:4px;padding:6px 9px;border:1px dashed var(--line);border-radius:8px;
+  background:#fbf8f2;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.log-adjust-inline{flex-basis:100%;width:100%;margin:2px 0}
+.log-adjust-label{font-size:9px;font-weight:800;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap}
+.log-adjust-input{
+  width:62px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;
+  font-family:inherit;font-size:12px;background:#fffdf9;color:var(--ink)}
+.log-adjust-input:focus{outline:none;border-color:var(--rose)}
+.log-adjust-unit{font-size:11px;color:var(--ink-soft)}
+.log-adjust-clear{
+  border:none;background:rgba(120,90,50,.08);color:var(--ink-soft);
+  border-radius:8px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  padding:0;font-size:13px;cursor:pointer;transition:background .15s,color .15s}
+.log-adjust-clear:hover{background:rgba(164,57,47,.15);color:#a4392f}
+.log-adjust-save{
+  border:1px solid var(--rose-soft);background:#fbeee9;color:var(--rose-deep);
+  border-radius:999px;padding:3px 12px;font-size:10.5px;font-weight:700;letter-spacing:.03em;cursor:pointer}
+.log-adjust-save:hover{background:var(--rose-soft)}
 
 /* next-plate prompt — fixed so it's visible wherever the user is on the page */
 #nextPlatePrompt{
@@ -943,6 +963,9 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <div id="alcoholBox"></div>
       <div id="cigBox"></div>
     </div>
+    <button id="logBtnHabits" title="Bad habits log">
+      <img src="/images/logbook.png" alt="Bad habits log">
+    </button>
     <div class="pantry-base"><div class="baseB"></div><div class="floorB"></div></div>
   </div>
 </section>
@@ -985,16 +1008,13 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <div>
         <div class="legend">
           <span><i class="li-e"></i><span data-i18n="legendEaten">eaten</span></span>
-          <span><i class="li-p"></i><span data-i18n="legendPlanned">planned</span></span>
         </div>
         <div id="bars"></div>
       </div>
       <div>
         <div id="infoCard"></div>
         <div style="display:flex;justify-content:center;align-items:center;gap:14px;margin-top:12px">
-          <button id="logBtnBottom" title="Food log" style="background:none;border:none;padding:0;cursor:pointer">
-            <img src="/images/logbook.png" alt="Food log" style="height:90px;display:block">
-          </button>
+          <span id="supportMsg" data-i18n="supportMsg" style="font-size:12px;color:var(--ink-soft);max-width:220px;text-align:right">This service is free, but your support is always appreciated.</span>
           <a id="donateBtn2" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=ingenskit%40hotmail.com&item_name=NUTRILOADER&currency_code=SEK&no_shipping=1" target="_blank" rel="noopener">
             <svg class="ppmark" viewBox="0 0 24 28" width="14" height="16" aria-hidden="true">
               <path d="M7.4 27 l.9-5.6 H6 L8.6 4.3 h7.3 c3.7 0 6 1.9 5.4 5.8 -.6 4.2 -3.7 6.2 -7.8 6.2 H10 l-.9 5.7 -.2 1.4 Z" fill="#003087"/>
@@ -1226,6 +1246,7 @@ const I18N = {
              sv:'Dagens näring. Klicka på ett näringsämne för att se vilka kroppsdelar det tar hand om.'},
   legendEaten:{en:'eaten',sv:'ätit'},
   legendPlanned:{en:'planned',sv:'planerat'},
+  supportMsg:{en:'This service is free, but your support is always appreciated.',sv:'Denna tjänst är gratis att använda, men allt stöd tas tacksamt emot. \u2764\uFE0F'},
   plateEmpty:{en:'Drag food here to plan your plate',sv:'Dra mat hit för att planera din tallrik'},
   pantryTitle:{en:'Pantry — pick what looks good',sv:'Skafferi — välj det som lockar'},
   reset:{en:'Clean plates',sv:'Rena tallrikar'},
@@ -1291,7 +1312,10 @@ const I18N = {
   dayNutrLabel:{en:'NUTRIENTS THAT DAY',sv:'N\u00c4RINGS\u00c4MNEN DEN DAGEN'},
   dayViceLabel:{en:'BAD HABITS THAT DAY',sv:'D\u00c5LIGA VANOR DEN DAGEN'},
   dayViceEmpty:{en:'Nothing logged this day.',sv:'Inget loggat den h\u00e4r dagen.'},
-  dayMealsEmpty:{en:'Nothing logged this day.',sv:'Inget loggat den h\u00e4r dagen.'}
+  dayMealsEmpty:{en:'Nothing logged this day.',sv:'Inget loggat den h\u00e4r dagen.'},
+  adjustLabel:{en:'ADJUSTMENT',sv:'JUSTERING'},
+  adjustSave:{en:'Save',sv:'Spara'},
+  adjustSaved:{en:'Adjusted',sv:'Justerat'}
 };
 
 /* ================= ORGAN GEOMETRY ================= */
@@ -1907,21 +1931,30 @@ function flyToPlate(f, fromEl, done){
 }
 
 
+/* ---- shared step/rounding rules for bad-habit amounts (sugar/alcohol/cigarettes) ---- */
+/* sugar: whole grams · alcohol: half or whole drinks · cigarettes: whole count */
+const VICE_STEP = {sugarTotal:1, alcoholTotal:0.5, cigTotal:1};
+function viceRound(val, step){
+  const inv = 1/step;
+  return Math.round((val||0)*inv)/inv;
+}
+
 /* ---- generic tally box (sugar / alcohol / cigarettes / secret vice) ---- */
-function buildTallyBox(elId, modCls, getTotal, setTotal, emoji, titleKey, hintKey, addKey, totalKey, inputId, unitKey){
+function buildTallyBox(elId, modCls, getTotal, setTotal, emoji, titleKey, hintKey, addKey, totalKey, inputId, unitKey, step){
+  step = step || 1;
   const el=document.getElementById(elId);
   el.innerHTML=`<div class="sg-body ${modCls}">
       <span class="sg-name">${emoji} ${t(titleKey)}</span>
-      <span class="sg-row"><input id="${inputId}" type="number" min="0" step="any" inputmode="decimal"><span class="un">${unitKey?t(unitKey):'g'}</span></span>
+      <span class="sg-row"><input id="${inputId}" type="number" min="0" step="${step}" inputmode="decimal"><span class="un">${unitKey?t(unitKey):'g'}</span></span>
       <button class="sg-add">${t(addKey)}</button>
-      <span class="sg-total">${t(totalKey).replace('{g}', Math.round(getTotal()*10)/10)}</span>
+      <span class="sg-total">${t(totalKey).replace('{g}', viceRound(getTotal(), step))}</span>
       <span class="sg-hint">${t(hintKey)}</span>
     </div>`;
   const addBtn = el.querySelector('.sg-add');
   const totalEl = el.querySelector('.sg-total');
   const inp = el.querySelector('#'+inputId);
   const upd=()=>{
-    totalEl.textContent=t(totalKey).replace('{g}', Math.round(getTotal()*10)/10);
+    totalEl.textContent=t(totalKey).replace('{g}', viceRound(getTotal(), step));
     totalEl.classList.add('bump'); setTimeout(()=>totalEl.classList.remove('bump'),250); };
   addBtn.onclick=()=>{
     const v=parseFloat(inp.value);
@@ -1933,13 +1966,13 @@ function buildTallyBox(elId, modCls, getTotal, setTotal, emoji, titleKey, hintKe
 
 let sugarTotal=0, alcoholTotal=0, cigTotal=0;
 function buildSugarBox(){
-  buildTallyBox('sugarBox','sug',()=>sugarTotal,v=>sugarTotal=v,'\u{1F36C}','sgTitle','sgHint','sgAdd','sgTotal','sgIn');
+  buildTallyBox('sugarBox','sug',()=>sugarTotal,v=>sugarTotal=v,'\u{1F36C}','sgTitle','sgHint','sgAdd','sgTotal','sgIn',null,VICE_STEP.sugarTotal);
 }
 function buildAlcoholBox(){
-  buildTallyBox('alcoholBox','alc',()=>alcoholTotal,v=>alcoholTotal=v,'\u{1F37A}','alcTitle','alcHint','alcAdd','alcTotal','alcIn','alcUnit');
+  buildTallyBox('alcoholBox','alc',()=>alcoholTotal,v=>alcoholTotal=v,'\u{1F37A}','alcTitle','alcHint','alcAdd','alcTotal','alcIn','alcUnit',VICE_STEP.alcoholTotal);
 }
 function buildCigBox(){
-  buildTallyBox('cigBox','cig',()=>cigTotal,v=>cigTotal=v,'\u{1F6AC}','cigTitle','cigHint','cigAdd','cigTotal','cigIn','cigUnit');
+  buildTallyBox('cigBox','cig',()=>cigTotal,v=>cigTotal=v,'\u{1F6AC}','cigTitle','cigHint','cigAdd','cigTotal','cigIn','cigUnit',VICE_STEP.cigTotal);
 }
 /* ---- microwave: manual entry from a food label ---- */
 const MW_FIELDS=[['protein','g',50],['fiber','g',30],['calcium','mg',800],['iron','mg',14],['vitC','mg',80],['vitD','\u00b5g',5]];
@@ -2291,10 +2324,6 @@ function doCleanPlates(){
   openLog();
 }
 document.getElementById('resetBtnTop').onclick=doCleanPlates;
-document.getElementById('logBtnBottom').addEventListener('click', ()=>{
-  saveLogSnapshot();
-  openLog();
-});
 
 /* ================= FOOD LOG ================= */
 const LOG_KEY = 'nutriloader_log_v1';
@@ -2393,11 +2422,12 @@ function saveLogSnapshot(){
   saveLog(log);
 }
 
-function openLog(){
+function openLog(mode){
   const modal = document.getElementById('logModal');
   modal.classList.add('open');
   selectedLogDay = dateStrOfToday();
   selectedLogMeal = null;
+  if(mode){ logViewMode = mode; openLogInfoPopup = null; }
   renderLog();
   updateStabilityWarning();
 }
@@ -2408,6 +2438,10 @@ function closeLog(){
 document.getElementById('logBtn').addEventListener('click', ()=>{
   saveLogSnapshot();
   openLog();
+});
+document.getElementById('logBtnHabits').addEventListener('click', ()=>{
+  saveLogSnapshot();
+  openLog('habits');
 });
 document.getElementById('logClose').addEventListener('click', closeLog);
 document.getElementById('logModal').addEventListener('pointerdown', e=>{
@@ -2599,9 +2633,9 @@ initAuth();
 
 /* ================= WEEKLY LOG TABLE ================= */
 const VICE_DEFS = [
-  {key:'sugarTotal', em:'🍬', color:'#cdb35e', titleKey:'sgTitle', unitKey:null, unitLit:'g'},
-  {key:'alcoholTotal', em:'🍺', color:'#5d83b3', titleKey:'alcTitle', unitKey:'alcUnit'},
-  {key:'cigTotal', em:'🚬', color:'#a87f56', titleKey:'cigTitle', unitKey:'cigUnit'}
+  {key:'sugarTotal', em:'🍬', color:'#cdb35e', titleKey:'sgTitle', unitKey:null, unitLit:'g', step:VICE_STEP.sugarTotal},
+  {key:'alcoholTotal', em:'🍺', color:'#5d83b3', titleKey:'alcTitle', unitKey:'alcUnit', step:VICE_STEP.alcoholTotal},
+  {key:'cigTotal', em:'🚬', color:'#a87f56', titleKey:'cigTitle', unitKey:'cigUnit', step:VICE_STEP.cigTotal}
 ];
 const WEEKDAY_NAMES = {
   en:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
@@ -2611,6 +2645,7 @@ let logViewMode = 'nutrition'; // 'nutrition' | 'habits'
 let selectedLogDay = dateStrOfToday(); // date string of the currently expanded big day panel — defaults to today
 let selectedLogMeal = null; // meal id currently expanded inside the big day panel
 let openLogInfoPopup = null; // {dStr,type,key} of the small per-icon popup, if one is open
+let openAdjustFood = null; // {dStr,mealId,foodId} of the food whose adjustment box is currently shown
 
 function pad2(n){ return String(n).padStart(2,'0'); }
 function dateStrOf(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -2703,6 +2738,16 @@ function buildWeekChartSvg(days, byDate, selectedDate){
   return svg;
 }
 
+function foodMeasureInfo(foodEntry, lang2){
+  const fdef = foodById(foodEntry.id);
+  const m = fdef && fdef.m ? fdef.m[lang2] : null;
+  const base = m ? m[0] : 1;
+  const unit = m ? m[1] : '';
+  const countable = ['st','piece','egg','skiva','slice'].includes(unit);
+  const step = unit==='g' ? 5 : unit==='oz' ? 0.25 : countable ? 0.5 : (unit==='dl' ? 1 : (unit==='cup' ? 0.25 : 0.1));
+  const amt = Math.round(base*(foodEntry.qty||1)*100)/100;
+  return {base, unit, step, amt};
+}
 function buildDayInfoHTML(dStr, type, key, lang2){
   const e = (loadLog()).find(en=>en.date===dStr);
   if(type==='meal'){
@@ -2710,19 +2755,36 @@ function buildDayInfoHTML(dStr, type, key, lang2){
     const mealName = lang2==='sv'?m.sv:m.en;
     const meal = e && e.meals.find(mm=>mm.mealId===key);
     const foods = meal ? meal.foods : [];
-    const foodsHTML = foods.length ? foods.map(f=>
-      `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}<button class="lft-del" data-date="${dStr}" data-meal="${key}" data-food="${f.id}" title="${lang2==='sv'?'Ta bort':'Remove'}">🗑️</button></span>`
-    ).join('') : `<div class="log-day-info-empty">${lang2==='sv'?'Inget loggat.':'Nothing logged.'}</div>`;
+    const foodsHTML = foods.length ? foods.map(f=>{
+      const isOpen = openAdjustFood && openAdjustFood.dStr===dStr && openAdjustFood.mealId===key && openAdjustFood.foodId===f.id;
+      if(isOpen){
+        const mi = foodMeasureInfo(f, lang2);
+        return `<div class="log-adjust log-adjust-inline" data-date="${dStr}" data-type="food" data-meal="${key}" data-food="${f.id}" data-base="${mi.base}">
+          <span class="log-adjust-label">${f.em} ${t('adjustLabel')}</span>
+          <input type="number" min="0" step="${mi.step}" class="log-adjust-input" value="${mi.amt}">
+          <button class="log-adjust-clear" title="${lang2==='sv'?'Nollställ':'Set to 0'}">🗑️</button>
+          <span class="log-adjust-unit">${mi.unit}</span>
+          <button class="log-adjust-save">${t('adjustSave')}</button>
+        </div>`;
+      }
+      return `<button class="log-food-tag lft-toggle ${f.eaten?'eaten':''}" data-date="${dStr}" data-meal="${key}" data-food="${f.id}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}</button>`;
+    }).join('') : `<div class="log-day-info-empty">${lang2==='sv'?'Inget loggat.':'Nothing logged.'}</div>`;
     return `<button class="log-day-info-close" aria-label="Close">✕</button>
       <div class="log-day-info-title">${m.ic} ${mealName} · ${dStr}</div>
       <div class="log-day-info-foods">${foodsHTML}</div>`;
   } else {
     const vd = VICE_DEFS.find(v=>v.key===key);
-    const val = e ? Math.round((e[key]||0)*10)/10 : 0;
+    const val = e ? viceRound(e[key]||0, vd.step) : 0;
     const unit = vd.unitKey ? t(vd.unitKey) : (vd.unitLit||'');
     return `<button class="log-day-info-close" aria-label="Close">✕</button>
       <div class="log-day-info-title">${vd.em} ${t(vd.titleKey)} · ${dStr}</div>
-      <div class="log-day-info-val">${val} ${unit}</div>`;
+      <div class="log-day-info-val">${val} ${unit}</div>
+      <div class="log-adjust" data-date="${dStr}" data-type="vice" data-key="${key}">
+        <span class="log-adjust-label">${t('adjustLabel')}</span>
+        <input type="number" min="0" step="${vd.step}" class="log-adjust-input" value="${val}">
+        <button class="log-adjust-clear" title="${lang2==='sv'?'Nollställ':'Set to 0'}">🗑️</button>
+        <button class="log-adjust-save">${t('adjustSave')}</button>
+      </div>`;
   }
 }
 
@@ -2742,14 +2804,22 @@ function buildBigDayHTML(dStr, lang2){
     const allEntries = loadLog();
     const hasAny = e && VICE_DEFS.some(vd=>e[vd.key]);
     const viceRowsHTML = VICE_DEFS.map(vd=>{
-      const val = e ? Math.round((e[vd.key]||0)*10)/10 : 0;
+      const val = e ? viceRound(e[vd.key]||0, vd.step) : 0;
       const unit = vd.unitKey ? t(vd.unitKey) : (vd.unitLit||'');
       const max = Math.max(1, ...allEntries.map(en=>en[vd.key]||0));
       const pct = Math.min(100, Math.round((val/max)*100));
-      return `<div class="log-nbar">
-        <span class="ln-name">${vd.em} ${t(vd.titleKey)}</span>
-        <div class="ln-track"><div class="ln-fill" style="width:${pct}%;background:${vd.color}"></div></div>
-        <span class="ln-pct">${val}${unit?(' '+unit):''}</span>
+      return `<div class="log-nbar-wrap">
+        <div class="log-nbar">
+          <span class="ln-name">${vd.em} ${t(vd.titleKey)}</span>
+          <div class="ln-track"><div class="ln-fill" style="width:${pct}%;background:${vd.color}"></div></div>
+          <span class="ln-pct">${val}${unit?(' '+unit):''}</span>
+        </div>
+        <div class="log-adjust" data-date="${dStr}" data-type="vice" data-key="${vd.key}">
+          <span class="log-adjust-label">${t('adjustLabel')}</span>
+          <input type="number" min="0" step="${vd.step}" class="log-adjust-input" value="${val}">
+          <button class="log-adjust-clear" title="${lang2==='sv'?'Nollställ':'Set to 0'}">🗑️</button>
+          <button class="log-adjust-save">${t('adjustSave')}</button>
+        </div>
       </div>`;
     }).join('');
     bodyHTML = hasAny
@@ -2768,9 +2838,20 @@ function buildBigDayHTML(dStr, lang2){
     if(selectedLogMeal && e){
       const meal = (e.meals||[]).find(mm=>mm.mealId===selectedLogMeal);
       const foods = meal ? meal.foods : [];
-      foodsHTML = `<div class="log-meal-foods">${foods.map(f=>
-        `<span class="log-food-tag ${f.eaten?'eaten':''}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}<button class="lft-del" data-date="${dStr}" data-meal="${selectedLogMeal}" data-food="${f.id}" title="${lang2==='sv'?'Ta bort':'Remove'}">🗑️</button></span>`
-      ).join('')}</div>`;
+      foodsHTML = `<div class="log-meal-foods">${foods.map(f=>{
+        const isOpen = openAdjustFood && openAdjustFood.dStr===dStr && openAdjustFood.mealId===selectedLogMeal && openAdjustFood.foodId===f.id;
+        if(isOpen){
+          const mi = foodMeasureInfo(f, lang2);
+          return `<div class="log-adjust log-adjust-inline" data-date="${dStr}" data-type="food" data-meal="${selectedLogMeal}" data-food="${f.id}" data-base="${mi.base}">
+            <span class="log-adjust-label">${f.em} ${t('adjustLabel')}</span>
+            <input type="number" min="0" step="${mi.step}" class="log-adjust-input" value="${mi.amt}">
+            <button class="log-adjust-clear" title="${lang2==='sv'?'Nollställ':'Set to 0'}">🗑️</button>
+            <span class="log-adjust-unit">${mi.unit}</span>
+            <button class="log-adjust-save">${t('adjustSave')}</button>
+          </div>`;
+        }
+        return `<button class="log-food-tag lft-toggle ${f.eaten?'eaten':''}" data-date="${dStr}" data-meal="${selectedLogMeal}" data-food="${f.id}"><span class="lft-em">${f.em}</span>${f.en||f.id}${f.qty&&f.qty!==1?` ×${f.qty}`:''}${f.eaten?' ✓':''}</button>`;
+      }).join('')}</div>`;
     }
 
     const nutKeys = Object.keys(NUTRIENTS);
@@ -2835,6 +2916,49 @@ function deleteLoggedFood(dStr, mealId, foodId){
   const lang2 = typeof lang !== 'undefined' ? lang : 'en';
   if(f) toast((lang2==='sv'?'Togs bort: ':'Removed: ')+f.em+' '+(f[lang2]||f.en||f.id));
   renderLog();
+}
+function adjustViceValue(dStr, key, newVal){
+  const log = loadLog();
+  const e = log.find(en=>en.date===dStr);
+  if(!e) return; // can only adjust a habit that already has a log entry for that day
+  e[key] = Math.max(0, newVal);
+  saveLog(log);
+  toast(t('adjustSaved'));
+  renderLog();
+}
+function adjustFoodQty(dStr, mealId, foodId, newQty){
+  if(newQty<=0){
+    if(openAdjustFood && openAdjustFood.dStr===dStr && openAdjustFood.mealId===mealId && openAdjustFood.foodId===foodId) openAdjustFood = null;
+    deleteLoggedFood(dStr, mealId, foodId);
+    return;
+  }
+  const log = loadLog();
+  const e = log.find(en=>en.date===dStr);
+  if(!e) return;
+  const meal = (e.meals||[]).find(m=>m.mealId===mealId);
+  if(!meal) return;
+  const f = meal.foods.find(ff=>ff.id===foodId);
+  if(!f) return;
+  f.qty = newQty;
+  recalcEntryNutrition(e);
+  saveLog(log);
+  if(openAdjustFood && openAdjustFood.dStr===dStr && openAdjustFood.mealId===mealId && openAdjustFood.foodId===foodId) openAdjustFood = null;
+  toast(t('adjustSaved'));
+  renderLog();
+}
+function applyAdjustment(box){
+  if(!box) return;
+  const input = box.querySelector('.log-adjust-input');
+  if(!input) return;
+  const raw = parseFloat(input.value);
+  const val = isNaN(raw) ? 0 : raw;
+  const dStr = box.dataset.date, type = box.dataset.type;
+  if(type==='vice'){
+    adjustViceValue(dStr, box.dataset.key, val);
+  } else if(type==='food'){
+    const base = parseFloat(box.dataset.base) || 1;
+    adjustFoodQty(dStr, box.dataset.meal, box.dataset.food, val/base);
+  }
 }
 
 function renderLog(){
@@ -3053,10 +3177,41 @@ function renderLog(){
 }
 
 document.getElementById('logWeeks').addEventListener('click', e=>{
-  const btn = e.target.closest('.lft-del');
-  if(!btn) return;
-  e.stopPropagation();
-  deleteLoggedFood(btn.dataset.date, btn.dataset.meal, btn.dataset.food);
+  const toggleBtn = e.target.closest('.lft-toggle');
+  if(toggleBtn){
+    e.stopPropagation();
+    const dStr=toggleBtn.dataset.date, mealId=toggleBtn.dataset.meal, foodId=toggleBtn.dataset.food;
+    if(openAdjustFood && openAdjustFood.dStr===dStr && openAdjustFood.mealId===mealId && openAdjustFood.foodId===foodId){
+      openAdjustFood = null;
+    } else {
+      openAdjustFood = {dStr, mealId, foodId};
+    }
+    renderLog();
+    return;
+  }
+  const clearBtn = e.target.closest('.log-adjust-clear');
+  if(clearBtn){
+    e.stopPropagation();
+    const box = clearBtn.closest('.log-adjust');
+    const input = box && box.querySelector('.log-adjust-input');
+    if(input){ input.value='0'; input.focus(); }
+    return;
+  }
+  const saveBtn = e.target.closest('.log-adjust-save');
+  if(saveBtn){
+    e.stopPropagation();
+    applyAdjustment(saveBtn.closest('.log-adjust'));
+  }
+});
+document.getElementById('logWeeks').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.classList && e.target.classList.contains('log-adjust-input')){
+    e.preventDefault();
+    e.stopPropagation();
+    applyAdjustment(e.target.closest('.log-adjust'));
+  }
+});
+document.getElementById('logWeeks').addEventListener('click', e=>{
+  if(e.target.classList && e.target.classList.contains('log-adjust-input')) e.stopPropagation();
 });
 
 // Update log button label in current language
