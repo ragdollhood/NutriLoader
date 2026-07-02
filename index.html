@@ -712,6 +712,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
   gap:6px;padding:0 18px 16px}
 .log-nbar{display:flex;flex-direction:column;gap:2px}
+.log-nbar-toggle{cursor:pointer}
 .log-nbar .ln-name{font-size:10.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.03em}
 .log-nbar .ln-track{height:7px;border-radius:999px;background:#e7dfd3;overflow:hidden;border:1px solid #ddd2c2;position:relative}
 .log-nbar .ln-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rose),var(--rose-deep));transition:width .4s ease}
@@ -784,7 +785,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-week-chart-hits{position:absolute;inset:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
 .lwch-cell{cursor:pointer}
 .log-week-btn-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:6px}
-.log-day-col{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0 2px;position:relative;border-right:1px dashed #e8e0d2}
+.log-day-col{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0 2px;position:relative;border-right:1px dashed #e8e0d2;cursor:pointer}
 .log-day-col:last-child{border-right:none}
 .log-day-col:first-of-type{border-left:1.5px solid #c8bfb0}
 .log-day-col.selected{background:var(--rose-soft)}
@@ -807,7 +808,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
 .log-meal-toggle-btn.active{background:var(--rose-soft);border-color:var(--rose-deep);color:var(--rose-deep)}
 .log-meals{flex-wrap:wrap;flex-direction:row}
 .log-nutr-label{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink-soft);padding:4px 18px 0}
-.log-day-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.log-day-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;min-height:22px;width:100%}
 .log-icon-btn{
   border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;
   font-size:15px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;
@@ -1014,7 +1015,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       <div>
         <div id="infoCard"></div>
         <div style="display:flex;justify-content:center;align-items:center;gap:14px;margin-top:12px">
-          <span id="supportMsg" data-i18n="supportMsg" style="font-size:12px;color:var(--ink-soft);max-width:220px;text-align:right">This service is free, but your support is appreciated!</span>
+          <span id="supportMsg" data-i18n="supportMsg" style="font-size:12px;color:var(--ink-soft);max-width:220px;text-align:right">This service is free, but your support is always appreciated.</span>
           <a id="donateBtn2" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=ingenskit%40hotmail.com&item_name=NUTRILOADER&currency_code=SEK&no_shipping=1" target="_blank" rel="noopener">
             <svg class="ppmark" viewBox="0 0 24 28" width="14" height="16" aria-hidden="true">
               <path d="M7.4 27 l.9-5.6 H6 L8.6 4.3 h7.3 c3.7 0 6 1.9 5.4 5.8 -.6 4.2 -3.7 6.2 -7.8 6.2 H10 l-.9 5.7 -.2 1.4 Z" fill="#003087"/>
@@ -2646,6 +2647,7 @@ let selectedLogDay = dateStrOfToday(); // date string of the currently expanded 
 let selectedLogMeal = null; // meal id currently expanded inside the big day panel
 let openLogInfoPopup = null; // {dStr,type,key} of the small per-icon popup, if one is open
 let openAdjustFood = null; // {dStr,mealId,foodId} of the food whose adjustment box is currently shown
+let openAdjustVice = null; // {dStr,key} of the bad-habit adjustment box currently shown in the big day panel
 
 function pad2(n){ return String(n).padStart(2,'0'); }
 function dateStrOf(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -2808,18 +2810,20 @@ function buildBigDayHTML(dStr, lang2){
       const unit = vd.unitKey ? t(vd.unitKey) : (vd.unitLit||'');
       const max = Math.max(1, ...allEntries.map(en=>en[vd.key]||0));
       const pct = Math.min(100, Math.round((val/max)*100));
-      return `<div class="log-nbar-wrap">
-        <div class="log-nbar">
-          <span class="ln-name">${vd.em} ${t(vd.titleKey)}</span>
-          <div class="ln-track"><div class="ln-fill" style="width:${pct}%;background:${vd.color}"></div></div>
-          <span class="ln-pct">${val}${unit?(' '+unit):''}</span>
-        </div>
-        <div class="log-adjust" data-date="${dStr}" data-type="vice" data-key="${vd.key}">
+      const isOpen = openAdjustVice && openAdjustVice.dStr===dStr && openAdjustVice.key===vd.key;
+      const adjustHTML = isOpen ? `<div class="log-adjust" data-date="${dStr}" data-type="vice" data-key="${vd.key}">
           <span class="log-adjust-label">${t('adjustLabel')}</span>
           <input type="number" min="0" step="${vd.step}" class="log-adjust-input" value="${val}">
           <button class="log-adjust-clear" title="${lang2==='sv'?'Nollställ':'Set to 0'}">🗑️</button>
           <button class="log-adjust-save">${t('adjustSave')}</button>
+        </div>` : '';
+      return `<div class="log-nbar-wrap">
+        <div class="log-nbar log-nbar-toggle" data-date="${dStr}" data-key="${vd.key}">
+          <span class="ln-name">${vd.em} ${t(vd.titleKey)}</span>
+          <div class="ln-track"><div class="ln-fill" style="width:${pct}%;background:${vd.color}"></div></div>
+          <span class="ln-pct">${val}${unit?(' '+unit):''}</span>
         </div>
+        ${adjustHTML}
       </div>`;
     }).join('');
     bodyHTML = hasAny
@@ -2923,6 +2927,8 @@ function adjustViceValue(dStr, key, newVal){
   if(!e) return; // can only adjust a habit that already has a log entry for that day
   e[key] = Math.max(0, newVal);
   saveLog(log);
+  if(openAdjustVice && openAdjustVice.dStr===dStr && openAdjustVice.key===key) openAdjustVice = null;
+  if(openLogInfoPopup && openLogInfoPopup.dStr===dStr && openLogInfoPopup.type==='vice' && openLogInfoPopup.key===key) openLogInfoPopup = null;
   toast(t('adjustSaved'));
   renderLog();
 }
@@ -3135,6 +3141,13 @@ function renderLog(){
   weeksEl.querySelectorAll('.lwch-cell[data-date]').forEach(c=>{
     c.addEventListener('click', ()=> toggleBigDay(c.dataset.date));
   });
+  weeksEl.querySelectorAll('.log-day-col[data-date]').forEach(col=>{
+    col.addEventListener('click', (ev)=>{
+      // don't hijack clicks on the small info popup that can open inside this column
+      if(ev.target.closest('.log-day-info')) return;
+      toggleBigDay(col.dataset.date);
+    });
+  });
   const bigClose = weeksEl.querySelector('.log-bigday-close');
   if(bigClose) bigClose.addEventListener('click', (ev)=>{ ev.stopPropagation(); selectedLogDay=null; selectedLogMeal=null; renderLog(); });
 
@@ -3177,6 +3190,17 @@ function renderLog(){
 }
 
 document.getElementById('logWeeks').addEventListener('click', e=>{
+  const viceToggleBtn = e.target.closest('.log-nbar-toggle');
+  if(viceToggleBtn){
+    const dStr=viceToggleBtn.dataset.date, key=viceToggleBtn.dataset.key;
+    if(openAdjustVice && openAdjustVice.dStr===dStr && openAdjustVice.key===key){
+      openAdjustVice = null;
+    } else {
+      openAdjustVice = {dStr, key};
+    }
+    renderLog();
+    return;
+  }
   const toggleBtn = e.target.closest('.lft-toggle');
   if(toggleBtn){
     e.stopPropagation();
