@@ -542,6 +542,11 @@ g.organ.sel .fillpart{filter:drop-shadow(0 0 5px rgba(166,79,71,.8))}
 #infoCard ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 #infoCard li{background:var(--panel-deep);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px}
 #infoCard li b{color:var(--rose-deep)}
+#supportRow{display:flex;justify-content:flex-start;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;max-width:100%}
+#supportMsg{font-size:12px;color:var(--ink-soft);text-align:left;white-space:nowrap}
+@media (max-width:1020px){
+  #supportMsg{white-space:normal}
+}
 #resetBtn{
   margin-top:12px;align-self:flex-start;border:1px solid var(--line);background:var(--panel-deep);
   color:var(--ink-soft);border-radius:999px;padding:7px 16px;font-size:12.5px;font-weight:700;letter-spacing:.05em}
@@ -1016,8 +1021,8 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       </div>
       <div>
         <div id="infoCard"></div>
-        <div style="display:flex;justify-content:flex-start;align-items:center;gap:14px;margin-top:12px">
-          <span id="supportMsg" data-i18n="supportMsg" style="font-size:12px;color:var(--ink-soft);white-space:nowrap;text-align:left">This service is free to use, but your support is always appreciated and gratefully received.</span>
+        <div id="supportRow">
+          <span id="supportMsg" data-i18n="supportMsg">This service is free to use, but your support is always appreciated and gratefully received.</span>
           <a id="donateBtn2" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=ingenskit%40hotmail.com&item_name=NUTRILOADER&currency_code=SEK&no_shipping=1" target="_blank" rel="noopener">
             <svg class="ppmark" viewBox="0 0 24 28" width="14" height="16" aria-hidden="true">
               <path d="M7.4 27 l.9-5.6 H6 L8.6 4.3 h7.3 c3.7 0 6 1.9 5.4 5.8 -.6 4.2 -3.7 6.2 -7.8 6.2 H10 l-.9 5.7 -.2 1.4 Z" fill="#003087"/>
