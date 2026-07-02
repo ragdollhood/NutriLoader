@@ -208,6 +208,10 @@ g.organ[data-organ="brain"] .hoverimg{opacity:1}
 #pantryQtyPop .addBtn{margin-top:10px;width:100%;border:1px solid var(--rose-soft);background:#fbeee9;color:var(--rose-deep);
   border-radius:999px;padding:7px 0;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
 #pantryQtyPop .addBtn:hover{background:var(--rose-soft)}
+#qtyPop .qtyRemoveBtn{margin-top:10px;width:100%;border:1px solid var(--line);background:#fbeee9;color:var(--rose-deep);
+  border-radius:999px;padding:7px 0;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+#qtyPop .qtyRemoveBtn:hover{background:var(--rose-soft);border-color:var(--rose-soft)}
+#qtyPop .qtyRemoveIc{font-size:13px;line-height:1}
 #pantryQtyPop .addBtn .plateIc{font-size:14px;line-height:1}
 #foodPop .sub{font-size:11.5px;color:var(--ink-soft);margin-bottom:8px}
 #foodPop .nrow{display:grid;grid-template-columns:92px 1fr 34px;gap:6px;align-items:center;font-size:11.5px;margin-bottom:4px}
@@ -368,11 +372,6 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   box-shadow:0 1px 4px rgba(60,40,20,.18);
   border:1px solid var(--rose-soft);background:#fdf3ef;color:var(--rose-deep);
   padding:2px 8px;font-size:10px;font-weight:700;border-radius:999px;margin-top:-7px;margin-bottom:3px;white-space:nowrap}
-.plate-item .rm{
-  position:absolute;top:0px;right:-6px;width:17px;height:17px;border-radius:50%;
-  border:1px solid var(--line);background:rgba(255,255,255,.95);font-size:9px;line-height:1;
-  display:grid;place-items:center;color:var(--ink-soft);box-shadow:0 1px 3px rgba(0,0,0,.15)}
-.plate-item .rm:hover{color:var(--rose-deep);border-color:var(--rose-soft)}
 
 /* ---------- body ---------- */
 #bodyZone{position:relative;flex:1;min-height:420px;display:flex;flex-direction:column;justify-content:center;border-radius:14px;transition:background .2s}
@@ -906,6 +905,7 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
   <div class="qlabel" id="qtyLabel"></div>
   <input type="range" id="qtyRange" min="0.5" max="2" step="0.5">
   <div class="ticks" id="qtyTicks"></div>
+  <button class="qtyRemoveBtn" id="qtyRemoveBtn"><span class="qtyRemoveIc" aria-hidden="true">🗑️</span><span data-i18n="removeFromPlate">Remove from plate</span></button>
 </div>
 <div id="foodPop"></div>
 <div id="pantryQtyPop">
@@ -1287,6 +1287,7 @@ const I18N = {
   eatenToast:{en:'{f} — on its way to your {o}. Nice work nourishing yourself!',
               sv:'{f} — på väg till {o}. Fint att du ger dig själv näring!'},
   removedToast:{en:'{f} removed from the plate',sv:'{f} borttagen från tallriken'},
+  removeFromPlate:{en:'Remove from plate',sv:'Ta bort från tallriken'},
   langLbl:{en:'Svenska',sv:'English'},
   howMuch:{en:'How much?',sv:'Hur mycket?'},
   q05:{en:'a small taste',sv:'en liten smak'},
@@ -1754,8 +1755,7 @@ function renderPlate(){
     el.style.transform='translate(-50%,-50%) scale('+pos.s+')';
     el.draggable=true;
     const nm=f[lang], fs=Math.min(11.5, Math.max(7.5, 125/nm.length)), tid='tarc'+it.uid;
-    el.innerHTML=`<button class="rm" title="✕">✕</button>
-      <div class="foodicon" title="${t('howMuch')}">
+    el.innerHTML=`<div class="foodicon" title="${t('howMuch')}">
         <svg class="nmArc" viewBox="0 0 78 78">
           <path id="${tid}" d="M 8 41 A 31 31 0 0 1 70 41" fill="none"/>
           <text class="nmtx" style="font-size:${fs}px"><textPath href="#${tid}" startOffset="50%" text-anchor="middle" dominant-baseline="middle">${nm.toUpperCase()}</textPath></text>
@@ -1769,7 +1769,6 @@ function renderPlate(){
     el.querySelector('.qty').onclick=ev=>{ev.stopPropagation();openQtyPop(it,ev.currentTarget);};
     el.querySelector('.foodicon').onclick=ev=>{ev.stopPropagation();openQtyPop(it,ev.currentTarget);};
     el.dataset.uid=it.uid;
-    el.querySelector('.rm').onclick=()=>{ closeQtyPop(); items=items.filter(x=>x.uid!==it.uid); toast(t('removedToast').replace('{f}',f[lang])); render(); };
     box.appendChild(el);
   });
   renderMealTabs();
@@ -2218,8 +2217,17 @@ function openQtyPop(it,anchor){
   document.getElementById('qtyTitle').textContent=f.em+' '+f[lang]+' — '+t('howMuch');
   refreshQtyRangeBounds(it.qty);
   document.getElementById('qtyLabel').textContent=fmtMeasure(f,it.qty,lang)+(fmtMeasureAlt(f,it.qty,lang)?' '+fmtMeasureAlt(f,it.qty,lang):'');
+  const rmBtn=document.getElementById('qtyRemoveBtn');
+  rmBtn.title=t('removeFromPlate');
+  rmBtn.onclick=()=>{
+    const uid=popItemUid;
+    closeQtyPop();
+    items=items.filter(x=>x.uid!==uid);
+    toast(t('removedToast').replace('{f}',f[lang]));
+    render();
+  };
   pop.classList.add('open');
-  placePop(pop,anchor,140);
+  placePop(pop,anchor,180);
 }
 function closeQtyPop(){pop.classList.remove('open');popItemUid=null;}
 document.getElementById('qtyRange').addEventListener('input',e=>{
