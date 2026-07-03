@@ -179,6 +179,25 @@ g.organ .hoverimg{opacity:0;transform:scale(1);transition:opacity .16s ease, tra
 g.organ.hov .hoverimg, g.organ.hovsel .hoverimg{opacity:1;transform:scale(1.03)}
 g.organ.hovsel .hoverimg{transform:scale(1.05)}
 g.organ[data-organ="brain"] .hoverimg{opacity:1}
+/* the hover images are full-body canvases (0,0–724,1536) with each organ's art positioned
+   at its real anatomical spot; scaling from the canvas center (default) drags high-up organs
+   (brain/eyes/lungs/heart) further upward, so each gets its own origin near its actual position */
+g.organ[data-organ="brain"] .hoverimg{transform-origin:50% 6%}
+g.organ[data-organ="eyes"] .hoverimg{transform-origin:50% 9%}
+g.organ[data-organ="lungs"] .hoverimg{transform-origin:50% 27%}
+g.organ[data-organ="heart"] .hoverimg{transform-origin:50% 28%}
+/* bigger hover-zoom for these organs specifically */
+g.organ[data-organ="eyes"].hov .hoverimg, g.organ[data-organ="eyes"].hovsel .hoverimg,
+g.organ[data-organ="brain"].hov .hoverimg, g.organ[data-organ="brain"].hovsel .hoverimg{transform:scale(1.18)}
+g.organ[data-organ="eyes"].hovsel .hoverimg,
+g.organ[data-organ="brain"].hovsel .hoverimg{transform:scale(1.24)}
+/* extra-large hover-zoom for heart, lungs and gut */
+g.organ[data-organ="lungs"].hov .hoverimg, g.organ[data-organ="lungs"].hovsel .hoverimg,
+g.organ[data-organ="gut"].hov .hoverimg, g.organ[data-organ="gut"].hovsel .hoverimg,
+g.organ[data-organ="heart"].hov .hoverimg, g.organ[data-organ="heart"].hovsel .hoverimg{transform:scale(1.45)}
+g.organ[data-organ="lungs"].hovsel .hoverimg,
+g.organ[data-organ="gut"].hovsel .hoverimg,
+g.organ[data-organ="heart"].hovsel .hoverimg{transform:scale(1.6)}
 #organLabel{position:fixed;z-index:70;pointer-events:none;display:none;
   background:var(--ink);color:#fdf6ee;padding:6px 14px;border-radius:999px;
   font-size:13.5px;font-weight:700;letter-spacing:.03em;box-shadow:0 6px 18px rgba(0,0,0,.3);white-space:nowrap}
