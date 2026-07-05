@@ -305,6 +305,17 @@ header h1 em{font-style:normal;color:var(--rose-deep)}
   letter-spacing:.04em;color:#003087;box-shadow:0 2px 8px rgba(85,70,55,.12);
   text-decoration:none;white-space:nowrap;transition:transform .15s ease}
 #donateBtn2:hover{background:#e8f0fc;border-color:#0070e0;transform:scale(1.06)}
+.shareRow{display:flex;align-items:center;gap:6px}
+.shareIconBtn{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:999px;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(85,70,55,.18);transition:transform .15s ease;color:#fff}
+.shareIconBtn:hover{transform:translateY(-1px)}
+.shareIconBtn:active{transform:scale(.92)}
+.shareIconBtn svg{width:12px;height:12px;display:block}
+.shareIconBtn.shareFb{background:#1877F2}
+.shareIconBtn.shareIg{background:radial-gradient(circle at 30% 107%,#fdf497,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
+#topLeftBtns .shareRow{margin-top:2px}
+#supportRow .shareRow{gap:6px}
 #langBtn{
   position:absolute;top:4px;right:26px;display:flex;align-items:center;gap:8px;
   border:1px solid var(--line);background:var(--panel);border-radius:999px;
@@ -951,6 +962,14 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
       </svg>
       <span>Thank you!</span>
     </a>
+    <div class="shareRow">
+      <a class="shareIconBtn shareFb" id="shareFbTop" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Share on Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.16 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.78 8.44-4.94 8.44-9.94Z"/></svg>
+      </a>
+      <a class="shareIconBtn shareIg" id="shareIgTop" href="#" target="_blank" rel="noopener" aria-label="Share on Instagram" title="Share on Instagram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.22.6 1.77 1.15.55.55.89 1.11 1.15 1.77.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.22 1.15-1.77a4.9 4.9 0 0 1 1.77-1.15c.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.28 2 12 2Zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.25a3.25 3.25 0 1 1 0-6.5 3.25 3.25 0 0 1 0 6.5ZM17.4 6.15a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0Z"/></svg>
+      </a>
+    </div>
   </div>
 <header>
   <h1><img src="images/logga-alpha.png" alt="Nutri Loader" class="title-image"></h1>
@@ -1067,6 +1086,14 @@ footer b{color:var(--rose-deep);letter-spacing:.05em}
             </svg>
             <span>Thank you!</span>
           </a>
+          <div class="shareRow">
+            <a class="shareIconBtn shareFb" id="shareFbBottom" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook" title="Share on Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.16 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.78 8.44-4.94 8.44-9.94Z"/></svg>
+            </a>
+            <a class="shareIconBtn shareIg" id="shareIgBottom" href="#" target="_blank" rel="noopener" aria-label="Share on Instagram" title="Share on Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.22.6 1.77 1.15.55.55.89 1.11 1.15 1.77.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.22 1.15-1.77a4.9 4.9 0 0 1 1.77-1.15c.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.28 2 12 2Zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.25a3.25 3.25 0 1 1 0-6.5 3.25 3.25 0 0 1 0 6.5ZM17.4 6.15a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0Z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -3399,6 +3426,28 @@ const response = await fetch(
 }
 
 registerVisit();
+</script>
+<script>
+(function(){
+  const pageUrl = window.location.href;
+  const fbLinks = [document.getElementById('shareFbTop'), document.getElementById('shareFbBottom')];
+  fbLinks.forEach(el=>{ if(el) el.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl); });
+
+  const igLinks = [document.getElementById('shareIgTop'), document.getElementById('shareIgBottom')];
+  igLinks.forEach(el=>{
+    if(!el) return;
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      navigator.clipboard.writeText(pageUrl).then(()=>{
+        const isSv = (typeof lang !== 'undefined' ? lang : 'en') === 'sv';
+        const original = el.innerHTML;
+        el.setAttribute('title', isSv ? 'Länk kopierad!' : 'Link copied!');
+        el.innerHTML = '✓';
+        setTimeout(()=>{ el.innerHTML = original; }, 2000);
+      }).catch(()=>{ window.open('https://www.instagram.com/', '_blank'); });
+    });
+  });
+})();
 </script>
 </body>
 </html>
