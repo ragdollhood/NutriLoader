@@ -3404,25 +3404,37 @@ async function registerVisit() {
   const visitorId = getVisitorId();
   const today = new Date().toISOString().slice(0, 10);
 
-const response = await fetch(
-`${SUPABASE_URL}/rest/v1/visitors`,
+  let country = "Unknown";
+
+  try {
+    const geo = await fetch("https://ipapi.co/json/");
+    const geoData = await geo.json();
+    country = geoData.country_name || "Unknown";
+  } catch (e) {
+    console.log("Country lookup failed");
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/visitors`,
     {
       method: "POST",
       headers: {
         apikey: SUPABASE_KEY,
         Authorization: `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json",
-     Prefer: "resolution=ignore-duplicates,return=minimal"
+        Prefer: "resolution=ignore-duplicates,return=minimal"
       },
       body: JSON.stringify({
         visitor_id: visitorId,
-        visit_date: today
+        visit_date: today,
+        country: country
       })
     }
   );
-     if (response.status === 409) {
-  return;
-}
+
+  if (response.status === 409) {
+    return;
+  }
 }
 
 registerVisit();
